@@ -44,7 +44,7 @@ func _ready():
     hud.menu_requested.connect(menu.open_panel)
     combat.feedback.connect(hud.show_notice)
     player.interact_requested.connect(func(): if map!=null: map.interact())
-    player.died.connect(return_to_town)
+    player.died.connect(return_to_town,CONNECT_DEFERRED)
     state.leveled.connect(func(lv):
         hud.show_notice("LEVEL %d! +5 attribute points. Open Stats to spend them." % lv,6)
         effects.show_attack("wave",player.position,1))

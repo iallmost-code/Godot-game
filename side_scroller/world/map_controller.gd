@@ -34,7 +34,7 @@ func setup(s):
         for data in [[750,485,300],[1100,375,280],[1500,475,350],[1940,350,300],[2370,455,380]]:
             build_platform(Vector2(data[0],data[1]+9),Vector2(data[2],18),true)
         make_label("← Willowbridge\nUp to return",portal_position+Vector2(-80,-130),Color("edf5cc"),17)
-        make_label("THE WHISPERWOOD",Vector2(670,230),Color("edf5cc"),23)
+        make_label("THE WHISPERWOOD",Vector2(670,270),Color("edf5cc"),23)
         make_label("Shift + Shift: double jump\nSpace: attack  •  Z / X: skills after first job",Vector2(390,300),Color("d7e9cc"),16)
         for data in [[640,610,"mossling"],[980,610,"mossling"],[1290,610,"mossling"],[1660,610,"mossling"],[2210,610,"mossling"],[2670,610,"mossling"],[815,485,"lantern"],[1530,475,"lantern"],[2370,455,"lantern"]]:
             var record={"position":Vector2(data[0],data[1]),"id":data[2],"node":null,"timer":0.0}

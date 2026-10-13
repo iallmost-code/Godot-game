@@ -46,12 +46,13 @@ func cancel():
 func tick(delta):
     for id in cooldowns: cooldowns[id]=maxf(0,cooldowns[id]-delta)
     if active == "": return
+    var previous_elapsed=elapsed
     elapsed+=delta
-    if elapsed >= 0.08 and elapsed <= 0.27:
+    if elapsed >= 0.08 and previous_elapsed <= 0.27:
         var skill=Catalog.skills()[active]
         var rank=state.skill_ranks.get(active,1)
-        var reach=skill.reach + (40*int(rank/2.0) if active=="wave" else 0)
-        var cap=skill.targets+(int(rank/2.0) if active=="wave" else 0)
+        var reach=skill.reach + (40*int((rank-1)/2.0) if active=="wave" else 0)
+        var cap=skill.targets+(int((rank-1)/2.0) if active=="wave" else 0)
         var targets: Array = []
         for e in get_tree().get_nodes_in_group("enemies"):
             var offset=e.global_position-player.global_position

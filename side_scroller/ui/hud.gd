@@ -32,7 +32,7 @@ func bind(s,c,b=null):
     root_control.add_child(map_label)
     var top=HBoxContainer.new()
     top.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-    top.position=Vector2(-365,22)
+    top.position=Vector2(-410,22)
     root_control.add_child(top)
     for id in ["stats","skills","inventory"]:
         top.add_child(Style.button(id.capitalize(),func(): menu_requested.emit(id)))
@@ -105,6 +105,7 @@ func refresh():
     mp_bar.value=state.mp
     xp_bar.max_value=state.xp_required(state.level)
     xp_bar.value=state.xp
+    xp_bar.tooltip_text="XP %d / %d  •  %d attribute points available" % [state.xp,state.xp_required(state.level),state.ap]
     potion_button.text="Potion ×%d%s" % [state.potions," (%.1fs)" % state.potion_cooldown if state.potion_cooldown>0 else ""]
     for entry in skills:
         var slot=entry.slot

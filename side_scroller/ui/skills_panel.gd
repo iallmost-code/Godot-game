@@ -56,5 +56,5 @@ func refresh():
                 line.add_child(button)
         row.add_child(Style.label(skill.description,14,Color("acc6c6")))
         if skill.active:
-            row.add_child(Style.label("%d MP  •  %.1fs cooldown  •  %d targets  •  Next rank: +15%% base attack" % [skill.mana,skill.cooldown,skill.targets],13,Color("e1bf83")))
+            row.add_child(Style.label("%d MP  •  %.1fs cooldown  •  %d targets  •  Next rank: +15%% base attack" % [skill.mana,skill.cooldown,skill.targets+(int(maxi(0,rank-1)/2.0) if id=="wave" else 0)],13,Color("e1bf83")))
     add_child(Style.label(note,15,Color("e8cf8e")))

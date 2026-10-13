@@ -60,5 +60,35 @@ func run(t):
     c.tick(3)
     s.mp=0
     t.check(not c.begin_attack("sweep"),"no-mana cast rejected")
+    c.tick(3)
+    s.job="spearman"
+    s.skill_ranks.wave=2
+    s.mp=100
+    var cluster=[]
+    for i in range(6):
+        var mob=load("res://actors/enemy.gd").new()
+        mob.position=Vector2(20+i*20,0)
+        world.add_child(mob)
+        mob.set_physics_process(false)
+        mob.hp=200
+        cluster.append(mob)
+    c.begin_attack("wave")
+    c.tick(0.12)
+    t.check(cluster[5].hp==200,"Wave rank two retains five-target limit")
+    c.tick(3)
+    s.skill_ranks.wave=3
+    c.begin_attack("wave")
+    c.tick(0.12)
+    t.check(cluster[5].hp<200,"Wave rank three gains sixth target")
+    for mob in cluster:
+        if is_instance_valid(mob): mob.queue_free()
+    await t.process_frame
+    c.tick(3)
+    enemy.position.x=60
+    enemy.hp=200
+    var previous=enemy.hp
+    c.begin_attack("basic")
+    c.tick(0.4)
+    t.check(enemy.hp<previous,"large frame delta does not skip attack hit window")
     world.queue_free()
     await t.process_frame
