@@ -28,7 +28,7 @@ func refresh():
         return
     add_child(Style.label("Tier %d skill points: %d  |  %s" % [selected_tier,state.sp[str(selected_tier)],"Advance with the town instructor to unlock this tier." if selected_tier>state.tier() else "Spend points to increase ranks; assign learned attacks below."],16))
     if selected_tier==2:
-        add_child(Style.label("Spear Mastery  →  Ground Wave\nBattle Vigor (independent passive)",16,Color("8ed9d0")))
+        add_child(Style.label("Spear Mastery  ->  Ground Wave\nBattle Vigor (independent passive)",16,Color("8ed9d0")))
     else:
         add_child(Style.label("Crescent Sweep  •  Driving Thrust  •  Strength Training  •  Iron Skin",15,Color("8ed9d0")))
     for id in Catalog.skills():
@@ -50,7 +50,7 @@ func refresh():
         line.add_child(rank_button)
         if skill.active:
             for slot in ["z","x","c"]:
-                var button=Style.button(slot.to_upper()+(" ✓" if state.slots[slot]==id else ""),func(): assign_skill(slot,id))
+                var button=Style.button(slot.to_upper()+(" (on)" if state.slots[slot]==id else ""),func(): assign_skill(slot,id))
                 button.custom_minimum_size.x=56
                 button.disabled=not state.can_use(id)
                 line.add_child(button)

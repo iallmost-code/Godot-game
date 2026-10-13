@@ -41,7 +41,7 @@ func refresh():
     var hp_gain=2*draft.get("STR",0)
     var mp_gain=2*draft.get("INT",0)
     var atk_gain=draft.get("STR",0)+int(proposed.DEX/4.0)-int(state.attributes.DEX/4.0)
-    add_child(Style.label("Attack %d → %d     Defense %d\nMax HP %d → %d     Max MP %d → %d\nCritical chance %.1f%%" % [stats.attack,stats.attack+atk_gain,stats.defense,stats.max_hp,stats.max_hp+hp_gain,stats.max_mp,stats.max_mp+mp_gain,stats.crit*100],18))
+    add_child(Style.label("Attack %d -> %d     Defense %d\nMax HP %d -> %d     Max MP %d -> %d\nCritical chance %.1f%%" % [stats.attack,stats.attack+atk_gain,stats.defense,stats.max_hp,stats.max_hp+hp_gain,stats.max_mp,stats.max_mp+mp_gain,stats.crit*100],18))
     var actions=HBoxContainer.new()
     add_child(actions)
     actions.add_child(Style.button("Confirm points",func(): confirm()))

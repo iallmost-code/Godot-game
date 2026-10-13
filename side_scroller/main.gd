@@ -15,6 +15,7 @@ var advancement_dialog
 var pending_job=""
 var save_store
 var mana_tick=0.0
+var startup_warning=""
 func _ready():
     state=preload("res://systems/character_state.gd").new()
     bindings=preload("res://systems/input_bindings.gd").new()
@@ -29,7 +30,7 @@ func _ready():
     effects=preload("res://visuals/combat_effects.gd").new()
     effects.z_index=12
     add_child(effects)
-    combat.attack_started.connect(func(id): effects.show_attack(id,player.global_position,player.facing))
+    combat.attack_started.connect(func(id,origin,direction,reach): effects.show_attack(id,origin,direction,reach))
     combat.impact.connect(effects.show_damage)
     camera=Camera2D.new()
     camera.zoom=Vector2(1.15,1.15)
@@ -51,7 +52,9 @@ func _ready():
     save_store=preload("res://systems/save_store.gd").new()
     save_store.process_mode=Node.PROCESS_MODE_ALWAYS
     add_child(save_store)
-    save_store.warning.connect(hud.show_notice)
+    save_store.warning.connect(func(message):
+        startup_warning=message
+        hud.show_notice(message,10))
     if not test_mode: save_store.load_into(state,bindings)
     state.changed.connect(func(): call_deferred("persist"))
     menu.binding_changed.connect(persist)
@@ -60,7 +63,8 @@ func _ready():
     menu.export_requested.connect(func(): save_store.export_backup(state,bindings))
     menu.import_requested.connect(func(): save_store.import_backup(state,bindings))
     change_map("town","entry")
-    hud.show_notice("Welcome! Arrows move • Shift jumps twice • Space attacks • Up interacts",10)
+    if startup_warning=="": hud.show_notice("Welcome! Arrows move • Shift jumps twice • Space attacks • Up interacts",10)
+    else: hud.show_notice(startup_warning,10)
     if test_mode:
         player.set_physics_process(false)
         set_process(false)
@@ -101,7 +105,7 @@ func show_advancement(id: String):
     Style.clear(menu.content)
     menu.content.add_child(box)
     box.add_child(Style.label("JOB ADVANCEMENT",26,Color("f4d48a")))
-    box.add_child(Style.label("Become a %s?\n\n%s" % [id.capitalize(),"Unlock Crescent Sweep and Driving Thrust, plus the first-job skill tree." if id=="warrior" else "Unlock Spear Mastery → Ground Wave and Battle Vigor."],20))
+    box.add_child(Style.label("Become a %s?\n\n%s" % [id.capitalize(),"Unlock Crescent Sweep and Driving Thrust, plus the first-job skill tree." if id=="warrior" else "Unlock Spear Mastery -> Ground Wave and Battle Vigor."],20))
     box.add_child(Style.button("Confirm advancement",func():
         if state.advance_job(pending_job):
             menu.close()

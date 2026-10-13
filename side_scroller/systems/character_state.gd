@@ -168,6 +168,13 @@ func load_record(record: Dictionary) -> bool:
         if record.sp[pool]+spent[pool]!=record.sp_earned[pool]: return false
         trial.sp[pool]=int(record.sp[pool])
         trial.sp_earned[pool]=int(record.sp_earned[pool])
+    var total_max=0 if trial.tier()==0 else 1+3*(trial.level-10)+(1 if trial.tier()==2 else 0)
+    if trial.sp_earned["1"]+trial.sp_earned["2"]>total_max: return false
+    for pool in ["1","2"]:
+        var earned=trial.sp_earned[pool]
+        if int(pool)<=trial.tier():
+            if earned<1 or (earned-1)%3!=0: return false
+        elif earned!=0: return false
     var slot_record=record.get("slots",{"z":"sweep" if trial.tier()>0 else "","x":"thrust" if trial.tier()>0 else "","c":""})
     if not slot_record is Dictionary: return false
     var assigned: Array=[]

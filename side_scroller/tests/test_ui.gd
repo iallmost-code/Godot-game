@@ -42,3 +42,39 @@ func run(t):
     s.advance_job("warrior")
     t.check(not s.assign_skill("c","sweep"),"duplicate skill assignment rejected")
     t.check(not s.assign_skill("z","wave"),"unlearned skill assignment rejected")
+    var game=load("res://main.tscn").instantiate()
+    game.test_mode=true
+    t.root.add_child(game)
+    game.player.set_physics_process(true)
+    game.menu.open_panel("controls")
+    var before=game.player.position
+    var attacks=game.combat.sequence
+    var control=game.menu.current_panel
+    control.start_capture("jump")
+    var captured=InputEventKey.new()
+    captured.physical_keycode=KEY_SPACE
+    captured.pressed=true
+    Input.parse_input_event(captured.duplicate())
+    Input.flush_buffered_events()
+    for i in range(3): await t.physics_frame
+    t.check(game.player.position==before and game.combat.sequence==attacks,"paused key capture cannot move or attack with a real player")
+    captured.pressed=false
+    Input.parse_input_event(captured.duplicate())
+    Input.flush_buffered_events()
+    captured=InputEventKey.new()
+    captured.physical_keycode=KEY_ESCAPE
+    captured.pressed=true
+    Input.parse_input_event(captured.duplicate())
+    Input.flush_buffered_events()
+    t.check(game.menu.opened and control.capture_action=="","Escape cancels capture before closing the paused menu")
+    captured.pressed=false
+    Input.parse_input_event(captured.duplicate())
+    Input.flush_buffered_events()
+    control.start_capture("attack")
+    game.menu.open_panel("stats")
+    await t.process_frame
+    game.menu.open_panel("controls")
+    t.check(game.menu.current_panel.capture_action=="","switching panels does not retain keyboard capture")
+    game.menu.close()
+    game.queue_free()
+    await t.process_frame

@@ -77,7 +77,8 @@ func _physics_process(delta):
     if attack_timer > 0: pose = "attack"
     if hurt_timer > 0 and int(hurt_timer*12)%2 == 0: visual.modulate.a = 0.55
     else: visual.modulate.a = 1
-    visual.set_pose(pose, facing, Time.get_ticks_msec()/1000.0)
+    var visual_facing=combat.attack_facing if combat!=null and combat.active!="" else facing
+    visual.set_pose(pose, visual_facing, Time.get_ticks_msec()/1000.0)
 func receive_damage(amount: int, impulse: Vector2) -> bool:
     if state == null or hurt_timer > 0 or state.hp <= 0: return false
     state.hp = maxf(0, state.hp-maxi(1,amount-int(state.derived_stats().defense)))

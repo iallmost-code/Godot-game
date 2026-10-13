@@ -28,12 +28,12 @@ func setup(s):
         npc.set_pose("idle",1,0)
         make_label("Captain Elowen\nJob advancement",instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
         make_label("WILLOWBRIDGE",Vector2(265,330),Color("495e59"),23)
-        make_label("Forest →\nUp to enter",portal_position+Vector2(-60,-130),Color("ebf9e7"),17)
+        make_label("Forest ->\nUp to enter",portal_position+Vector2(-60,-130),Color("ebf9e7"),17)
         make_label("A quiet place to begin.\nSpeak to Elowen at levels 10 and 30.",Vector2(820,260),Color("516d68"),17)
     else:
         for data in [[750,485,300],[1100,375,280],[1500,475,350],[1940,350,300],[2370,455,380]]:
             build_platform(Vector2(data[0],data[1]+9),Vector2(data[2],18),true)
-        make_label("← Willowbridge\nUp to return",portal_position+Vector2(-80,-130),Color("edf5cc"),17)
+        make_label("<- Willowbridge\nUp to return",portal_position+Vector2(-80,-130),Color("edf5cc"),17)
         make_label("THE WHISPERWOOD",Vector2(670,270),Color("edf5cc"),23)
         make_label("Shift + Shift: double jump\nSpace: attack  •  Z / X: skills after first job",Vector2(390,300),Color("d7e9cc"),16)
         for data in [[640,610,"mossling"],[980,610,"mossling"],[1290,610,"mossling"],[1660,610,"mossling"],[2210,610,"mossling"],[2670,610,"mossling"],[815,485,"lantern"],[1530,475,"lantern"],[2370,455,"lantern"]]:

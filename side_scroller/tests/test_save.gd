@@ -46,5 +46,23 @@ func run(t):
     data=JSON.parse_string(text)
     data.character.erase("coins")
     t.check(store.import_json(JSON.stringify(data),copy,b) and copy.coins==0,"optional missing field has default")
+    data=JSON.parse_string(text)
+    data.character.level=40
+    data.character.xp=0
+    data.character.job="spearman"
+    data.character.attributes={"STR":4,"DEX":4,"INT":4,"LUK":4}
+    data.character.ap=195
+    data.character.skill_ranks={"basic":1,"sweep":1,"thrust":1}
+    data.character.sp={"1":91,"2":31}
+    data.character.sp_earned={"1":91,"2":31}
+    data.bindings.attack=KEY_A
+    var prior=copy.to_record()
+    t.check(not store.import_json(JSON.stringify(data),copy,b),"cross-tier earned SP cannot double-count level rewards")
+    t.check(copy.to_record()==prior and b.current().attack==KEY_SPACE,"rejected SP import preserves character and live key bindings")
+    data=JSON.parse_string(text)
+    data.character.sp={"1":0,"2":0}
+    data.character.sp_earned={"1":0,"2":0}
+    data.character.skill_ranks={"basic":1,"sweep":1,"thrust":1}
+    t.check(not store.import_json(JSON.stringify(data),copy,b),"advanced job must retain its advancement reward")
     store.queue_free()
     await t.process_frame

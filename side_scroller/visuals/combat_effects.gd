@@ -4,9 +4,10 @@ var numbers: Array=[]
 func show_damage(pos: Vector2,amount: int,critical: bool):
     if numbers.size()>=60: numbers.pop_front()
     numbers.append({"position":pos+Vector2(randf_range(-12,12),0),"amount":amount,"critical":critical,"age":0.0})
-func show_attack(id: String,origin: Vector2,facing: int):
+func show_attack(id: String,origin: Vector2,facing: int,reach=-1.0):
     if effects.size()>=30: effects.pop_front()
-    effects.append({"id":id,"position":origin,"facing":facing,"age":0.0})
+    if reach<0: reach=preload("res://data/catalog.gd").skills()[id].reach
+    effects.append({"id":id,"position":origin,"facing":facing,"reach":reach,"age":0.0})
 func _process(delta):
     for e in effects.duplicate():
         e.age+=delta
@@ -23,16 +24,17 @@ func _draw():
         var color=Color("fff2b2")
         color.a=fade
         if e.id=="wave":
+            draw_line(p+Vector2(face*15,12),p+Vector2(face*e.reach,12),Color(0.45,0.92,0.9,fade*0.6),8*fade)
             for i in range(3):
-                var x=face*(40+e.age*600+i*50)
-                var poly=PackedVector2Array([p+Vector2(x,-12),p+Vector2(x+face*55,-95+i*12),p+Vector2(x+face*100,12)])
+                var tip=face*e.reach*(0.4+i*0.3)
+                var poly=PackedVector2Array([p+Vector2(tip-face*90,12),p+Vector2(tip-face*45,-65+i*9),p+Vector2(tip,12)])
                 draw_colored_polygon(poly,Color(0.45,0.92,0.9,fade*(0.7-i*0.12)))
         elif e.id=="thrust":
-            draw_line(p+Vector2(face*12,0),p+Vector2(face*190,0),Color(0.5,0.9,1,fade),12*fade)
-            draw_line(p+Vector2(face*12,0),p+Vector2(face*180,0),color,4)
-            draw_colored_polygon(PackedVector2Array([p+Vector2(face*170,-12),p+Vector2(face*210,0),p+Vector2(face*170,12)]),color)
+            draw_line(p+Vector2(face*12,0),p+Vector2(face*(e.reach-8),0),Color(0.5,0.9,1,fade),12*fade)
+            draw_line(p+Vector2(face*12,0),p+Vector2(face*(e.reach-15),0),color,4)
+            draw_colored_polygon(PackedVector2Array([p+Vector2(face*(e.reach-30),-12),p+Vector2(face*e.reach,0),p+Vector2(face*(e.reach-30),12)]),color)
         else:
-            var radius=100.0 if e.id=="basic" else 145.0
+            var radius=float(e.reach)
             var base_angle=0.0 if face==1 else PI
             draw_arc(p,radius,base_angle-0.95,base_angle+0.95,24,Color(1,0.74,0.39,fade),12*fade,true)
             draw_arc(p,radius-8,base_angle-0.85,base_angle+0.85,24,color,5*fade,true)

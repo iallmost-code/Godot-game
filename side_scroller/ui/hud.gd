@@ -36,7 +36,7 @@ func bind(s,c,b=null):
     root_control.add_child(top)
     for id in ["stats","skills","inventory"]:
         top.add_child(Style.button(id.capitalize(),func(): menu_requested.emit(id)))
-    top.add_child(Style.button("☰",func(): menu_requested.emit("controls")))
+    top.add_child(Style.button("Menu",func(): menu_requested.emit("controls")))
     var panel=PanelContainer.new()
     panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
     panel.offset_top=-100

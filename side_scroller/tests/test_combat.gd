@@ -90,5 +90,20 @@ func run(t):
     c.begin_attack("basic")
     c.tick(0.4)
     t.check(enemy.hp<previous,"large frame delta does not skip attack hit window")
+    c.tick(3)
+    enemy.position=Vector2(70,0)
+    enemy.hp=200
+    var behind=load("res://actors/enemy.gd").new()
+    behind.position=Vector2(-70,0)
+    world.add_child(behind)
+    behind.set_physics_process(false)
+    behind.hp=200
+    player.position=Vector2.ZERO
+    player.facing=1
+    c.begin_attack("basic")
+    player.facing=-1
+    player.position=Vector2(-20,0)
+    c.tick(0.12)
+    t.check(enemy.hp<200 and behind.hp==200,"turning during windup keeps damage on the displayed attack side")
     world.queue_free()
     await t.process_frame

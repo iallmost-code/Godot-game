@@ -4,7 +4,7 @@ An original, single-player 2D side-scrolling RPG prototype for **Godot Web Edito
 
 ## Import the playable project
 
-Choose **Side-Scroller-Warrior.zip** in the Web Editor landing page's **Preload project ZIP**, then start the editor. Open the imported Windswept project and click **Run Project**. Click inside the running game so it receives keyboard input. Use the editor's Run button if your browser captures function keys.
+Choose **Side-Scroller-Warrior.zip** in the Web Editor landing page's **Preload project ZIP**, then start the editor. In the Install Project dialog, click **Install** with **Edit Now** checked. Once the project opens, click **Run Project**. Click inside the running game so it receives keyboard input. Use the editor's Run button if your browser captures function keys.
 
 Use this standalone project ZIP, not GitHub's repository-wide Code → Download ZIP: that archive also contains the previous 3D prototype.
 

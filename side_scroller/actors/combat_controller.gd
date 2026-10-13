@@ -8,7 +8,11 @@ var elapsed = 0.0
 var struck: Array = []
 var sequence = 0
 var combo = 0
-signal attack_started(skill_id: String)
+var attack_origin=Vector2.ZERO
+var attack_facing=1
+var attack_reach=0.0
+var attack_targets=0
+signal attack_started(skill_id: String,origin: Vector2,direction: int,reach: float)
 signal impact(position: Vector2, damage: int, critical: bool)
 signal feedback(message: String)
 func setup(p,s):
@@ -38,7 +42,12 @@ func begin_attack(id: String) -> bool:
     combo = (combo+1)%2
     cooldowns[id]=skill.cooldown
     player.attack_timer=0.30
-    attack_started.emit(id)
+    var rank=state.skill_ranks.get(id,1)
+    attack_origin=player.global_position
+    attack_facing=player.facing
+    attack_reach=skill.reach+(40*int((rank-1)/2.0) if id=="wave" else 0)
+    attack_targets=skill.targets+(int((rank-1)/2.0) if id=="wave" else 0)
+    attack_started.emit(id,attack_origin,attack_facing,attack_reach)
     return true
 func cancel():
     active=""
@@ -51,21 +60,21 @@ func tick(delta):
     if elapsed >= 0.08 and previous_elapsed <= 0.27:
         var skill=Catalog.skills()[active]
         var rank=state.skill_ranks.get(active,1)
-        var reach=skill.reach + (40*int((rank-1)/2.0) if active=="wave" else 0)
-        var cap=skill.targets+(int((rank-1)/2.0) if active=="wave" else 0)
+        var reach=attack_reach
+        var cap=attack_targets
         var targets: Array = []
         for e in get_tree().get_nodes_in_group("enemies"):
-            var offset=e.global_position-player.global_position
-            if e.hp>0 and absf(offset.y)<70 and offset.x*player.facing>=-12 and absf(offset.x)<reach:
+            var offset=e.global_position-attack_origin
+            if e.hp>0 and absf(offset.y)<70 and offset.x*attack_facing>=-12 and absf(offset.x)<reach:
                 targets.append(e)
-        targets.sort_custom(func(a,b): return absf(a.global_position.x-player.global_position.x)<absf(b.global_position.x-player.global_position.x))
+        targets.sort_custom(func(a,b): return absf(a.global_position.x-attack_origin.x)<absf(b.global_position.x-attack_origin.x))
         for e in targets:
             if struck.size() >= cap: break
             if struck.has(e.get_instance_id()): continue
             struck.append(e.get_instance_id())
             var critical=randf()<state.derived_stats().crit
             var damage=int(state.derived_stats().attack*(skill.power+maxi(0,rank-1)*0.15)*(1.5 if critical else 1.0))
-            var push=Vector2(player.facing*260,-70) if active=="thrust" else Vector2.ZERO
+            var push=Vector2(attack_facing*260,-70) if active=="thrust" else Vector2.ZERO
             if e.receive_hit(damage,push,int(get_instance_id())+sequence):
                 impact.emit(e.global_position+Vector2(0,-45),damage,critical)
     if elapsed>=0.32: active=""
