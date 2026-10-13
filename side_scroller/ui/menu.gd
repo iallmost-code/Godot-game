@@ -7,7 +7,7 @@ var content
 var current_panel
 var opened=false
 var selected="stats"
-signal visibility_changed(open: bool)
+signal menu_visibility_changed(open: bool)
 signal save_requested
 signal export_requested
 signal import_requested
@@ -72,13 +72,13 @@ func open_panel(id: String):
         content.add_child(Style.button("Save character now",func(): save_requested.emit()))
         content.add_child(Style.button("Download JSON backup",func(): export_requested.emit()))
         content.add_child(Style.button("Import JSON backup",func(): import_requested.emit()))
-    visibility_changed.emit(true)
+    menu_visibility_changed.emit(true)
 func close():
     if current_panel!=null and selected=="controls": current_panel.capture_action=""
     opened=false
     root_control.hide()
     get_tree().paused=false
-    visibility_changed.emit(false)
+    menu_visibility_changed.emit(false)
 func _unhandled_input(event):
     if not event.is_action_pressed("menu") or event is InputEventKey and event.echo: return
     if opened: close()
