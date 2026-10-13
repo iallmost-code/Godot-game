@@ -48,6 +48,17 @@ func _ready():
     state.leveled.connect(func(lv):
         hud.show_notice("LEVEL %d! +5 attribute points. Open Stats to spend them." % lv,6)
         effects.show_attack("wave",player.position,1))
+    save_store=preload("res://systems/save_store.gd").new()
+    save_store.process_mode=Node.PROCESS_MODE_ALWAYS
+    add_child(save_store)
+    save_store.warning.connect(hud.show_notice)
+    if not test_mode: save_store.load_into(state,bindings)
+    state.changed.connect(func(): call_deferred("persist"))
+    menu.binding_changed.connect(persist)
+    menu.save_requested.connect(func():
+        if save_store.save(state,bindings): hud.show_notice("Character saved."))
+    menu.export_requested.connect(func(): save_store.export_backup(state,bindings))
+    menu.import_requested.connect(func(): save_store.import_backup(state,bindings))
     change_map("town","entry")
     hud.show_notice("Welcome! Arrows move • Shift jumps twice • Space attacks • Up interacts",10)
     if test_mode:
@@ -104,3 +115,6 @@ func _process(delta):
     if map!=null:
         player.position.x=clampf(player.position.x,20,map.width-20)
         camera.position=Vector2(lerpf(camera.position.x,clampf(player.position.x,557,map.width-557),minf(1,delta*6)),450)
+
+func persist():
+    if not test_mode and save_store!=null: save_store.save(state,bindings)
