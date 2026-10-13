@@ -1,0 +1,32 @@
+extends RefCounted
+func run(t):
+    var s = load("res://systems/character_state.gd").new()
+    t.check(s.level == 1, "new character begins at level one")
+    if s.level != 1: return
+    t.check(s.attributes == {"STR": 4, "DEX": 4, "INT": 4, "LUK": 4}, "four starting attributes")
+    s.add_xp(-9)
+    t.check(s.xp == 0, "negative XP ignored")
+    s.add_xp(s.xp_required(1) + s.xp_required(2))
+    t.check(s.level == 3 and s.ap == 10, "multi-level XP grants each AP reward once")
+    t.check(not s.allocate_attributes({"STR": 11}) and s.ap == 10, "overspent allocation rejected")
+    t.check(s.allocate_attributes({"STR": 5}) and s.ap == 5 and s.attributes.STR == 9, "valid allocation applied")
+    t.check(not s.allocate_attributes({"STR": -1}), "negative allocation rejected")
+    t.check(not s.advance_job("warrior"), "first job locked before ten")
+    while s.level < 10: s.add_xp(s.xp_required(s.level))
+    t.check(s.advance_job("warrior") and s.sp["1"] == 1, "first advancement grants tier SP")
+    t.check(not s.advance_job("warrior") and s.sp["1"] == 1, "duplicate advancement rejected")
+    t.check(s.can_use("sweep") and s.can_use("thrust"), "starter skills usable immediately")
+    t.check(not s.rank_up("wave"), "locked second-tier skill blocked")
+    s.add_xp(s.xp_required(10))
+    t.check(s.sp["1"] == 4, "post-job level grants three tier points")
+    while s.level < 30: s.add_xp(s.xp_required(s.level))
+    t.check(s.advance_job("spearman") and s.sp["2"] == 1, "second advancement grants one second-tier point")
+    t.check(not s.rank_up("wave"), "wave prerequisite enforced")
+    t.check(s.rank_up("mastery"), "mastery learns with second-tier point")
+    t.check(not s.rank_up("wave"), "empty point pool rejects spending")
+    t.check(not s.advance_job("dragon_knight"), "future job unavailable")
+    var expected = 120 + 12 * 29 + 2 * 5
+    t.check(s.derived_stats().max_hp == expected, "HP uses published formula")
+    var old_hp = s.hp
+    t.check(s.allocate_attributes({"INT": 2}), "INT allocates")
+    t.check(s.hp == old_hp, "allocation does not secretly heal current HP")
