@@ -25,4 +25,8 @@ with tempfile.TemporaryDirectory() as directory:
         for source in (root/'side_scroller').rglob('*.gd'):
             if '.godot' not in source.parts:
                 assert source.relative_to(root/'side_scroller').as_posix() in names
-print('PASS: ZIP integrity, root layout, all scripts, directory entries, cache/save exclusions')
+        with ZipFile(root/'Side-Scroller-Warrior.zip') as shipped:
+            assert set(shipped.namelist()) == names, 'Shipped ZIP file list is stale'
+            for name in names:
+                assert shipped.read(name) == z.read(name), f'Shipped ZIP is stale: {name}'
+print('PASS: ZIP integrity, root layout, all scripts, directory entries, cache/save exclusions, shipped source parity')
