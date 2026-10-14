@@ -13,6 +13,7 @@ with tempfile.TemporaryDirectory() as directory:
         names=set(z.namelist())
         assert z.testzip() is None
         assert {'project.godot','main.tscn','main.gd','README.md'}<=names
+        assert {'art/warrior_atlas.png','art/sky.png','art/props.png','art/terrain.png','art/enemies.png','art/effects.png'}<=names
         assert b'Windswept' in z.read('project.godot')
         assert len(names)==len(z.namelist())
         assert not any('.godot/' in n or '.git/' in n or n.endswith('.json') for n in names)

@@ -1,6 +1,6 @@
 # Windswept — Spearbound
 
-An original, single-player 2D side-scrolling RPG prototype for **Godot Web Editor 4.7.2**. Uses the Compatibility renderer, original animated vector artwork, and no external assets or plugins.
+An original, single-player 2D side-scrolling RPG prototype for **Godot Web Editor 4.7.2**. Uses the Compatibility renderer, original shaded sprite artwork and painted scenery, and no external assets or plugins.
 
 ## Import the playable project
 
@@ -29,7 +29,7 @@ Rebind controls through **Menu → Controls**. Escape cancels a pending key capt
 4. Spend attribute points in Stats (STR, DEX, INT, LUK). Compare and equip drops in Inventory.
 5. At **level 10**, return to town and speak to **Captain Elowen**, the spear-bearing instructor near the first house. Confirm Warrior advancement. **Z: Crescent Sweep** and **X: Driving Thrust** now unlock automatically.
 6. Use the Skills window to rank up first-job skills and passives. Thrust pushes monsters back; double jump is your mobility move.
-7. At **level 30**, return to Elowen to advance to Spearman. Learn **Spear Mastery**, then earn more second-job skill points by leveling and learn **Ground Wave**. Assign it to Z or C. Replacing Z with Ground Wave frees Sweep for another slot; the same skill cannot occupy two slots.
+7. At **level 30**, return to Elowen to advance to Spearman. Learn **Spear Mastery**, then earn more second-job skill points by leveling and learn **Ground Wave**. Assign it to Z or C. Replacing Z with Ground Wave frees Sweep for another slot; clicking another slot moves the skill, or swaps it with that slot’s current skill, so the same skill never occupies two slots.
 8. The prototype goes to **level 40**, allowing second-job skill builds. Dragon Knight (60), Dark Knight (100), and Hyper (140+) are **future content**, shown as locked tabs.
 
 Death sends you back to town at full health with collected loot and progression kept. No XP penalty. Town regenerates health and monsters stay in the forest. Enemy warning markers give you time to jump away.
@@ -40,7 +40,7 @@ Progress and controls save in this browser's local project data. They are not sy
 
 ## Current scope
 
-One town, one multi-platform forest, two monster types, a warrior/spearman job path, heavy second-job mob attacks, stats, a ranked skill tree, equipment, loot, double jump, key configuration, and saves. Third/fourth jobs, Hyper gameplay, sword/thief branches, quests, bosses, multiplayer, and production art are not implemented yet. Art is original scalable vector art, not MapleStory sprites.
+One town, one multi-platform forest, two monster types, a warrior/spearman job path, heavy second-job mob attacks, stats, a ranked skill tree, equipment, loot, double jump, key configuration, and saves. Third/fourth jobs, Hyper gameplay, sword/thief branches, quests, bosses, multiplayer, and production art are not implemented yet. Art now uses original shaded character/monster sprites, painted scenery, textured terrain, and illustrated skill effects. It is not extracted MapleStory artwork.
 
 ## Development checks
 

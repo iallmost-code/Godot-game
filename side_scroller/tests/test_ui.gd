@@ -40,7 +40,10 @@ func run(t):
     await t.process_frame
     while s.level<10: s.add_xp(s.xp_required(s.level))
     s.advance_job("warrior")
-    t.check(not s.assign_skill("c","sweep"),"duplicate skill assignment rejected")
+    t.check(s.assign_skill("c","sweep"),"learned skill can move to an empty hotbar slot")
+    t.check(s.slots.c=="sweep" and s.slots.z=="","moving a skill clears its previous slot")
+    t.check(s.assign_skill("x","sweep"),"learned skills can swap occupied slots")
+    t.check(s.slots.x=="sweep" and s.slots.c=="thrust","occupied-slot reassignment preserves both skills")
     t.check(not s.assign_skill("z","wave"),"unlearned skill assignment rejected")
     var game=load("res://main.tscn").instantiate()
     game.test_mode=true
@@ -78,3 +81,27 @@ func run(t):
     game.menu.close()
     game.queue_free()
     await t.process_frame
+    var assign_game=load("res://main.tscn").instantiate()
+    assign_game.test_mode=true
+    t.root.add_child(assign_game)
+    while assign_game.state.level<10: assign_game.state.add_xp(assign_game.state.xp_required(assign_game.state.level))
+    assign_game.state.advance_job("warrior")
+    assign_game.menu.open_panel("skills")
+    await t.process_frame
+    var button=find_button(assign_game.menu.current_panel,"C")
+    t.check(button!=null and not button.disabled,"learned skill has an active assignment button")
+    if button!=null:
+        button.pressed.emit()
+        await t.process_frame
+        t.check(assign_game.state.slots.c=="sweep" and assign_game.state.slots.z=="","paused-menu button callback moves a learned skill")
+        t.check(assign_game.hud.skills[3].button.text.contains("Crescent Sweep"),"hotbar updates after a menu assignment")
+    assign_game.menu.close()
+    assign_game.queue_free()
+    await t.process_frame
+
+func find_button(node: Node,text: String):
+    if node is Button and node.text==text: return node
+    for child in node.get_children():
+        var found=find_button(child,text)
+        if found!=null: return found
+    return null

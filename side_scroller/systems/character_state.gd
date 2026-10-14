@@ -87,9 +87,12 @@ func can_use(id: String) -> bool:
     return defs.has(id) and defs[id].active and defs[id].tier <= tier() and skill_ranks.get(id,0) > 0
 func assign_skill(slot: String, id: String) -> bool:
     if not slots.has(slot) or not can_use(id) or id == "basic": return false
+    var previous=""
     for key in slots:
-        if key != slot and slots[key] == id: return false
-    slots[slot] = id
+        if key!=slot and slots[key]==id: previous=key
+    var displaced=slots[slot]
+    slots[slot]=id
+    if previous!="": slots[previous]=displaced
     changed.emit()
     return true
 func add_item(id: String) -> bool:

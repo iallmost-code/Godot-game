@@ -8,6 +8,6 @@ Current project source: [`side_scroller/`](side_scroller/). Full controls and pr
 
 Default controls: **arrows** move, **Up** interacts, **Shift** jumps/double jumps, **Space** attacks, **Z/X/C** cast assigned skills. Rebind keys in Controls.
 
-Includes Willowbridge town, Whisperwood forest, original animated vector characters, damage numbers, double jump, XP, loot, equipment, stat allocation, skill ranks, Warrior advancement at 10 and Spearman at 30, configurable controls, and local saves/JSON backups. Third/fourth job and Hyper tabs describe future content and are locked in this build. Prototype level cap is 40 so you can build second-job skills.
+Includes Willowbridge town, Whisperwood forest, original shaded sprite characters and textured scenery, damage numbers, double jump, XP, loot, equipment, stat allocation, skill ranks, Warrior advancement at 10 and Spearman at 30, configurable controls, and local saves/JSON backups. Third/fourth job and Hyper tabs describe future content and are locked in this build. Prototype level cap is 40 so you can build second-job skills.
 
 The original 3D crypt project remains at the repository root for preservation; the new standalone ZIP contains only the new 2D project.

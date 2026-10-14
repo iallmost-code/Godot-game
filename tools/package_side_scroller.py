@@ -17,13 +17,13 @@ files = []
 for path in sorted(root.rglob('*')):
     if not path.is_file() or any(part.startswith('.') for part in path.relative_to(root).parts):
         continue
-    if path.suffix in {'.tmp', '.json', '.png'}:
+    if path.suffix in {'.tmp', '.json', '.import'}:
         continue
-    if path.suffix not in {'.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.uid'}:
+    if path.suffix not in {'.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid'}:
         raise SystemExit(f'Unexpected project file: {path}')
     if path.suffix in {'.gd', '.tscn', '.godot', '.tres'}:
         text = path.read_text()
-        for ref in re.findall(r'res://([A-Za-z0-9_./-]+\.(?:gd|tscn|svg|tres))', text):
+        for ref in re.findall(r'res://([A-Za-z0-9_./-]+\.(?:gd|tscn|svg|png|tres))', text):
             if not (root / ref).is_file():
                 raise SystemExit(f'Missing dependency {ref} referenced by {path.name}')
     files.append(path)

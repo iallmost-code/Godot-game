@@ -11,6 +11,7 @@ var facing=1
 var last_source=-1
 var dead=false
 var player
+var sprite: Sprite2D
 signal defeated(position: Vector2, definition_id: String)
 func _ready():
     add_to_group("enemies")
@@ -27,6 +28,19 @@ func _ready():
     if definition_id=="lantern":
         hp=32
         max_hp=32
+    sprite=Sprite2D.new()
+    sprite.texture=preload("res://art/enemies.png")
+    sprite.region_enabled=true
+    sprite.region_filter_clip_enabled=true
+    sprite.centered=false
+    sprite.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+    sprite.scale=Vector2.ONE*0.09
+    var shader=Shader.new()
+    shader.code="shader_type canvas_item; uniform float flash=0.0; void fragment(){COLOR.rgb=mix(COLOR.rgb,vec3(1.0),flash);}"
+    var mat=ShaderMaterial.new()
+    mat.shader=shader
+    sprite.material=mat
+    add_child(sprite)
 func _physics_process(delta):
     if dead: return
     hurt_flash=maxf(0,hurt_flash-delta)
@@ -58,6 +72,14 @@ func _physics_process(delta):
             velocity.x=move_toward(velocity.x,desired,180*delta)
     else: velocity.x=move_toward(velocity.x,0,200*delta)
     move_and_slide()
+    if sprite!=null:
+        var origin=887 if definition_id=="lantern" else 0
+        var anchor=513.0 if definition_id=="lantern" else 435.0
+        sprite.region_rect=Rect2(origin,0,887,887)
+        sprite.flip_h=facing>0 if definition_id=="lantern" else facing<0
+        sprite.position=Vector2(-(887-anchor) if sprite.flip_h else -anchor,-749 if definition_id=="lantern" else -739)*0.09
+        sprite.position.y+=sin(Time.get_ticks_msec()/220.0)*1.4
+        sprite.material.set_shader_parameter("flash",1.0 if hurt_flash>0 else 0.0)
     queue_redraw()
 func receive_hit(damage: int,push: Vector2,source: int) -> bool:
     if dead or source==last_source: return false
@@ -72,28 +94,6 @@ func receive_hit(damage: int,push: Vector2,source: int) -> bool:
     queue_redraw()
     return true
 func _draw():
-    var bob=sin(Time.get_ticks_msec()/220.0)*2
-    var color=Color("8abc6c") if definition_id=="mossling" else Color("c1a0e0")
-    if hurt_flash>0: color=Color.WHITE
-    draw_set_transform(Vector2(0,-20+bob),0,Vector2(23,19))
-    draw_circle(Vector2.ZERO,1,color)
-    draw_set_transform(Vector2.ZERO)
-    if definition_id=="mossling":
-        for side in [-1,1]:
-            draw_colored_polygon(PackedVector2Array([Vector2(side*12,-30),Vector2(side*24,-48),Vector2(side*4,-40)]),Color("527e54"))
-        draw_circle(Vector2(-8,-36),7,Color("a8d67e"))
-        draw_circle(Vector2(7,-36),9,Color("a8d67e"))
-    else:
-        for x in [-18,0,18]:
-            draw_set_transform(Vector2(x,-38),x*0.025,Vector2(10,17))
-            draw_circle(Vector2.ZERO,1,Color("8263bd"))
-            draw_set_transform(Vector2.ZERO)
-        draw_circle(Vector2(0,-38),9,Color("ffe5a2"))
-    for side in [-1,1]:
-        draw_circle(Vector2(side*8+facing*2,-20+bob),3,Color("253b43"))
-        draw_circle(Vector2(side*8+facing*2-1,-21+bob),1,Color.WHITE)
-        draw_line(Vector2(side*13,-3),Vector2(side*22,-3),Color("425d57"),5)
-    draw_line(Vector2(-3,-12+bob),Vector2(3,-12+bob),Color("425d57"),2)
     if hp<max_hp:
         draw_style_box(health_style(Color("243449")),Rect2(-25,-58,50,5))
         draw_rect(Rect2(-25,-58,50*float(hp)/max_hp,5),Color("ff827b"))

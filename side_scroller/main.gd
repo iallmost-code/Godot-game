@@ -48,7 +48,7 @@ func _ready():
     player.died.connect(return_to_town,CONNECT_DEFERRED)
     state.leveled.connect(func(lv):
         hud.show_notice("LEVEL %d! +5 attribute points. Open Stats to spend them." % lv,6)
-        effects.show_attack("wave",player.position,1))
+        effects.show_level_up(player.position))
     save_store=preload("res://systems/save_store.gd").new()
     save_store.process_mode=Node.PROCESS_MODE_ALWAYS
     add_child(save_store)
@@ -85,6 +85,8 @@ func change_map(id: String,spawn: String) -> bool:
     map=next
     map_id=id
     combat.cancel()
+    effects.effects.clear()
+    effects.numbers.clear()
     player.reset_at(map.spawn_position(spawn))
     hud.map_label.text="WILLOWBRIDGE  /  SAFE TOWN" if id=="town" else "THE WHISPERWOOD  /  MONSTER FIELD"
     if id=="forest": hud.show_notice("Defeat creatures for XP. Job advancement begins at level 10 in town.",7)

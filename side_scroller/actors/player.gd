@@ -7,6 +7,7 @@ var coyote = 0.0
 var boost_timer = 0.0
 var hurt_timer = 0.0
 var attack_timer = 0.0
+var damage_recoil=0.0
 var state
 var visual: Node2D
 var combat
@@ -32,12 +33,14 @@ func reset_at(pos: Vector2):
     coyote = 0
     hurt_timer = 1.5
     attack_timer = 0
+    damage_recoil=0
 func request_jump():
     jump_buffer = 0.12
 func apply_knockback(impulse: Vector2): velocity += impulse
 func _physics_process(delta):
     hurt_timer = maxf(0, hurt_timer-delta)
     attack_timer = maxf(0, attack_timer-delta)
+    damage_recoil=maxf(0,damage_recoil-delta)
     var direction = Input.get_axis("move_left", "move_right") if movement_enabled else 0.0
     if direction != 0: facing = int(sign(direction))
     if is_on_floor():
@@ -75,6 +78,8 @@ func _physics_process(delta):
     if not is_on_floor(): pose = "jump"
     elif absf(velocity.x) > 15: pose = "run"
     if attack_timer > 0: pose = "attack"
+    elif damage_recoil>0: pose="hurt"
+    if combat!=null and combat.active!="": visual.attack_style=combat.active
     if hurt_timer > 0 and int(hurt_timer*12)%2 == 0: visual.modulate.a = 0.55
     else: visual.modulate.a = 1
     var visual_facing=combat.attack_facing if combat!=null and combat.active!="" else facing
@@ -83,6 +88,7 @@ func receive_damage(amount: int, impulse: Vector2) -> bool:
     if state == null or hurt_timer > 0 or state.hp <= 0: return false
     state.hp = maxf(0, state.hp-maxi(1,amount-int(state.derived_stats().defense)))
     hurt_timer = 0.8
+    damage_recoil=0.16
     apply_knockback(impulse)
     state.changed.emit()
     if state.hp <= 0: died.emit()

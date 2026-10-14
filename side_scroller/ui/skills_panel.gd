@@ -2,15 +2,17 @@ extends VBoxContainer
 const Catalog=preload("res://data/catalog.gd")
 const Style=preload("res://ui/style.gd")
 var state
+var bindings
 var selected_tier=1
 var note=""
-func bind(s,_b=null):
+func bind(s,b=null):
     state=s
+    bindings=b
     selected_tier=maxi(1,state.tier())
     refresh()
 func assign_skill(slot: String,id: String) -> bool:
     var result=state.assign_skill(slot,id)
-    note="Assigned to "+slot.to_upper() if result else "Already assigned elsewhere, or not learned."
+    note="Assigned to "+slot_label(slot)+". Existing skills move or swap automatically." if result else "Learn this skill and unlock its job tier first."
     refresh()
     return result
 func refresh():
@@ -27,6 +29,12 @@ func refresh():
         add_child(Style.label(explanation,17))
         return
     add_child(Style.label("Tier %d skill points: %d  |  %s" % [selected_tier,state.sp[str(selected_tier)],"Advance with the town instructor to unlock this tier." if selected_tier>state.tier() else "Spend points to increase ranks; assign learned attacks below."],16))
+    var hotbar=HBoxContainer.new()
+    add_child(hotbar)
+    for slot in ["z","x","c"]:
+        var assigned=state.slots[slot]
+        hotbar.add_child(Style.label(slot_label(slot)+": "+(Catalog.skills()[assigned].name if assigned!="" else "Empty"),15,Color("f4d48a")))
+    if note!="": add_child(Style.label(note,15,Color("8ed9d0")))
     if selected_tier==2:
         add_child(Style.label("Spear Mastery  ->  Ground Wave\nBattle Vigor (independent passive)",16,Color("8ed9d0")))
     else:
@@ -50,11 +58,16 @@ func refresh():
         line.add_child(rank_button)
         if skill.active:
             for slot in ["z","x","c"]:
-                var button=Style.button(slot.to_upper()+(" (on)" if state.slots[slot]==id else ""),func(): assign_skill(slot,id))
+                var button=Style.button(slot_label(slot)+(" (on)" if state.slots[slot]==id else ""),func(): assign_skill(slot,id))
                 button.custom_minimum_size.x=56
                 button.disabled=not state.can_use(id)
+                button.tooltip_text="Move or swap this skill into "+slot_label(slot)+"." if state.can_use(id) else "Locked: unlock this job and learn rank 1 first."
                 line.add_child(button)
         row.add_child(Style.label(skill.description,14,Color("acc6c6")))
         if skill.active:
             row.add_child(Style.label("%d MP  •  %.1fs cooldown  •  %d targets  •  Next rank: +15%% base attack" % [skill.mana,skill.cooldown,skill.targets+(int(maxi(0,rank-1)/2.0) if id=="wave" else 0)],13,Color("e1bf83")))
-    add_child(Style.label(note,15,Color("e8cf8e")))
+
+
+func slot_label(slot: String) -> String:
+    if bindings!=null: return OS.get_keycode_string(bindings.current()["skill_"+slot])
+    return slot.to_upper()
