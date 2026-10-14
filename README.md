@@ -8,8 +8,8 @@ Current project source: [`side_scroller/`](side_scroller/). Full controls and pr
 
 Default controls: **arrows** move, **Up** interacts, **Shift** jumps/double jumps, **Space** attacks, **Z/X/C** cast assigned skills. Rebind keys in Controls.
 
-Includes Willowbridge town, Whisperwood forest, original shaded sprite characters and textured scenery, damage numbers, double jump, XP, loot, equipment, stat allocation, skill ranks, separate Warrior/Thief character slots, sword starters, a short Driving Thrust lunge, eight-frame walking cycles, Warrior or Thief advancement at 10 and Warrior's Spearman advancement at 30, configurable controls, and local saves/JSON backups. Later Thief jobs, third/fourth Warrior jobs and Hyper tabs describe future content and are locked in this build. Prototype level cap is 40 so you can build second-job skills.
+Includes Willowbridge town, Whisperwood forest, original shaded sprite characters and textured scenery, damage numbers, double jump, XP, loot, equipment, stat allocation, skill ranks, separate Warrior/Thief character slots, sword starters, a short Driving Thrust lunge, eight-frame walking cycles, Warrior or Thief advancement at 10 and Warrior's Spearman advancement at 30, configurable controls, and local saves/JSON backups. Thief advancements now reach Night Lord at 100, with increasing basic stars and third-job Shadow Partner. Warrior third/fourth jobs and Hyper remain future content. Level cap is 100.
 
-Try the throwing-star Thief through **Menu → Characters → Play / Continue: Thief**. Your Warrior save stays in its own slot. Thief first job unlocks Twin Stars and Shadow Fan; Night Lord is future content.
+Try the throwing-star Thief through **Menu → Characters → Play / Continue: Thief**. Your Warrior save stays in its own slot. Thief first job unlocks Shadow Fan. Basic attacks throw 1/2/3/4 stars by job; Hermit at 60 unlocks a 60-second Shadow Partner on C that mirrors your throws. Twin Stars has been removed.
 
 The original 3D crypt project remains at the repository root for preservation; the new standalone ZIP contains only the new 2D project.

@@ -23,10 +23,10 @@ func refresh():
     for i in range(1,6):
         var text=(["Thief 10","Assassin 30","Hermit 60","Night Lord 100","Hyper 140+"] if state.archetype=="thief" else ["Warrior 10","Spearman 30","Dragon Knight 60","Dark Knight 100","Hyper 140+"])[i-1]
         tabs.add_child(Style.button(text,func(): selected_tier=i; refresh()))
-    if selected_tier>2 or state.archetype=="thief" and selected_tier>1:
+    if selected_tier>4 or state.archetype=="warrior" and selected_tier>2:
         add_child(Style.label("FUTURE JOB — NOT PLAYABLE IN THIS BUILD",20,Color("bba8dc")))
         var explanation="Dragon Knight: erupting spears and larger area attacks." if selected_tier==3 else "Dark Knight: powerful mob clearing, boss damage and a map attack." if selected_tier==4 else "Hyper: passive skill modifiers, powerful buffs and burst attacks."
-        if state.archetype=="thief": explanation="Thief is playable now. Assassin, Hermit, Night Lord and Hyper skills are future content."
+        if state.archetype=="thief": explanation="Hyper skills are future content. Thief job-based stars and Shadow Partner are playable."
         add_child(Style.label(explanation,17))
         return
     add_child(Style.label("Tier %d skill points: %d  |  %s" % [selected_tier,state.sp[str(selected_tier)],"Advance with the town instructor to unlock this tier." if selected_tier>state.tier() else "Spend points to increase ranks; assign learned attacks below."],16))
@@ -36,10 +36,14 @@ func refresh():
         var assigned=state.slots[slot]
         hotbar.add_child(Style.label(slot_label(slot)+": "+(Catalog.skills()[assigned].name if assigned!="" else "Empty"),15,Color("f4d48a")))
     if note!="": add_child(Style.label(note,15,Color("8ed9d0")))
-    if selected_tier==2:
+    if state.archetype=="thief":
+        add_child(Style.label("Basic stars: Thief 1 → Assassin 2 → Hermit 3 → Night Lord 4",16,Color("8ed9d0")))
+        if selected_tier>=2:
+            add_child(Style.label("Advance with Elowen at level %d. %d stars per basic attack.\n%s" % [{2:30,3:60,4:100}[selected_tier],selected_tier,"Hermit unlocks Shadow Partner, mirroring your stars for 60 seconds." if selected_tier>=3 else ""],15,Color("bfaee5")))
+    elif selected_tier==2:
         add_child(Style.label("Spear Mastery  ->  Ground Wave\nBattle Vigor (independent passive)",16,Color("8ed9d0")))
     else:
-        add_child(Style.label("Twin Stars  •  Shadow Fan  •  Claw Precision  •  Shadow Guard" if state.archetype=="thief" else "Crescent Sweep  •  Driving Thrust  •  Strength Training  •  Iron Skin",15,Color("8ed9d0")))
+        add_child(Style.label("Shadow Fan  •  Claw Precision  •  Shadow Guard" if state.archetype=="thief" else "Crescent Sweep  •  Driving Thrust  •  Strength Training  •  Iron Skin",15,Color("8ed9d0")))
     for id in Catalog.skills():
         var skill=Catalog.skills()[id]
         if skill.tier!=selected_tier or not state.skill_belongs(id): continue
@@ -65,7 +69,7 @@ func refresh():
                 button.tooltip_text="Move or swap this skill into "+slot_label(slot)+"." if state.can_use(id) else "Locked: unlock this job and learn rank 1 first."
                 line.add_child(button)
         row.add_child(Style.label(skill.description,14,Color("acc6c6")))
-        if skill.active:
+        if skill.active and not skill.get("buff",false):
             row.add_child(Style.label("%d MP  •  %.1fs cooldown  •  %d targets  •  Next rank: +15%% base attack" % [skill.mana,skill.cooldown,skill.targets+(int(maxi(0,rank-1)/2.0) if id=="wave" else 0)],13,Color("e1bf83")))
 
 

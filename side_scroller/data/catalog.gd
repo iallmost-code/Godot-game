@@ -10,13 +10,13 @@ static func skills() -> Dictionary:
         "wave": {"name":"Ground Wave", "path":"warrior", "tier":2, "max":5, "active":true, "mana":8, "cooldown":3.0, "reach":330, "targets":5, "power":2.0, "requires":"mastery", "description":"A powerful sweeping wave. Ranks 3 and 5 increase reach and targets."},
         "vigor": {"name":"Battle Vigor", "path":"warrior", "tier":2, "max":5, "active":false, "description":"Gain 15 maximum HP per rank."},
         "star": {"name":"Star Throw", "path":"thief", "tier":0, "max":1, "active":true, "mana":0, "cooldown":0.38, "reach":480, "targets":1, "power":1.0, "projectile":true, "description":"Throw a spinning star. No ammunition needed."},
-        "twin_stars": {"name":"Twin Stars", "path":"thief", "tier":1, "max":5, "active":true, "mana":4, "cooldown":0.8, "reach":540, "targets":1, "power":0.85, "projectile":true, "description":"Throw two stars in quick succession at a distant target."},
         "star_fan": {"name":"Shadow Fan", "path":"thief", "tier":1, "max":5, "active":true, "mana":6, "cooldown":1.6, "reach":440, "targets":3, "power":1.25, "projectile":true, "description":"Send three stars across a wide fan to clear nearby monsters."},
+        "shadow_partner": {"name":"Shadow Partner", "path":"thief", "tier":3, "max":1, "active":true, "mana":15, "cooldown":60.0, "reach":0, "targets":0, "power":0.0, "buff":true, "description":"Summon your shadow for 60 seconds. It mirrors every star you throw."},
         "precision": {"name":"Claw Precision", "path":"thief", "tier":1, "max":5, "active":false, "description":"Gain 3 throwing attack per rank."},
         "shadow_guard": {"name":"Shadow Guard", "path":"thief", "tier":1, "max":5, "active":false, "description":"Gain 2 defense per rank."}
     }
 static func jobs() -> Dictionary:
-    return {"beginner":{"name":"Beginner", "tier":0, "level":1}, "warrior":{"name":"Warrior", "tier":1, "level":10}, "thief":{"name":"Thief", "tier":1, "level":10}, "spearman":{"name":"Spearman", "tier":2, "level":30}, "dragon_knight":{"name":"Dragon Knight", "tier":3, "level":60, "future":true}, "dark_knight":{"name":"Dark Knight", "tier":4, "level":100, "future":true}}
+    return {"beginner":{"name":"Beginner", "tier":0, "level":1}, "warrior":{"name":"Warrior", "tier":1, "level":10}, "thief":{"name":"Thief", "tier":1, "level":10}, "assassin":{"name":"Assassin", "tier":2, "level":30}, "hermit":{"name":"Hermit", "tier":3, "level":60}, "night_lord":{"name":"Night Lord", "tier":4, "level":100}, "spearman":{"name":"Spearman", "tier":2, "level":30}, "dragon_knight":{"name":"Dragon Knight", "tier":3, "level":60, "future":true}, "dark_knight":{"name":"Dark Knight", "tier":4, "level":100, "future":true}}
 static func items() -> Dictionary:
     return {
         "starter_sword":{"name":"Trail Sword", "slot":"weapon", "path":"warrior", "attack":18, "defense":0, "icon":"⚔"},

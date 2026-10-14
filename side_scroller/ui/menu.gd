@@ -78,8 +78,9 @@ Stand beside Captain Elowen in town and press Up to advance.",17))
             button.disabled=active
             content.add_child(button)
         content.add_child(Style.label("Warrior: sword combat, lunge, mob pushes; Spearman at level 30.
-Thief: claw and throwing stars; Twin Stars and Shadow Fan at level 10.
-Thief's later advancements are not playable yet.",17,Color("bfaee5")))
+Thief: claw and throwing stars; Shadow Fan at 10; basic stars increase at each job.
+Assassin 30: 2 stars. Hermit 60: 3 stars + Shadow Partner.
+Night Lord 100: 4 stars (8 with Shadow Partner).",17,Color("bfaee5")))
     else:
         content.add_child(Style.label("SAVE & BACKUP",24,Color("f4d48a")))
         content.add_child(Style.label("Your character saves locally after progress changes.\nBrowser site data belongs to this browser and can be erased.\nExport a JSON backup before clearing site data or changing devices.

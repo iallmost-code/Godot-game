@@ -99,6 +99,7 @@ func change_map(id: String,spawn: String) -> bool:
     camera.position=Vector2(clampf(player.position.x,557,map.width-557),450)
     return true
 func return_to_town():
+    combat.clear_partner()
     state.restore()
     change_map("town","entry")
     hud.show_notice("Back on your feet. All collected loot and progress are kept.",7)
@@ -121,6 +122,7 @@ func switch_character(slot: String) -> bool:
         return false
     combat.cancel()
     combat.cooldowns.clear()
+    combat.clear_partner()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
     menu.close()
@@ -128,12 +130,12 @@ func switch_character(slot: String) -> bool:
     hud.show_notice("%s character loaded. Level 10: stand beside Elowen and press Up to advance." % slot.capitalize(),8)
     return true
 func show_advancement(id: String):
-    if state.job=="thief":
-        hud.show_notice("Elowen: You are a Thief. Assassin, Hermit and Night Lord are future advancements.",7)
+    if id=="" or not preload("res://data/catalog.gd").jobs().has(id):
+        hud.show_notice("Elowen: You have reached the last available advancement for this route.",7)
         return
-    var required=10 if id in ["warrior","thief"] else 30
-    if state.level<required or (state.job=="spearman"):
-        hud.show_notice("Elowen: Return at level %d. Later jobs are coming in a future build." % required,6)
+    var required=preload("res://data/catalog.gd").jobs()[id].level
+    if state.level<required or id!=state.next_job():
+        hud.show_notice("Elowen: Return at level %d to become a %s." % [required,preload("res://data/catalog.gd").jobs()[id].name],6)
         return
     pending_job=id
     menu.open_panel("stats")
@@ -141,11 +143,11 @@ func show_advancement(id: String):
     Style.clear(menu.content)
     menu.content.add_child(box)
     box.add_child(Style.label("JOB ADVANCEMENT",26,Color("f4d48a")))
-    box.add_child(Style.label("Become a %s?\n\n%s" % [id.capitalize(),"Receive a sword and unlock Crescent Sweep, Driving Thrust and the warrior skill tree." if id=="warrior" else "Receive a claw and unlock Twin Stars, Shadow Fan and the thief skill tree." if id=="thief" else "Receive a spear and unlock Spear Mastery -> Ground Wave and Battle Vigor."],20))
+    box.add_child(Style.label("Become a %s?\n\n%s" % [preload("res://data/catalog.gd").jobs()[id].name,"Receive a sword and unlock Crescent Sweep, Driving Thrust and the warrior skill tree." if id=="warrior" else "Receive a claw, Shadow Fan and the thief skill tree." if id=="thief" else "Basic attacks now throw 2 stars." if id=="assassin" else "Basic attacks throw 3 stars. Unlock a 60-second Shadow Partner on C." if id=="hermit" else "Basic attacks throw 4 stars, or 8 with Shadow Partner active." if id=="night_lord" else "Receive a spear and unlock Spear Mastery -> Ground Wave and Battle Vigor."],20))
     box.add_child(Style.button("Confirm advancement",func():
         if state.advance_job(pending_job):
             menu.close()
-            hud.show_notice("You are now a %s! Open Skills to learn and equip abilities." % state.job.capitalize(),7)))
+            hud.show_notice("You are now a %s! Open Skills to learn and equip abilities." % preload("res://data/catalog.gd").jobs()[state.job].name,7)))
     box.add_child(Style.button("Not yet",menu.close))
 func _process(delta):
     state.potion_cooldown=maxf(0,state.potion_cooldown-delta)

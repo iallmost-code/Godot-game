@@ -51,7 +51,7 @@ func bind(s,c,b=null):
     var left=VBoxContainer.new()
     left.custom_minimum_size.x=360
     row.add_child(left)
-    status=Style.label("",17,Color("f4d48a"))
+    status=Style.label("",15,Color("f4d48a"))
     left.add_child(status)
     hp_bar=create_bar(left,Color("ea8391"))
     mp_bar=create_bar(left,Color("71b7df"))
@@ -104,7 +104,7 @@ func _process(delta):
 func refresh():
     if state==null or status==null: return
     var stats=state.derived_stats()
-    status.text="LV %d  %s  •  HP %d/%d  MP %d/%d" % [state.level,state.job.capitalize(),state.hp,stats.max_hp,state.mp,stats.max_mp]
+    status.text="LV %d  %s  •  HP %d/%d  MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
     hp_bar.max_value=stats.max_hp
     hp_bar.value=state.hp
     mp_bar.max_value=stats.max_mp
@@ -120,4 +120,8 @@ func refresh():
         var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else slot.to_upper()
         var cooldown=combat.cooldowns.get(id,0)
         entry.button.text=key+"\n"+(state.skill_name(id) if id!="" else "Unassigned")+("\n%.1fs" % cooldown if cooldown>0 else "")
+        if id=="star" and combat.partner_time>0:
+            entry.button.text=key+"\nStar Throw ×%d" % (state.basic_star_count()*2)
+            entry.button.tooltip_text="%d player stars + %d partner stars" % [state.basic_star_count(),state.basic_star_count()]
+        if id=="shadow_partner" and combat.partner_time>0: entry.button.text=key+"\nShadow Partner\n%d s active" % ceili(combat.partner_time)
         entry.button.modulate=Color("819a9c") if id=="" or cooldown>0 else Color.WHITE

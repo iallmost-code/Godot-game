@@ -10,7 +10,7 @@ func run(t):
     t.check(not thief.advance_job("thief"),"thief first job requires level ten")
     while thief.level<10: thief.add_xp(thief.xp_required(thief.level))
     t.check(not thief.advance_job("warrior") and thief.advance_job("thief"),"thief route advances to thief rather than warrior")
-    t.check(thief.slots.z=="twin_stars" and thief.slots.x=="star_fan","thief advancement assigns its two attacks")
+    t.check(thief.slots.z=="" and thief.slots.x=="star_fan","thief advancement assigns Shadow Fan without a redundant star skill")
     t.check(not thief.can_use("thrust") and not thief.rank_up("strength"),"thief cannot learn warrior skills")
     t.check(thief.rank_up("precision"),"thief can spend its first skill point")
     t.check(thief.add_item("forest_sword") and not thief.equip("forest_sword"),"thief cannot equip a warrior weapon")

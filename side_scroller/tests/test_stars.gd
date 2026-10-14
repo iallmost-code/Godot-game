@@ -27,11 +27,14 @@ func run(t):
     t.check(mob.hp<500 and t.get_nodes_in_group("player_stars").is_empty(),"ranged star damages and ends on an enemy")
     c.tick(1)
     var hp=mob.hp
-    t.check(c.begin_attack("twin_stars"),"thief learned twin attack starts")
+    while s.level<30: s.add_xp(s.xp_required(s.level))
+    s.advance_job("assassin")
+    t.check(c.begin_attack("star"),"second-job basic attack starts")
     c.tick(0.2)
-    t.check(t.get_nodes_in_group("player_stars").size()==2,"Twin Stars launches two separate stars even with a large frame delta")
+    t.check(t.get_nodes_in_group("player_stars").size()==2,"second-job basic launches two separate stars even with a large frame delta")
     for i in range(22): await t.physics_frame
-    t.check(mob.hp<hp and t.get_nodes_in_group("player_stars").is_empty(),"both twin projectiles resolve")
+    t.check(mob.hp<hp and t.get_nodes_in_group("player_stars").is_empty(),"both second-job basic projectiles resolve")
+    s.job="thief"
     c.tick(2)
     c.begin_attack("star_fan")
     c.tick(0.12)

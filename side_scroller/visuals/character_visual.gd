@@ -30,7 +30,7 @@ func set_pose(mode: String,direction: int,time: float):
     elif mode=="jump": frame=9
     elif mode=="hurt": frame=13
     elif mode=="attack":
-        frame=10 if time-pose_started<0.08 else 11 if attack_style in ["thrust","star","twin_stars"] else 15 if attack_style=="star_fan" else 12
+        frame=10 if time-pose_started<0.08 else 11 if attack_style in ["thrust","star"] else 15 if attack_style=="star_fan" else 12
     current_frame=frame
     var data=Layout.DATA[appearance]
     var rect=data.rects[frame]

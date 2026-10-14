@@ -94,7 +94,7 @@ func interact():
     if player.global_position.distance_to(portal_position)<90:
         portal_requested.emit("forest" if map_id=="town" else "town","entry")
     elif map_id=="town" and absf(player.position.x-instructor_position.x)<100:
-        advancement_requested.emit(state.archetype if state.job=="beginner" or state.archetype=="thief" else "spearman")
+        advancement_requested.emit(state.next_job())
     else: reward_notice.emit("Move near a glowing portal or the town instructor, then press Up.")
 func _process(delta):
     for record in spawns:
