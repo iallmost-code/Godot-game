@@ -82,7 +82,9 @@ func on_defeated(pos: Vector2,id: String,record: Dictionary):
     var reward={"coins":randi_range(2,7)}
     var roll=randf()
     if roll<0.18: reward.potions=1
-    elif roll<0.3: reward.item="forest_spear" if randf()<0.5 else "forest_armor"
+    elif roll<0.3:
+        var weapon="forest_claw" if state.archetype=="thief" else "forest_spear" if state.job=="spearman" else "forest_sword"
+        reward.item=weapon if randf()<0.5 else "forest_armor"
     var loot=preload("res://world/loot_pickup.gd").new()
     loot.setup(reward)
     loot.position=pos
@@ -92,7 +94,7 @@ func interact():
     if player.global_position.distance_to(portal_position)<90:
         portal_requested.emit("forest" if map_id=="town" else "town","entry")
     elif map_id=="town" and absf(player.position.x-instructor_position.x)<100:
-        advancement_requested.emit("warrior" if state.job=="beginner" else "spearman")
+        advancement_requested.emit(state.archetype if state.job=="beginner" or state.archetype=="thief" else "spearman")
     else: reward_notice.emit("Move near a glowing portal or the town instructor, then press Up.")
 func _process(delta):
     for record in spawns:

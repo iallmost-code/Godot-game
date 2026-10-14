@@ -12,6 +12,7 @@ var attack_origin=Vector2.ZERO
 var attack_facing=1
 var attack_reach=0.0
 var attack_targets=0
+var volleys_fired=0
 signal attack_started(skill_id: String,origin: Vector2,direction: int,reach: float)
 signal impact(position: Vector2, damage: int, critical: bool)
 signal feedback(message: String)
@@ -38,6 +39,7 @@ func begin_attack(id: String) -> bool:
     active=id
     elapsed=0
     struck.clear()
+    volleys_fired=0
     sequence+=1
     combo = (combo+1)%2
     cooldowns[id]=skill.cooldown
@@ -47,16 +49,40 @@ func begin_attack(id: String) -> bool:
     attack_facing=player.facing
     attack_reach=skill.reach+(40*int((rank-1)/2.0) if id=="wave" else 0)
     attack_targets=skill.targets+(int((rank-1)/2.0) if id=="wave" else 0)
+    if id=="thrust": player.start_lunge(attack_facing)
     attack_started.emit(id,attack_origin,attack_facing,attack_reach)
     return true
 func cancel():
     active=""
     struck.clear()
+    player.lunge_time=0
+func launch_stars(id: String):
+    var skill=Catalog.skills()[id]
+    var angles=[-0.17,0.0,0.17] if id=="star_fan" else [0.0]
+    for angle in angles:
+        var star=preload("res://world/player_star.gd").new()
+        star.direction=Vector2(attack_facing,0).rotated(angle)
+        star.max_distance=attack_reach
+        var rank=state.skill_ranks.get(id,1)
+        star.critical=randf()<state.derived_stats().crit
+        star.damage=int(state.derived_stats().attack*(skill.power+maxi(0,rank-1)*0.15)*(1.5 if star.critical else 1.0))
+        star.hit.connect(func(pos,amount,critical): impact.emit(pos,amount,critical))
+        player.get_parent().add_child(star)
+        # Trace from the body, so even a thin wall before the hand blocks the throw.
+        star.global_position=attack_origin+Vector2(0,-25)
 func tick(delta):
     for id in cooldowns: cooldowns[id]=maxf(0,cooldowns[id]-delta)
     if active == "": return
     var previous_elapsed=elapsed
     elapsed+=delta
+    var active_skill=Catalog.skills()[active]
+    if active_skill.get("projectile",false):
+        var desired=2 if active=="twin_stars" else 1
+        while volleys_fired<desired and elapsed>=0.08+volleys_fired*0.09:
+            launch_stars(active)
+            volleys_fired+=1
+        if elapsed>=0.32: active=""
+        return
     if elapsed >= 0.08 and previous_elapsed <= 0.27:
         var skill=Catalog.skills()[active]
         var rank=state.skill_ranks.get(active,1)

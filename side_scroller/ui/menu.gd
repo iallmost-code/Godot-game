@@ -11,6 +11,7 @@ signal menu_visibility_changed(open: bool)
 signal save_requested
 signal export_requested
 signal import_requested
+signal character_requested(slot: String)
 signal binding_changed
 func setup(s,b):
     state=s
@@ -41,7 +42,7 @@ func setup(s,b):
     title_row.add_child(Style.button("Return to game",close))
     var tabs=HBoxContainer.new()
     layout.add_child(tabs)
-    for id in ["stats","skills","inventory","controls","save"]:
+    for id in ["stats","skills","inventory","controls","characters","save"]:
         tabs.add_child(Style.button(id.capitalize(),func(): open_panel(id)))
     var scroll=ScrollContainer.new()
     scroll.size_flags_vertical=Control.SIZE_EXPAND_FILL
@@ -66,9 +67,23 @@ func open_panel(id: String):
         if id=="inventory": current_panel.bind(state)
         else: current_panel.bind(state,bindings)
         if id=="controls": current_panel.binding_changed.connect(func(): binding_changed.emit())
+    elif id=="characters":
+        content.add_child(Style.label("YOUR CHARACTERS",24,Color("f4d48a")))
+        content.add_child(Style.label("Two independent save slots. Switching saves your current character.
+A new character starts at level 1; first job advancement is at level 10.
+Stand beside Captain Elowen in town and press Up to advance.",17))
+        for slot in ["warrior","thief"]:
+            var active=state.archetype==slot
+            var button=Style.button(("Current: " if active else "Play / Continue: ")+slot.capitalize(),func(): character_requested.emit(slot))
+            button.disabled=active
+            content.add_child(button)
+        content.add_child(Style.label("Warrior: sword combat, lunge, mob pushes; Spearman at level 30.
+Thief: claw and throwing stars; Twin Stars and Shadow Fan at level 10.
+Thief's later advancements are not playable yet.",17,Color("bfaee5")))
     else:
         content.add_child(Style.label("SAVE & BACKUP",24,Color("f4d48a")))
-        content.add_child(Style.label("Your character saves locally after progress changes.\nBrowser site data belongs to this browser and can be erased.\nExport a JSON backup before clearing site data or changing devices.",18))
+        content.add_child(Style.label("Your character saves locally after progress changes.\nBrowser site data belongs to this browser and can be erased.\nExport a JSON backup before clearing site data or changing devices.
+Import a backup into its matching Warrior or Thief character slot.",18))
         content.add_child(Style.button("Save character now",func(): save_requested.emit()))
         content.add_child(Style.button("Download JSON backup",func(): export_requested.emit()))
         content.add_child(Style.button("Import JSON backup",func(): import_requested.emit()))

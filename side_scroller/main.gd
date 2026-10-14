@@ -55,9 +55,14 @@ func _ready():
     save_store.warning.connect(func(message):
         startup_warning=message
         hud.show_notice(message,10))
-    if not test_mode: save_store.load_into(state,bindings)
+    if not test_mode:
+        var selected=save_store.selected_slot()
+        save_store.use_slot(selected)
+        state.initialize_class(selected)
+        save_store.load_into(state,bindings)
     state.changed.connect(func(): call_deferred("persist"))
     menu.binding_changed.connect(persist)
+    menu.character_requested.connect(switch_character)
     menu.save_requested.connect(func():
         if save_store.save(state,bindings): hud.show_notice("Character saved."))
     menu.export_requested.connect(func(): save_store.export_backup(state,bindings))
@@ -85,6 +90,7 @@ func change_map(id: String,spawn: String) -> bool:
     map=next
     map_id=id
     combat.cancel()
+    for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     effects.effects.clear()
     effects.numbers.clear()
     player.reset_at(map.spawn_position(spawn))
@@ -96,8 +102,36 @@ func return_to_town():
     state.restore()
     change_map("town","entry")
     hud.show_notice("Back on your feet. All collected loot and progress are kept.",7)
+func switch_character(slot: String) -> bool:
+    if not save_store.slot_paths.has(slot) or slot==save_store.active_slot: return false
+    if not save_store.save(state,bindings): return false
+    var previous_slot=save_store.active_slot
+    var previous_bindings=bindings.current()
+    save_store.use_slot(slot)
+    var next=preload("res://systems/character_state.gd").new()
+    next.initialize_class(slot)
+    if FileAccess.file_exists(save_store.path) and not save_store.load_into(next,bindings):
+        save_store.use_slot(previous_slot)
+        bindings.apply(previous_bindings)
+        hud.show_notice("Could not load that character. Your current character is kept.",7)
+        return false
+    if not save_store.remember_slot(slot):
+        save_store.use_slot(previous_slot)
+        bindings.apply(previous_bindings)
+        return false
+    combat.cancel()
+    combat.cooldowns.clear()
+    for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
+    state.load_record(next.to_record())
+    menu.close()
+    change_map("town","entry")
+    hud.show_notice("%s character loaded. Level 10: stand beside Elowen and press Up to advance." % slot.capitalize(),8)
+    return true
 func show_advancement(id: String):
-    var required=10 if id=="warrior" else 30
+    if state.job=="thief":
+        hud.show_notice("Elowen: You are a Thief. Assassin, Hermit and Night Lord are future advancements.",7)
+        return
+    var required=10 if id in ["warrior","thief"] else 30
     if state.level<required or (state.job=="spearman"):
         hud.show_notice("Elowen: Return at level %d. Later jobs are coming in a future build." % required,6)
         return
@@ -107,7 +141,7 @@ func show_advancement(id: String):
     Style.clear(menu.content)
     menu.content.add_child(box)
     box.add_child(Style.label("JOB ADVANCEMENT",26,Color("f4d48a")))
-    box.add_child(Style.label("Become a %s?\n\n%s" % [id.capitalize(),"Unlock Crescent Sweep and Driving Thrust, plus the first-job skill tree." if id=="warrior" else "Unlock Spear Mastery -> Ground Wave and Battle Vigor."],20))
+    box.add_child(Style.label("Become a %s?\n\n%s" % [id.capitalize(),"Receive a sword and unlock Crescent Sweep, Driving Thrust and the warrior skill tree." if id=="warrior" else "Receive a claw and unlock Twin Stars, Shadow Fan and the thief skill tree." if id=="thief" else "Receive a spear and unlock Spear Mastery -> Ground Wave and Battle Vigor."],20))
     box.add_child(Style.button("Confirm advancement",func():
         if state.advance_job(pending_job):
             menu.close()

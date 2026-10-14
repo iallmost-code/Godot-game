@@ -2,6 +2,27 @@ extends Node
 const Character=preload("res://systems/character_state.gd")
 const Bindings=preload("res://systems/input_bindings.gd")
 var path="user://side_scroller.json"
+var slot_paths={"warrior":"user://side_scroller.json","thief":"user://side_scroller_thief.json"}
+var selection_path="user://side_scroller_slot.txt"
+var active_slot="warrior"
+func selected_slot() -> String:
+    if FileAccess.file_exists(selection_path):
+        var selected=FileAccess.get_file_as_string(selection_path).strip_edges()
+        if slot_paths.has(selected): return selected
+    return "warrior"
+func remember_slot(slot: String) -> bool:
+    if not slot_paths.has(slot): return false
+    var file=FileAccess.open(selection_path,FileAccess.WRITE)
+    if file==null:
+        warning.emit("Cannot switch characters here: current progress was kept.")
+        return false
+    file.store_string(slot)
+    file.close()
+    return true
+func use_slot(slot: String):
+    active_slot=slot
+    path=slot_paths[slot]
+
 var browser_callback
 var pending_state
 var pending_bindings
@@ -15,7 +36,7 @@ func import_json(text: String,state,bindings) -> bool:
     var data=parser.data
     if not data is Dictionary or data.get("version",0)!=1 or not data.get("character",null) is Dictionary or not data.get("bindings",null) is Dictionary: return false
     var staged=Character.new()
-    if not staged.load_record(data.character): return false
+    if not staged.load_record(data.character) or staged.archetype!=state.archetype: return false
     var validator=Bindings.new()
     # Validate bindings without changing the live InputMap on rejection.
     var before=bindings.current()
@@ -57,13 +78,13 @@ func load_into(state,bindings) -> bool:
 func export_backup(state,bindings):
     var text=export_json(state,bindings)
     if OS.has_feature("web"):
-        JavaScriptBridge.download_buffer(text.to_utf8_buffer(),"Spearbound-save.json","application/json")
+        JavaScriptBridge.download_buffer(text.to_utf8_buffer(),"Windswept-"+state.archetype+"-save.json","application/json")
         warning.emit("Backup download requested.")
     else:
         var dialog=FileDialog.new()
         dialog.file_mode=FileDialog.FILE_MODE_SAVE_FILE
         dialog.access=FileDialog.ACCESS_FILESYSTEM
-        dialog.current_file="Spearbound-save.json"
+        dialog.current_file="Windswept-"+state.archetype+"-save.json"
         dialog.filters=PackedStringArray(["*.json ; Character save"])
         dialog.process_mode=Node.PROCESS_MODE_ALWAYS
         add_child(dialog)

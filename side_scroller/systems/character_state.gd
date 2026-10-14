@@ -5,6 +5,7 @@ signal leveled(level: int)
 var level = 1
 var xp = 0
 var job = "beginner"
+var archetype = "warrior"
 var attributes = {"STR":4, "DEX":4, "INT":4, "LUK":4}
 var ap = 0
 var sp = {"1":0, "2":0}
@@ -13,11 +14,25 @@ var skill_ranks = {"basic":1}
 var slots = {"z":"", "x":"", "c":""}
 var hp = 120.0
 var mp = 40.0
-var inventory: Array = ["starter_spear", "starter_armor"]
-var equipment = {"weapon":"starter_spear", "armor":"starter_armor"}
+var inventory: Array = ["starter_sword", "starter_armor"]
+var equipment = {"weapon":"starter_sword", "armor":"starter_armor"}
 var coins = 0
 var potions = 5
 var potion_cooldown = 0.0
+func initialize_class(kind: String) -> bool:
+    if not ["warrior","thief"].has(kind) or job!="beginner" or level!=1 or xp!=0: return false
+    archetype=kind
+    skill_ranks={basic_skill():1}
+    var weapon="starter_claw" if kind=="thief" else "starter_sword"
+    inventory=[weapon,"starter_armor"]
+    equipment={"weapon":weapon,"armor":"starter_armor"}
+    return true
+func basic_skill() -> String: return "star" if archetype=="thief" else "basic"
+func skill_belongs(id: String) -> bool:
+    return Catalog.skills().has(id) and Catalog.skills()[id].path==archetype
+func skill_name(id: String) -> String:
+    if id=="basic" and equipment.weapon.contains("spear"): return "Spear Combo"
+    return Catalog.skills()[id].name
 func xp_required(at_level: int) -> int: return 25 + 8 * at_level
 func tier() -> int: return Catalog.jobs()[job].tier
 func add_xp(amount: int):
@@ -41,8 +56,8 @@ func derived_stats() -> Dictionary:
     var armor_defense = item_defs[equipment.armor].defense
     return {"max_hp":120 + 12 * (level-1) + 2 * (attributes.STR-4) + skill_ranks.get("vigor",0)*15,
         "max_mp":40 + 3 * (level-1) + 2 * (attributes.INT-4),
-        "attack":weapon_attack + attributes.STR + int(attributes.DEX/4.0) + skill_ranks.get("strength",0)*3 + skill_ranks.get("mastery",0)*4,
-        "defense":armor_defense + int(attributes.STR/10.0) + skill_ranks.get("iron",0)*2,
+        "attack":weapon_attack + (attributes.LUK if archetype=="thief" else attributes.STR) + int(attributes.DEX/4.0) + (skill_ranks.get("precision",0) if archetype=="thief" else skill_ranks.get("strength",0))*3 + skill_ranks.get("mastery",0)*4,
+        "defense":armor_defense + int(attributes.STR/10.0) + (skill_ranks.get("iron",0)+skill_ranks.get("shadow_guard",0))*2,
         "crit":minf(0.25, 0.05 + 0.002 * (attributes.LUK-4))}
 func allocate_attributes(delta: Dictionary) -> bool:
     var total = 0
@@ -55,24 +70,29 @@ func allocate_attributes(delta: Dictionary) -> bool:
     changed.emit()
     return true
 func advance_job(next: String) -> bool:
-    if (next == "warrior" and job == "beginner" and level >= 10):
+    if (next in ["warrior","thief"] and next==archetype and job == "beginner" and level >= 10):
         job = next
         sp["1"] += 1
         sp_earned["1"] += 1
-        skill_ranks.sweep = 1
-        skill_ranks.thrust = 1
-        slots.z = "sweep"
-        slots.x = "thrust"
+        var starters=["twin_stars","star_fan"] if archetype=="thief" else ["sweep","thrust"]
+        for id in starters: skill_ranks[id]=1
+        slots.z=starters[0]
+        slots.x=starters[1]
+        var reward="thief_claw" if archetype=="thief" else "warrior_sword"
+        if not inventory.has(reward): inventory.append(reward)
+        if Catalog.items()[equipment.weapon].attack<Catalog.items()[reward].attack: equipment.weapon=reward
     elif next == "spearman" and job == "warrior" and level >= 30:
         job = next
         sp["2"] += 1
         sp_earned["2"] += 1
+        if not inventory.has("job_spear"): inventory.append("job_spear")
+        equipment.weapon="job_spear"
     else: return false
     changed.emit()
     return true
 func rank_up(id: String) -> bool:
     var defs = Catalog.skills()
-    if not defs.has(id): return false
+    if not skill_belongs(id): return false
     var skill = defs[id]
     var pool = str(skill.tier)
     if skill.tier < 1 or skill.tier > tier() or sp.get(pool,0) <= 0: return false
@@ -84,9 +104,9 @@ func rank_up(id: String) -> bool:
     return true
 func can_use(id: String) -> bool:
     var defs = Catalog.skills()
-    return defs.has(id) and defs[id].active and defs[id].tier <= tier() and skill_ranks.get(id,0) > 0
+    return skill_belongs(id) and defs[id].active and defs[id].tier <= tier() and skill_ranks.get(id,0) > 0
 func assign_skill(slot: String, id: String) -> bool:
-    if not slots.has(slot) or not can_use(id) or id == "basic": return false
+    if not slots.has(slot) or not can_use(id) or id in ["basic","star"]: return false
     var previous=""
     for key in slots:
         if key!=slot and slots[key]==id: previous=key
@@ -102,6 +122,7 @@ func add_item(id: String) -> bool:
     return true
 func equip(id: String) -> bool:
     if not inventory.has(id) or not Catalog.items().has(id): return false
+    if Catalog.items()[id].get("path",archetype)!=archetype: return false
     equipment[Catalog.items()[id].slot] = id
     changed.emit()
     return true
@@ -125,18 +146,21 @@ func restore():
     mp = derived_stats().max_mp
     changed.emit()
 func to_record() -> Dictionary:
-    return {"version":1,"level":level,"xp":xp,"job":job,"attributes":attributes.duplicate(),"ap":ap,"sp":sp.duplicate(),"sp_earned":sp_earned.duplicate(),"skill_ranks":skill_ranks.duplicate(),"slots":slots.duplicate(),"inventory":inventory.duplicate(),"equipment":equipment.duplicate(),"coins":coins,"potions":potions}
+    return {"version":1,"level":level,"xp":xp,"job":job,"archetype":archetype,"attributes":attributes.duplicate(),"ap":ap,"sp":sp.duplicate(),"sp_earned":sp_earned.duplicate(),"skill_ranks":skill_ranks.duplicate(),"slots":slots.duplicate(),"inventory":inventory.duplicate(),"equipment":equipment.duplicate(),"coins":coins,"potions":potions}
 func whole(value,minimum: int,maximum: int) -> bool:
     return (value is int or value is float) and is_finite(float(value)) and value==int(value) and value>=minimum and value<=maximum
 func load_record(record: Dictionary) -> bool:
     if record.get("version",0)!=1 or not whole(record.get("level",0),1,40): return false
     var trial=get_script().new()
+    var kind=record.get("archetype","warrior")
+    if not kind is String or not trial.initialize_class(kind): return false
     trial.level=int(record.level)
     if not whole(record.get("xp",-1),0,trial.xp_required(trial.level)-1): return false
     trial.xp=int(record.xp)
     if not record.get("job",null) is String: return false
     trial.job=record.job
-    if not ["beginner","warrior","spearman"].has(trial.job): return false
+    if not ["beginner","warrior","spearman","thief"].has(trial.job): return false
+    if trial.job!="beginner" and ((trial.archetype=="thief")!=(trial.job=="thief")): return false
     if trial.level<Catalog.jobs()[trial.job].level: return false
     if not record.get("attributes",null) is Dictionary or record.attributes.size()!=4: return false
     var allocated=0
@@ -151,14 +175,15 @@ func load_record(record: Dictionary) -> bool:
     var spent={"1":0,"2":0}
     for id in record.skill_ranks:
         var defs=Catalog.skills()
-        if not defs.has(id): return false
+        if not trial.skill_belongs(id): return false
         var skill=defs[id]
         if not whole(record.skill_ranks[id],1,skill.max) or skill.tier>trial.tier(): return false
         var rank=int(record.skill_ranks[id])
         trial.skill_ranks[id]=rank
-        if skill.tier>0: spent[str(skill.tier)]+=rank-(1 if id in ["sweep","thrust"] else 0)
-    if trial.skill_ranks.get("basic",0)!=1: return false
-    if trial.tier()>=1 and (trial.skill_ranks.get("sweep",0)<1 or trial.skill_ranks.get("thrust",0)<1): return false
+        if skill.tier>0: spent[str(skill.tier)]+=rank-(1 if id in ["sweep","thrust","twin_stars","star_fan"] else 0)
+    if trial.skill_ranks.get(trial.basic_skill(),0)!=1: return false
+    var starters=["twin_stars","star_fan"] if trial.archetype=="thief" else ["sweep","thrust"]
+    if trial.tier()>=1 and (trial.skill_ranks.get(starters[0],0)<1 or trial.skill_ranks.get(starters[1],0)<1): return false
     for id in trial.skill_ranks:
         var skill=Catalog.skills()[id]
         if skill.has("requires") and trial.skill_ranks.get(skill.requires,0)<1: return false
@@ -178,12 +203,12 @@ func load_record(record: Dictionary) -> bool:
         if int(pool)<=trial.tier():
             if earned<1 or (earned-1)%3!=0: return false
         elif earned!=0: return false
-    var slot_record=record.get("slots",{"z":"sweep" if trial.tier()>0 else "","x":"thrust" if trial.tier()>0 else "","c":""})
+    var slot_record=record.get("slots",{"z":starters[0] if trial.tier()>0 else "","x":starters[1] if trial.tier()>0 else "","c":""})
     if not slot_record is Dictionary: return false
     var assigned: Array=[]
     for slot in ["z","x","c"]:
         var id=slot_record.get(slot,"")
-        if not id is String or id!="" and (not trial.can_use(id) or id=="basic" or assigned.has(id)): return false
+        if not id is String or id!="" and (not trial.can_use(id) or id in ["basic","star"] or assigned.has(id)): return false
         trial.slots[slot]=id
         if id!="": assigned.append(id)
     if not record.get("inventory",null) is Array or record.inventory.size()>100: return false
@@ -195,11 +220,12 @@ func load_record(record: Dictionary) -> bool:
     for slot in ["weapon","armor"]:
         var id=record.equipment.get(slot,"")
         if not id is String or not trial.inventory.has(id) or Catalog.items()[id].slot!=slot: return false
+        if Catalog.items()[id].get("path",trial.archetype)!=trial.archetype: return false
         trial.equipment[slot]=id
     if not whole(record.get("coins",0),0,1000000) or not whole(record.get("potions",5),0,10000): return false
     trial.coins=int(record.get("coins",0))
     trial.potions=int(record.get("potions",5))
-    for key in ["level","xp","job","attributes","ap","sp","sp_earned","skill_ranks","slots","inventory","equipment","coins","potions"]:
+    for key in ["level","xp","job","archetype","attributes","ap","sp","sp_earned","skill_ranks","slots","inventory","equipment","coins","potions"]:
         set(key,trial.get(key))
     hp=derived_stats().max_hp
     mp=derived_stats().max_mp

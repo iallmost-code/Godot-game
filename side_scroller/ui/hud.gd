@@ -115,9 +115,9 @@ func refresh():
     potion_button.text="Potion ×%d%s" % [state.potions," (%.1fs)" % state.potion_cooldown if state.potion_cooldown>0 else ""]
     for entry in skills:
         var slot=entry.slot
-        var id="basic" if slot=="attack" else state.slots[slot]
+        var id=state.basic_skill() if slot=="attack" else state.slots[slot]
         var action="attack" if slot=="attack" else "skill_"+slot
         var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else slot.to_upper()
         var cooldown=combat.cooldowns.get(id,0)
-        entry.button.text=key+"\n"+(Catalog.skills()[id].name if id!="" else "Unassigned")+("\n%.1fs" % cooldown if cooldown>0 else "")
+        entry.button.text=key+"\n"+(state.skill_name(id) if id!="" else "Unassigned")+("\n%.1fs" % cooldown if cooldown>0 else "")
         entry.button.modulate=Color("819a9c") if id=="" or cooldown>0 else Color.WHITE

@@ -15,7 +15,7 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Move | Left / Right arrows |
 | Interact with portal or instructor | Up arrow |
 | Jump; press again in air for boosted double jump | Shift |
-| Basic spear combo (hold to continue attacking) | Space |
+| Basic sword/spear attack or star throw (hold to repeat) | Space |
 | Assigned skills | Z / X / C |
 | Menus | Escape or top-right buttons |
 
@@ -23,24 +23,24 @@ Rebind controls through **Menu → Controls**. Escape cancels a pending key capt
 
 ## Your first journey
 
-1. Begin as a level-1 Beginner in **Willowbridge**. Space and double jump are available immediately. **Z/X/C start unassigned**; they are not broken.
+1. Begin as a level-1 Beginner on the Warrior route in **Willowbridge**, carrying a sword. To try the throwing-star Thief, open **Menu → Characters → Play / Continue: Thief**. The two slots keep their own character progress and controls; switching saves the current character. Space and double jump are available immediately. **Z/X/C start unassigned**.
 2. Go right to the glowing arch. Press Up nearby to enter the **Whisperwood**.
 3. Defeat mosslings and lantern blooms for XP. Walk over drops to collect coins, potions, and equipment. Potion button heals you; mana regenerates over time.
-4. Spend attribute points in Stats (STR, DEX, INT, LUK). Compare and equip drops in Inventory.
-5. At **level 10**, return to town and speak to **Captain Elowen**, the spear-bearing instructor near the first house. Confirm Warrior advancement. **Z: Crescent Sweep** and **X: Driving Thrust** now unlock automatically.
-6. Use the Skills window to rank up first-job skills and passives. Thrust pushes monsters back; double jump is your mobility move.
-7. At **level 30**, return to Elowen to advance to Spearman. Learn **Spear Mastery**, then earn more second-job skill points by leveling and learn **Ground Wave**. Assign it to Z or C. Replacing Z with Ground Wave frees Sweep for another slot; clicking another slot moves the skill, or swaps it with that slot’s current skill, so the same skill never occupies two slots.
-8. The prototype goes to **level 40**, allowing second-job skill builds. Dragon Knight (60), Dark Knight (100), and Hyper (140+) are **future content**, shown as locked tabs.
+4. Spend attribute points in Stats (STR, DEX, INT, LUK). Warrior weapon damage scales with STR; throwing damage scales with LUK, with a smaller DEX contribution to both. Compare and equip class-appropriate drops in Inventory.
+5. At **level 10**, return to town, stand beside **Captain Elowen**, and **press Up** (clicking the NPC does not interact). Confirm your route's advancement. Warriors receive a sword and **Z: Crescent Sweep / X: Driving Thrust**. Thieves receive a claw and **Z: Twin Stars / X: Shadow Fan**. Skills are assigned automatically.
+6. Use Skills to increase ranks and assign or swap learned skills onto Z/X/C. **Driving Thrust lunges roughly 64 pixels forward**, respects walls, and pushes monsters. Thieves have actual traveling star projectiles, a two-star attack and a three-star fan; walls block projectiles. Stars need no ammunition.
+7. On the **Warrior route**, at **level 30**, return to Elowen to advance to Spearman and receive a spear. Learn **Spear Mastery**, then earn more second-job skill points by leveling and learn **Ground Wave**. Assign it to Z or C. Replacing Z with Ground Wave frees Sweep for another slot; clicking another slot moves the skill, or swaps it with that slot’s current skill, so the same skill never occupies two slots.
+8. The prototype goes to **level 40**, allowing Warrior second-job skill builds. Dragon Knight, Dark Knight and Hyper are future content. The Thief route currently has **first job only**; Assassin, Hermit, Night Lord and Hyper tabs are visibly marked as future content.
 
 Death sends you back to town at full health with collected loot and progression kept. No XP penalty. Town regenerates health and monsters stay in the forest. Enemy warning markers give you time to jump away.
 
 ## Saves
 
-Progress and controls save in this browser's local project data. They are not synchronized with GitHub. **Menu → Save** provides explicit save and JSON backup export/import. Keep a JSON backup before clearing browser site data or switching devices. Corrupt saves are rejected and backed up when possible.
+Progress and controls save in this browser's local project data. They are not synchronized with GitHub. **Menu → Save** provides explicit save and JSON backup export/import. Keep a JSON backup before clearing browser site data or switching devices. Import backups into the matching Warrior or Thief slot; cross-class imports are rejected to protect the other character. Older Warrior backups remain compatible. Corrupt saves are rejected and backed up when possible.
 
 ## Current scope
 
-One town, one multi-platform forest, two monster types, a warrior/spearman job path, heavy second-job mob attacks, stats, a ranked skill tree, equipment, loot, double jump, key configuration, and saves. Third/fourth jobs, Hyper gameplay, sword/thief branches, quests, bosses, multiplayer, and production art are not implemented yet. Art now uses original shaded character/monster sprites, painted scenery, textured terrain, and illustrated skill effects. It is not extracted MapleStory artwork.
+One town, one multi-platform forest, two monster types, a sword Warrior/Spearman route, a throwing-star Thief first job, separate character slots, eight-frame walking cycles, heavy Warrior second-job mob attacks, stats, a ranked skill tree, equipment, loot, double jump, key configuration, and saves. Later Thief jobs, third/fourth Warrior jobs, Hyper gameplay, quests, bosses, multiplayer, and final production art are not implemented yet. Art now uses original shaded character/monster sprites, painted scenery, textured terrain, and illustrated skill effects. It is not extracted MapleStory artwork.
 
 ## Development checks
 

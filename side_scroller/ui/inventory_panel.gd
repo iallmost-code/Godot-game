@@ -23,7 +23,8 @@ func refresh():
         var button=Button.new()
         var equipped=state.equipment[item.slot]==id
         button.text="Equipped" if equipped else "Equip"
-        button.disabled=equipped
+        button.disabled=equipped or item.get("path",state.archetype)!=state.archetype
+        if item.get("path",state.archetype)!=state.archetype: button.text="Other class"
         button.pressed.connect(func(): state.equip(id); refresh())
         row.add_child(button)
     var info=Label.new()

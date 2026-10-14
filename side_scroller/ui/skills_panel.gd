@@ -21,11 +21,12 @@ func refresh():
     var tabs=HBoxContainer.new()
     add_child(tabs)
     for i in range(1,6):
-        var text=["Warrior 10","Spearman 30","Dragon Knight 60","Dark Knight 100","Hyper 140+"][i-1]
+        var text=(["Thief 10","Assassin 30","Hermit 60","Night Lord 100","Hyper 140+"] if state.archetype=="thief" else ["Warrior 10","Spearman 30","Dragon Knight 60","Dark Knight 100","Hyper 140+"])[i-1]
         tabs.add_child(Style.button(text,func(): selected_tier=i; refresh()))
-    if selected_tier>2:
+    if selected_tier>2 or state.archetype=="thief" and selected_tier>1:
         add_child(Style.label("FUTURE JOB — NOT PLAYABLE IN THIS BUILD",20,Color("bba8dc")))
         var explanation="Dragon Knight: erupting spears and larger area attacks." if selected_tier==3 else "Dark Knight: powerful mob clearing, boss damage and a map attack." if selected_tier==4 else "Hyper: passive skill modifiers, powerful buffs and burst attacks."
+        if state.archetype=="thief": explanation="Thief is playable now. Assassin, Hermit, Night Lord and Hyper skills are future content."
         add_child(Style.label(explanation,17))
         return
     add_child(Style.label("Tier %d skill points: %d  |  %s" % [selected_tier,state.sp[str(selected_tier)],"Advance with the town instructor to unlock this tier." if selected_tier>state.tier() else "Spend points to increase ranks; assign learned attacks below."],16))
@@ -38,10 +39,10 @@ func refresh():
     if selected_tier==2:
         add_child(Style.label("Spear Mastery  ->  Ground Wave\nBattle Vigor (independent passive)",16,Color("8ed9d0")))
     else:
-        add_child(Style.label("Crescent Sweep  •  Driving Thrust  •  Strength Training  •  Iron Skin",15,Color("8ed9d0")))
+        add_child(Style.label("Twin Stars  •  Shadow Fan  •  Claw Precision  •  Shadow Guard" if state.archetype=="thief" else "Crescent Sweep  •  Driving Thrust  •  Strength Training  •  Iron Skin",15,Color("8ed9d0")))
     for id in Catalog.skills():
         var skill=Catalog.skills()[id]
-        if skill.tier!=selected_tier: continue
+        if skill.tier!=selected_tier or not state.skill_belongs(id): continue
         var row=VBoxContainer.new()
         row.add_theme_constant_override("separation",3)
         add_child(row)

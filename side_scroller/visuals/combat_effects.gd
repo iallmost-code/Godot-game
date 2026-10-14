@@ -11,6 +11,7 @@ func show_level_up(pos: Vector2):
     if numbers.size()>=60: numbers.pop_front()
     numbers.append({"position":pos+Vector2(-35,-70),"amount":0,"critical":true,"age":0.0,"text":"LEVEL UP!"})
 func show_attack(id: String,origin: Vector2,facing: int,reach=-1.0):
+    if id in ["star","twin_stars","star_fan"]: return
     if effects.size()>=30: effects.pop_front()
     if reach<0: reach=preload("res://data/catalog.gd").skills()[id].reach
     effects.append({"id":id,"position":origin,"facing":facing,"reach":reach,"age":0.0})
