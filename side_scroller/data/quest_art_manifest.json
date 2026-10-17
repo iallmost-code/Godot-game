@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "npc_bases": [
+    "elderly woman, silver bun, green shawl, cream skirt, woven basket",
+    "plump baker woman, white bonnet, cream apron, bread basket",
+    "weathered harbor man, blue cap, teal coat, rope coil",
+    "young shrine keeper woman, white robe, red sash, paper charm",
+    "bearded blacksmith man, dark apron, copper goggles, lowered hammer",
+    "young courier woman, plum hood, brown satchel",
+    "bespectacled scholar man, brown vest, blue scarf, book",
+    "young lantern boy, yellow raincoat, brown boots, small lantern",
+    "serene monk, tan robe, blue sash, prayer beads",
+    "elderly mage man, navy robe, blue pointed hat, silver beard, staff",
+    "farmer woman, straw hat, ochre overalls, seed pouch",
+    "engineer woman, brass goggles, teal overalls, wrench",
+    "traveling merchant man, burgundy coat, broad hat, travel pack",
+    "ranger woman, auburn braid, forest-green cloak, bow on back",
+    "winter warden man, fur-trimmed blue coat, white hair",
+    "alchemist woman, silver hair, violet robe, green vial",
+    "elderly woman, silver bun, teal-blue shawl, cream skirt, woven basket",
+    "plump baker woman, white bonnet, lavender apron, bread basket",
+    "weathered harbor man, blue cap, burgundy coat, rope coil",
+    "young shrine keeper woman, white robe, blue sash, paper charm",
+    "bearded blacksmith man, navy apron, copper goggles, lowered hammer",
+    "young courier woman, dark green hood, brown satchel",
+    "bespectacled scholar man, slate vest, gold scarf, book",
+    "young lantern boy, red raincoat, brown boots, small lantern",
+    "serene monk, dark teal robe, pale blue sash, prayer beads",
+    "elderly mage man, violet robe, violet pointed hat, silver beard, staff",
+    "farmer woman, straw hat, green overalls, seed pouch",
+    "engineer woman, brass goggles, rust-orange overalls, wrench",
+    "traveling merchant man, indigo coat, broad hat, travel pack",
+    "ranger woman, auburn braid, blue cloak, bow on back",
+    "winter warden man, fur-trimmed brown coat, white hair",
+    "alchemist woman, silver hair, deep navy robe, green vial"
+  ],
+  "icon_names": [
+    "snail_shell",
+    "mushroom_cap",
+    "slime_goo",
+    "stump_bark",
+    "pig_ribbon",
+    "boar_tusk",
+    "bat_wing",
+    "golem_rock",
+    "fairy_wing",
+    "ice_shard",
+    "fire_ore",
+    "gear_cog",
+    "bone_fragment",
+    "scale",
+    "feather",
+    "star_fragment",
+    "cursed_doll",
+    "ectoplasm",
+    "lizard_tail",
+    "crab_claw"
+  ],
+  "integration": {
+    "npc_layout": "res://visuals/npc_layout.gd: DATA maps every quest NPC name to two64x96 rects and absolute foot anchors; BASES has16 original designs plus16 outfit-color variants, one unique sprite pair per NPC; all face left.",
+    "ui_icon_layout": "res://visuals/ui_icon_layout.gd",
+    "quest_drop_rule": "For collect quests, the named item is a quest-specific drop from target. It need not be a normal loot-table item. Award or increment it only while that quest is active.",
+    "prerequisites": "For each quest with a next value, require completion before accepting its successor; start only quests not referenced by next.",
+    "nearby_starting_ground": "Willowbridge quests use its directly connected Farmeadow approach. Targets in regional routes can have a lower placed level than their default roster level.",
+    "scope": "Art and content only; Claude wires the runtime systems.",
+    "climb_layout": "res://visuals/climb_layout.gd: DATA is biome -> six Rect2 regions; rope_mid=16x64 and ladder_mid=32x64; repeat vertically without scaling. Top/bottom are16px tall.",
+    "climb_bodies": "res://visuals/body_layout.gd: CLIMB[class] supplies a separate texture, skin_mask and two anchored frames each for climb_rope/climb_ladder. Anchors and heads are absolute source-pixel coordinates; hands are relative offsets from feet, matching the existing body format. Optional custom_texture/custom_skin_mask are bald back-view companions, for fully replacing hair during climbing; default texture keeps each original class look.",
+    "character_looks": "res://visuals/custom_body_layout.gd: opt-in neutral bald companions preserve original poses and clothing. Its heads array matches body_layout.HEAD_ANCHORS. Draw each hair/face region at its per-view anchor, using HAIR_SCALE/FACE_SCALE before the usual body scale. Reuse the back/rear_side hair views while climbing.",
+    "skin_tint": "custom and climb skin_mask textures match their entire source sheets. Sample the red channel to restrict tinting to neutral exposed skin; multiply-tint face plates with the same skin color and tint hair separately. Skin masks leave clothing colors alone.",
+    "pet_layout": "res://visuals/pet_layout.gd: rects/anchors, idle[0,1], walk[2,3,4,5], jump[6]; all48x48, facing right.",
+    "levelup_layout": "res://visuals/levelup_layout.gd: LEVEL_UP has six256x256 frames at10fps, ground anchors; SKILL_LEARNED has four frames at10fps with centered anchors and smaller blue sparkles; neither loops.",
+    "writing_scope": "Four linked quests per town,128 total. next identifies a successor; require its predecessor completed before offering it. The final step of every chain gives usable universal gear.",
+    "quest_map": "Each quest includes target_map, the actual local hunting map ID; dialogue uses its displayed map name rather than an internal route ID."
+  },
+  "new_files": [
+    "side_scroller/art/archer_climb.png",
+    "side_scroller/art/archer_climb.png.import",
+    "side_scroller/art/archer_climb_skin_mask.png",
+    "side_scroller/art/archer_climb_skin_mask.png.import",
+    "side_scroller/art/archer_custom_body.png",
+    "side_scroller/art/archer_custom_body.png.import",
+    "side_scroller/art/archer_custom_body_skin_mask.png",
+    "side_scroller/art/archer_custom_body_skin_mask.png.import",
+    "side_scroller/art/archer_custom_climb.png",
+    "side_scroller/art/archer_custom_climb.png.import",
+    "side_scroller/art/archer_custom_climb_skin_mask.png",
+    "side_scroller/art/archer_custom_climb_skin_mask.png.import",
+    "side_scroller/art/climb_atlas.png",
+    "side_scroller/art/climb_atlas.png.import",
+    "side_scroller/art/levelup_atlas.png",
+    "side_scroller/art/levelup_atlas.png.import",
+    "side_scroller/art/looks_atlas.png",
+    "side_scroller/art/looks_atlas.png.import",
+    "side_scroller/art/mage_climb.png",
+    "side_scroller/art/mage_climb.png.import",
+    "side_scroller/art/mage_climb_skin_mask.png",
+    "side_scroller/art/mage_climb_skin_mask.png.import",
+    "side_scroller/art/mage_custom_body.png",
+    "side_scroller/art/mage_custom_body.png.import",
+    "side_scroller/art/mage_custom_body_skin_mask.png",
+    "side_scroller/art/mage_custom_body_skin_mask.png.import",
+    "side_scroller/art/mage_custom_climb.png",
+    "side_scroller/art/mage_custom_climb.png.import",
+    "side_scroller/art/mage_custom_climb_skin_mask.png",
+    "side_scroller/art/mage_custom_climb_skin_mask.png.import",
+    "side_scroller/art/npc_atlas.png",
+    "side_scroller/art/npc_atlas.png.import",
+    "side_scroller/art/pets_atlas.png",
+    "side_scroller/art/pets_atlas.png.import",
+    "side_scroller/art/thief_climb.png",
+    "side_scroller/art/thief_climb.png.import",
+    "side_scroller/art/thief_climb_skin_mask.png",
+    "side_scroller/art/thief_climb_skin_mask.png.import",
+    "side_scroller/art/thief_custom_body.png",
+    "side_scroller/art/thief_custom_body.png.import",
+    "side_scroller/art/thief_custom_body_skin_mask.png",
+    "side_scroller/art/thief_custom_body_skin_mask.png.import",
+    "side_scroller/art/thief_custom_climb.png",
+    "side_scroller/art/thief_custom_climb.png.import",
+    "side_scroller/art/thief_custom_climb_skin_mask.png",
+    "side_scroller/art/thief_custom_climb_skin_mask.png.import",
+    "side_scroller/art/ui_icons_atlas.png",
+    "side_scroller/art/ui_icons_atlas.png.import",
+    "side_scroller/art/warrior_climb.png",
+    "side_scroller/art/warrior_climb.png.import",
+    "side_scroller/art/warrior_climb_skin_mask.png",
+    "side_scroller/art/warrior_climb_skin_mask.png.import",
+    "side_scroller/art/warrior_custom_body.png",
+    "side_scroller/art/warrior_custom_body.png.import",
+    "side_scroller/art/warrior_custom_body_skin_mask.png",
+    "side_scroller/art/warrior_custom_body_skin_mask.png.import",
+    "side_scroller/art/warrior_custom_climb.png",
+    "side_scroller/art/warrior_custom_climb.png.import",
+    "side_scroller/art/warrior_custom_climb_skin_mask.png",
+    "side_scroller/art/warrior_custom_climb_skin_mask.png.import",
+    "side_scroller/data/quest_art_manifest.json",
+    "side_scroller/data/quests.json",
+    "side_scroller/visuals/climb_layout.gd",
+    "side_scroller/visuals/custom_body_layout.gd",
+    "side_scroller/visuals/levelup_layout.gd",
+    "side_scroller/visuals/looks_layout.gd",
+    "side_scroller/visuals/npc_layout.gd",
+    "side_scroller/visuals/pet_layout.gd",
+    "side_scroller/visuals/ui_icon_layout.gd"
+  ],
+  "atlas_sizes": {
+    "side_scroller/art/archer_climb.png": {
+      "bytes": 105811,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/archer_climb_skin_mask.png": {
+      "bytes": 933,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/archer_custom_body.png": {
+      "bytes": 361957,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/archer_custom_body_skin_mask.png": {
+      "bytes": 28881,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/archer_custom_climb.png": {
+      "bytes": 89263,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/archer_custom_climb_skin_mask.png": {
+      "bytes": 8689,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/climb_atlas.png": {
+      "bytes": 231189,
+      "pixels": [
+        168,
+        1224
+      ]
+    },
+    "side_scroller/art/levelup_atlas.png": {
+      "bytes": 504985,
+      "pixels": [
+        1300,
+        520
+      ]
+    },
+    "side_scroller/art/looks_atlas.png": {
+      "bytes": 341582,
+      "pixels": [
+        1056,
+        792
+      ]
+    },
+    "side_scroller/art/mage_climb.png": {
+      "bytes": 348666,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/mage_climb_skin_mask.png": {
+      "bytes": 5602,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/mage_custom_body.png": {
+      "bytes": 1163196,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/mage_custom_body_skin_mask.png": {
+      "bytes": 63169,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/mage_custom_climb.png": {
+      "bytes": 95044,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/mage_custom_climb_skin_mask.png": {
+      "bytes": 10961,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/npc_atlas.png": {
+      "bytes": 821918,
+      "pixels": [
+        544,
+        800
+      ]
+    },
+    "side_scroller/art/pets_atlas.png": {
+      "bytes": 179758,
+      "pixels": [
+        364,
+        312
+      ]
+    },
+    "side_scroller/art/thief_climb.png": {
+      "bytes": 96254,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/thief_climb_skin_mask.png": {
+      "bytes": 957,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/thief_custom_body.png": {
+      "bytes": 375268,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/thief_custom_body_skin_mask.png": {
+      "bytes": 49573,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/thief_custom_climb.png": {
+      "bytes": 86962,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/thief_custom_climb_skin_mask.png": {
+      "bytes": 9510,
+      "pixels": [
+        1256,
+        313
+      ]
+    },
+    "side_scroller/art/ui_icons_atlas.png": {
+      "bytes": 204444,
+      "pixels": [
+        416,
+        364
+      ]
+    },
+    "side_scroller/art/warrior_climb.png": {
+      "bytes": 90838,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/warrior_climb_skin_mask.png": {
+      "bytes": 1734,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/warrior_custom_body.png": {
+      "bytes": 373258,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/warrior_custom_body_skin_mask.png": {
+      "bytes": 67388,
+      "pixels": [
+        1254,
+        1254
+      ]
+    },
+    "side_scroller/art/warrior_custom_climb.png": {
+      "bytes": 75549,
+      "pixels": [
+        1256,
+        314
+      ]
+    },
+    "side_scroller/art/warrior_custom_climb_skin_mask.png": {
+      "bytes": 11428,
+      "pixels": [
+        1256,
+        314
+      ]
+    }
+  },
+  "counts": {
+    "quests": 128,
+    "towns": 32,
+    "npc_designs": 32,
+    "npc_idle_frames": 64,
+    "pet_species": 6,
+    "pet_frames": 42,
+    "hair_styles": 8,
+    "hair_views": 4,
+    "faces": 6,
+    "face_views": 2,
+    "ui_icons": 52,
+    "level_up_frames": 6,
+    "skill_learned_frames": 4,
+    "climb_biomes": 19,
+    "class_climb_frames": 16
+  }
+}

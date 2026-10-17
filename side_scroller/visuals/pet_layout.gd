@@ -1,0 +1,12 @@
+extends RefCounted
+# Authored sprite data only. Coordinates and anchors are in atlas pixels.
+const ART=preload("res://art/pets_atlas.png")
+const DATA={
+    "puppy":{"rects":[Rect2(2,2,48,48),Rect2(54,2,48,48),Rect2(106,2,48,48),Rect2(158,2,48,48),Rect2(210,2,48,48),Rect2(262,2,48,48),Rect2(314,2,48,48)],"anchors":[Vector2(26,49),Vector2(78,49),Vector2(130,49),Vector2(182,49),Vector2(234,49),Vector2(286,49),Vector2(338,49)],"idle":[0,1],"walk":[2,3,4,5],"jump":[6],"idle_fps":2,"walk_fps":8,"height":48,"facing":1},
+    "kitten":{"rects":[Rect2(2,54,48,48),Rect2(54,54,48,48),Rect2(106,54,48,48),Rect2(158,54,48,48),Rect2(210,54,48,48),Rect2(262,54,48,48),Rect2(314,54,48,48)],"anchors":[Vector2(26,101),Vector2(78,101),Vector2(130,101),Vector2(182,101),Vector2(234,101),Vector2(286,101),Vector2(338,101)],"idle":[0,1],"walk":[2,3,4,5],"jump":[6],"idle_fps":2,"walk_fps":8,"height":48,"facing":1},
+    "bunny":{"rects":[Rect2(2,106,48,48),Rect2(54,106,48,48),Rect2(106,106,48,48),Rect2(158,106,48,48),Rect2(210,106,48,48),Rect2(262,106,48,48),Rect2(314,106,48,48)],"anchors":[Vector2(26,153),Vector2(78,153),Vector2(130,153),Vector2(182,153),Vector2(234,153),Vector2(286,153),Vector2(338,153)],"idle":[0,1],"walk":[2,3,4,5],"jump":[6],"idle_fps":2,"walk_fps":8,"height":48,"facing":1},
+    "baby_dragon":{"rects":[Rect2(2,158,48,48),Rect2(54,158,48,48),Rect2(106,158,48,48),Rect2(158,158,48,48),Rect2(210,158,48,48),Rect2(262,158,48,48),Rect2(314,158,48,48)],"anchors":[Vector2(26,205),Vector2(78,205),Vector2(130,205),Vector2(182,205),Vector2(234,205),Vector2(286,205),Vector2(338,205)],"idle":[0,1],"walk":[2,3,4,5],"jump":[6],"idle_fps":2,"walk_fps":8,"height":48,"facing":1},
+    "penguin":{"rects":[Rect2(2,210,48,48),Rect2(54,210,48,48),Rect2(106,210,48,48),Rect2(158,210,48,48),Rect2(210,210,48,48),Rect2(262,210,48,48),Rect2(314,210,48,48)],"anchors":[Vector2(26,257),Vector2(78,257),Vector2(130,257),Vector2(182,257),Vector2(234,257),Vector2(286,257),Vector2(338,257)],"idle":[0,1],"walk":[2,3,4,5],"jump":[6],"idle_fps":2,"walk_fps":8,"height":48,"facing":1},
+    "slime":{"rects":[Rect2(2,262,48,48),Rect2(54,262,48,48),Rect2(106,262,48,48),Rect2(158,262,48,48),Rect2(210,262,48,48),Rect2(262,262,48,48),Rect2(314,262,48,48)],"anchors":[Vector2(26,309),Vector2(78,309),Vector2(130,309),Vector2(182,309),Vector2(234,309),Vector2(286,309),Vector2(338,309)],"idle":[0,1],"walk":[2,3,4,5],"jump":[6],"idle_fps":2,"walk_fps":8,"height":48,"facing":1},
+}
+const PETS=DATA

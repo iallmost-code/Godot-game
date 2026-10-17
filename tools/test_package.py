@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Regression checks for an archive Godot's Web Editor can actually extract."""
 from pathlib import Path
+import json
 import subprocess
 import sys
 import tempfile
@@ -22,12 +23,17 @@ with tempfile.TemporaryDirectory() as directory:
         assert {'art/warrior_body.png','art/thief_body.png','art/mage_body.png','art/archer_body.png','art/weapons_atlas.png','art/combat_atlas.png','art/monster_atlas.png','visuals/body_layout.gd','visuals/weapon_layout.gd','visuals/attack_art.gd','visuals/monster_layout.gd'}<=names
         assert b'Windswept' in z.read('project.godot')
         assert len(names)==len(z.namelist())
-        assert not any('.godot/' in n or '.git/' in n or n.endswith('.json') for n in names)
+        assert not any('.godot/' in n or '.git/' in n or (n.endswith('.json') and not n.startswith('data/')) for n in names)
         assert not any(n.startswith('side_scroller/') for n in names)
         for name in names:
             if '/' in name and not name.endswith('/'):
                 parent=name.rsplit('/',1)[0]+'/'
                 assert parent in names, f'Godot importer needs directory entry: {parent}'
+        for source in (root/'side_scroller/data').glob('*.json'):
+            name=source.relative_to(root/'side_scroller').as_posix()
+            assert name in names, f'Authored JSON is missing: {name}'
+            assert z.read(name) == source.read_bytes(), f'Authored JSON is stale: {name}'
+            assert isinstance(json.loads(z.read(name)), dict), f'Invalid data object: {name}'
         for source in (root/'side_scroller').rglob('*.gd'):
             if '.godot' not in source.parts:
                 assert source.relative_to(root/'side_scroller').as_posix() in names

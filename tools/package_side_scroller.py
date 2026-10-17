@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build the standalone project ZIP, never a ZIP of the old crypt project."""
 import argparse
+import json
 from pathlib import Path
 import re
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
@@ -17,9 +18,14 @@ files = []
 for path in sorted(root.rglob('*')):
     if not path.is_file() or any(part.startswith('.') for part in path.relative_to(root).parts):
         continue
-    if path.suffix in {'.tmp', '.json', '.import'}:
+    if path.suffix in {'.tmp', '.import'}:
         continue
-    if path.suffix not in {'.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid', '.ttf', '.gdshader'}:
+    # Authored data is shipped; browser saves outside data/ remain excluded.
+    if path.suffix == '.json':
+        if path.parent != root / 'data':
+            continue
+        json.loads(path.read_text(encoding='utf-8'))
+    if path.suffix not in {'.json', '.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid', '.ttf', '.gdshader'}:
         raise SystemExit(f'Unexpected project file: {path}')
     if path.suffix in {'.gd', '.tscn', '.godot', '.tres'}:
         text = path.read_text()
