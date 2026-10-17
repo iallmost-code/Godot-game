@@ -27,18 +27,19 @@ func setup(s):
     for platform in data.platforms:
         build_platform(Vector2(platform[0],platform[1]+8),Vector2(platform[2],16),true)
     for portal in portals:
-        make_label(portal.label,portal.position+Vector2(-85,-130),Color("edf5cc"),17)
-    if map_id=="town":
+        make_label(portal.label,portal.position+Vector2(-85,-160),Color("edf5cc"),15)
+    if data.safe:
         var npc=preload("res://visuals/character_visual.gd").new()
+        instructor_position=Vector2(500 if map_id=="town" else 600,610)
         npc.position=instructor_position
         npc.modulate=Color(0.92,0.96,1.0)
         add_child(npc)
         npc.set_pose("idle",1,0)
-        make_label("Captain Elowen\nJob advancement",instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
+        make_label(data.npc.name+("\nJob advancement" if data.npc.path!="" else "\nUp to talk"),instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
     else:
-        make_label("Briar Hollow: tougher enemies and better loot →" if map_id=="forest" else "ROOTWARDEN ahead →\nLv 25 recommended • Jump over the slam!",Vector2(380,300),Color("e7d2ed"),16)
+        make_label(data.get("notice","Explore the trails and return to town to recover."),Vector2(380,300),Color("e7d2ed"),16)
         for entry in data.enemies:
-            var record={"position":Vector2(entry[0],entry[1]),"id":entry[2],"node":null,"timer":0.0}
+            var record={"position":Vector2(entry[0],entry[1]),"id":entry[2],"node":null,"timer":0.0,"level":entry[3] if entry.size()>3 else 0}
             spawns.append(record)
             spawn_enemy(record)
     var artwork=preload("res://visuals/world_art.gd").new()
@@ -75,6 +76,8 @@ func spawn_enemy(record):
     enemy.definition_id=record.id
     enemy.position=record.position
     enemy.player=player
+    enemy.level=record.level
+    enemy.area_tint=preload("res://visuals/world_theme.gd").enemy_tint(Maps.definition(map_id).biome)
     add_child(enemy)
     record.node=enemy
     if record.id=="rootwarden":
@@ -83,16 +86,20 @@ func spawn_enemy(record):
     enemy.defeated.connect(func(pos,id): on_defeated(pos,id,record))
 func on_defeated(pos: Vector2,id: String,record: Dictionary):
     record.timer=45.0 if id=="rootwarden" else 9.0 if map_id=="briar" else 7.0
-    state.add_xp({"mossling":40,"lantern":60,"thornling":110,"briar_lantern":140,"rootwarden":900}[id])
-    var reward={"coins":randi_range(7,14) if map_id=="briar" else randi_range(2,7)}
+    var base_xp={"mossling":40,"lantern":60,"thornling":110,"briar_lantern":140,"rootwarden":900}[id]
+    var normal_level=preload("res://data/enemy_stats.gd").profile(id).level
+    var actual_level=record.level if record.level>0 else normal_level
+    state.add_xp(maxi(1,int(base_xp*float(actual_level)/normal_level)))
+    var advanced=Maps.definition(map_id).level>=15
+    var reward={"coins":randi_range(7,14) if advanced else randi_range(2,7)}
     var weapon_type="claw" if state.archetype=="thief" else "spear" if state.job=="spearman" else "sword"
     var roll=randf()
     if id=="rootwarden":
         reward={"coins":75,"potions":3,"item":"warden_"+weapon_type}
         reward_notice.emit("Rootwarden defeated! Collect your guaranteed weapon and potions.")
     elif roll<0.18: reward.potions=1
-    elif roll<(0.42 if map_id=="briar" else 0.3):
-        var zone="briar" if map_id=="briar" else "forest"
+    elif roll<(0.42 if advanced else 0.3):
+        var zone=Maps.definition(map_id).loot_zone
         reward.item=zone+"_"+weapon_type if randf()<0.5 else zone+"_armor"
     var loot=preload("res://world/loot_pickup.gd").new()
     loot.setup(reward)
@@ -104,8 +111,12 @@ func interact():
         if player.global_position.distance_to(portal.position)<90:
             portal_requested.emit(portal.target,portal.spawn)
             return
-    if map_id=="town" and absf(player.position.x-instructor_position.x)<100:
-        advancement_requested.emit(state.next_job())
+    var data=Maps.definition(map_id)
+    if data.safe and absf(player.position.x-instructor_position.x)<100:
+        var instructor=data.npc
+        if instructor.path=="all" or instructor.path==state.archetype:
+            advancement_requested.emit(state.next_job())
+        else: reward_notice.emit(instructor.name+": "+instructor.greeting)
     else: reward_notice.emit("Move near a glowing portal or the town instructor, then press Up.")
 func _process(delta):
     for record in spawns:

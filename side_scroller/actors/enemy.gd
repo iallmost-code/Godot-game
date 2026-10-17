@@ -1,6 +1,7 @@
 extends CharacterBody2D
 const EnemyStats=preload("res://data/enemy_stats.gd")
 var level=0
+var area_tint=Color.WHITE
 var hp=40
 var max_hp=40
 var is_heavy=false
@@ -37,6 +38,8 @@ func _ready():
     elif definition_id=="briar_lantern":
         hp=100
         max_hp=100
+    max_hp=maxi(12,max_hp+12*(level-EnemyStats.profile(definition_id).level))
+    hp=max_hp
     sprite=Sprite2D.new()
     sprite.texture=preload("res://art/enemies.png")
     sprite.region_enabled=true
@@ -51,6 +54,7 @@ func _ready():
     sprite.material=mat
     if definition_id=="thornling": sprite.modulate=Color("ecb8cd")
     elif definition_id=="briar_lantern": sprite.modulate=Color("b7e6f0")
+    sprite.modulate*=area_tint
     add_child(sprite)
 func _physics_process(delta):
     if dead: return

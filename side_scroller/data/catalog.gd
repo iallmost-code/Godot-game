@@ -35,5 +35,13 @@ static func items() -> Dictionary:
         "warden_sword":{"name":"Rootwarden's Edge", "slot":"weapon", "path":"warrior", "attack":50, "defense":0, "icon":"⚔"},
         "warden_spear":{"name":"Rootwarden's Lance", "slot":"weapon", "path":"warrior", "attack":50, "defense":0, "icon":"♜"},
         "warden_claw":{"name":"Rootwarden's Talon", "slot":"weapon", "path":"thief", "attack":50, "defense":0, "icon":"✦"},
+        "expedition_sword":{"name":"Wayfarer Blade","slot":"weapon","path":"warrior","attack":70,"defense":0,"icon":"S"},
+        "expedition_spear":{"name":"Wayfarer Lance","slot":"weapon","path":"warrior","attack":70,"defense":0,"icon":"P"},
+        "expedition_claw":{"name":"Wayfarer Talon","slot":"weapon","path":"thief","attack":70,"defense":0,"icon":"C"},
+        "expedition_armor":{"name":"Wayfarer Coat","slot":"armor","attack":0,"defense":20,"icon":"A"},
+        "relic_sword":{"name":"Aethersteel Blade","slot":"weapon","path":"warrior","attack":110,"defense":0,"icon":"S"},
+        "relic_spear":{"name":"Aethersteel Lance","slot":"weapon","path":"warrior","attack":110,"defense":0,"icon":"P"},
+        "relic_claw":{"name":"Aethersteel Talon","slot":"weapon","path":"thief","attack":110,"defense":0,"icon":"C"},
+        "relic_armor":{"name":"Aetherweave Coat","slot":"armor","attack":0,"defense":32,"icon":"A"},
         "starter_armor":{"name":"Trail Vest", "slot":"armor", "attack":0, "defense":2, "icon":"◆"},
         "forest_armor":{"name":"Mossguard Coat", "slot":"armor", "attack":0, "defense":5, "icon":"◆"}}

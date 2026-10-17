@@ -10,6 +10,7 @@ var effects
 var camera
 var map
 var map_id=""
+var respawn_map_id="town"
 var hud
 var menu
 var advancement_dialog
@@ -94,6 +95,7 @@ func change_map(id: String,spawn: String) -> bool:
         map.queue_free()
     map=next
     map_id=id
+    if definition.safe: respawn_map_id=id
     menu.world_map_id=id
     combat.cancel()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
@@ -105,12 +107,13 @@ func change_map(id: String,spawn: String) -> bool:
     hud.player=player
     if id=="forest": hud.show_notice("Briar Hollow lies beyond the far-right portal. Recommended level 15+.",7)
     elif id=="briar": hud.show_notice("Briar Hollow: stronger monsters, better loot. Rootwarden waits at the far end.",7)
+    elif id!="town": hud.show_notice(definition.name+" - "+("Safe town. Health recovers here. Open M for routes." if definition.safe else definition.get("notice","Explore this hunting area.")),6)
     camera.position=Vector2(clampf(player.position.x,557,map.width-557),450)
     return true
 func return_to_town():
     combat.clear_partner()
     state.restore()
-    change_map("town","entry")
+    change_map(respawn_map_id,"entry")
     hud.show_notice("Back on your feet. All collected loot and progress are kept.",7)
 func switch_character(slot: String) -> bool:
     if not save_store.slot_paths.has(slot) or slot==save_store.active_slot: return false
@@ -134,6 +137,7 @@ func switch_character(slot: String) -> bool:
     combat.clear_partner()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
+    respawn_map_id="town"
     menu.close()
     change_map("town","entry")
     hud.show_notice("%s character loaded. Level 10: stand beside Elowen and press Up to advance." % slot.capitalize(),8)
@@ -161,7 +165,7 @@ func show_advancement(id: String):
 func _process(delta):
     state.potion_cooldown=maxf(0,state.potion_cooldown-delta)
     state.mp=minf(state.derived_stats().max_mp,state.mp+2.5*delta)
-    if map_id=="town": state.hp=minf(state.derived_stats().max_hp,state.hp+12*delta)
+    if Maps.definition(map_id).safe: state.hp=minf(state.derived_stats().max_hp,state.hp+12*delta)
     if player.position.y>950: return_to_town()
     if map!=null:
         player.position.x=clampf(player.position.x,20,map.width-20)

@@ -23,7 +23,7 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Character stats | S |
 | Menu / close window | Escape or top-right buttons |
 
-Menus use a silver frame, blue headers and green stat rows. Drag the dark title bar to move the window. The same shortcut closes its panel; another menu shortcut switches panels. Inventory uses a selectable equipment grid: click an item to inspect it, then Equip. The map shows all three connected areas, your location, portals and the boss location.
+Menus use a silver frame, blue headers and green stat rows. Drag the dark title bar to move the window. The same shortcut closes its panel; another menu shortcut switches panels. Inventory uses a selectable equipment grid: click an item to inspect it, then Equip. The atlas lists all 32 regions and 65 playable maps, with platforms, portals, your location and directions from your current area to any inspected map. See [WORLD_GUIDE.md](WORLD_GUIDE.md) for all town names and routes.
 
 Rebind all gameplay and menu shortcuts through **Menu → Controls**. Escape cancels a pending key capture. Each action needs a unique key; restore defaults is available. Open menus pause the game.
 
@@ -48,7 +48,10 @@ Progress and controls save in this browser's local project data. They are not sy
 
 ## Current scope
 
-One town, two hunting maps, four regular monster variants, the Rootwarden miniboss, a sword Warrior/Spearman route, four Thief advancements with growing basic volleys and a timed Shadow Partner, separate character slots, eight-frame walking cycles, heavy Warrior second-job mob attacks, bulk stat allocation, a ranked skill tree, equipment, loot, double jump, key configuration, and saves. Additional second/fourth-job Thief skills, third/fourth Warrior jobs, Hyper gameplay, quests, multiplayer, and final production art remain future content. Art uses original chibi sprites, bold outlines, mushroom cottages, chunky grass terrain and layered backgrounds inspired by classic side-scrolling RPGs.
+32 safe towns/regions and 33 hunting maps, the Rootwarden miniboss, a sword Warrior/Spearman route, four Thief advancements with growing basic volleys and a timed Shadow Partner, separate character slots, eight-frame walking cycles, heavy Warrior second-job mob attacks, bulk stats, a ranked skill tree, equipment tiers, loot, double jump, key configuration, saves and an atlas with route directions. Town checkpoints apply during the current session; restarting/loading still begins in Willowbridge. Warden Bram in Ironridge and Mara Vex in Shadecross also provide the existing Warrior/Thief advancement flow.
+
+This is the first world-content pass, using shared enemy families and map-layout templates with original themed scenery. Regional quest stories, additional monsters/bosses, additional character classes, Warrior third/fourth jobs, Hyper gameplay and multiplayer remain future content. Pirate content is excluded. See [WORLD_GUIDE.md](WORLD_GUIDE.md) for the complete renamed location list.
+
 
 ## Development checks
 

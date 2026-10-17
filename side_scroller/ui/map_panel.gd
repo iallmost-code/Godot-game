@@ -3,39 +3,84 @@ const Style=preload("res://ui/style.gd")
 const Maps=preload("res://data/maps.gd")
 var map_id="town"
 var player_position=Vector2.ZERO
+var selected_region="town"
+var selected_area="town"
 func bind(_state,_bindings=null):
     refresh()
 func set_context(id: String,pos: Vector2):
     map_id=id
     player_position=pos
+    selected_region=Maps.definition(id).region
+    selected_area=id
+    refresh()
+func inspect_region(id: String):
+    selected_region=id
+    selected_area=id
     refresh()
 func refresh():
     Style.clear(self)
-    add_child(Style.section("WINDSWEPT ISLAND  /  WORLD MAP"))
-    var route=HBoxContainer.new()
-    route.add_theme_constant_override("separation",10)
-    add_child(route)
-    var areas=[["town","Willowbridge","Safe town • Job instructor"],["forest","Whisperwood","Starter hunting grounds"],["briar","Briar Hollow","Level 15+ • Rootwarden 25+"]]
-    for area in areas:
-        var card=PanelContainer.new()
-        card.custom_minimum_size=Vector2(268,92)
-        card.add_theme_stylebox_override("panel",Style.box(Color("e5f2c5") if area[0]==map_id else Color("e3edf4"),Color("8daf45") if area[0]==map_id else Color("a0b7c6"),5,10))
-        var layout=VBoxContainer.new()
-        card.add_child(layout)
-        layout.add_child(Style.label(area[1],19))
-        layout.add_child(Style.label(area[2],13))
-        layout.add_child(Style.label("YOU ARE HERE" if area[0]==map_id else "Connected by ground portal",12))
-        route.add_child(card)
-    add_child(Style.section(Maps.definition(map_id).title+"  /  AREA MAP",true))
+    add_child(Style.section("WINDSWEPT WORLD ATLAS  /  %d regions - %d playable maps" % [Maps.regions().size(),Maps.all_ids().size()]))
+    var columns=HBoxContainer.new()
+    columns.add_theme_constant_override("separation",10)
+    add_child(columns)
+    var scroll=ScrollContainer.new()
+    scroll.custom_minimum_size=Vector2(220,340)
+    scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+    columns.add_child(scroll)
+    var regions=VBoxContainer.new()
+    scroll.add_child(regions)
+    var active_index=0
+    var index=0
+    for region in Maps.regions():
+        var id=region.id
+        var button=Style.button(region.name,func(): inspect_region(id))
+        button.custom_minimum_size=Vector2(198,30)
+        button.tooltip_text="Inspect this region. Travel through world portals to visit."
+        if id==selected_region:
+            button.modulate=Color("bbdc96")
+            active_index=index
+        regions.add_child(button)
+        index+=1
+    scroll.set_deferred("scroll_vertical",maxi(0,active_index*35-100))
+    var info=VBoxContainer.new()
+    info.custom_minimum_size.x=610
+    columns.add_child(info)
+    var region=Maps.definition(selected_region)
+    var area=Maps.definition(selected_area)
+    info.add_child(Style.section(region.name.to_upper()+"  /  "+region.biome.capitalize()))
+    var areas=HBoxContainer.new()
+    info.add_child(areas)
+    for id in Maps.all_ids():
+        var definition=Maps.definition(id)
+        if definition.region!=selected_region: continue
+        var button=Style.button(definition.name,func(): selected_area=id; refresh())
+        if id==selected_area: button.modulate=Color("bbdc96")
+        areas.add_child(button)
+    info.add_child(Style.label("Safe town - health recovery and respawn checkpoint" if area.safe else "Level %d+ hunting - scaled enemies and equipment drops" % area.level,14))
+    var routes=[]
+    for portal in area.portals:
+        routes.append(Maps.definition(portal.target).name)
+    var steps=[]
+    for id in Maps.route_between(map_id,selected_area): steps.append(Maps.definition(id).name)
+    var route_text=Style.label("Portals: "+", ".join(routes)+"\nRoute from here: "+" > ".join(steps),13)
+    route_text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+    route_text.custom_minimum_size.x=580
+    info.add_child(route_text)
     var chart=Chart.new()
-    chart.map_id=map_id
+    chart.map_id=selected_area
     chart.player_position=player_position
-    chart.custom_minimum_size=Vector2(820,210)
-    add_child(chart)
-    add_child(Style.label("Yellow dot: you   •   Blue diamonds: portals   •   Red crown: Rootwarden\nTravel in the world: stand by a portal and press your Interact key. This map does not teleport you.",14))
+    chart.show_player=selected_area==map_id
+    chart.custom_minimum_size=Vector2(600,195)
+    info.add_child(chart)
+    info.add_child(Style.section("YOU ARE IN: "+Maps.definition(map_id).name,true))
+    var local=Style.button("Show my current area",func(): set_context(map_id,player_position))
+    info.add_child(local)
+    add_child(Style.label("Yellow: you   Blue: portals   Red crown: Rootwarden. Inspecting a region does not teleport you.
+Travel by standing at the named portal and pressing your Interact key. Towns are safe checkpoints.",13))
 class Chart extends Control:
     var map_id="town"
     var player_position=Vector2.ZERO
+    var show_player=true
     func _draw():
         var definition=Maps.definition(map_id)
         var w=size.x-50
@@ -51,8 +96,9 @@ class Chart extends Control:
             var p=Vector2(25+portal.position.x*factor,ground-10)
             draw_colored_polygon(PackedVector2Array([p+Vector2(0,-9),p+Vector2(7,0),p+Vector2(0,9),p+Vector2(-7,0)]),Color("3d9ccd"))
         var pos=Vector2(25+player_position.x*factor,ground-(610-player_position.y)*0.34-13)
-        draw_circle(pos,7,Color("bb8627"))
-        draw_circle(pos,4,Color("fff16c"))
+        if show_player:
+            draw_circle(pos,7,Color("bb8627"))
+            draw_circle(pos,4,Color("fff16c"))
         if map_id=="briar":
             var boss=Vector2(25+2920*factor,ground-10)
             draw_colored_polygon(PackedVector2Array([boss+Vector2(-10,0),boss+Vector2(-10,-13),boss+Vector2(-3,-6),boss+Vector2(0,-17),boss+Vector2(4,-6),boss+Vector2(10,-13),boss+Vector2(10,0)]),Color("c54b67"))
