@@ -77,6 +77,8 @@ func update_partner(delta):
     partner.walk_phase=player.visual.walk_phase
     partner.appearance=player.visual.appearance
     partner.attack_style=active if active!="" else "star"
+    partner.set_equipment(state.equipment.weapon)
+    partner.set_attack_clock(elapsed,swing_end,windup)
     partner.set_pose("attack" if active!="" else player.visual.pose,direction,Time.get_ticks_msec()/1000.0)
 # ---------------- Summons ----------------
 func clear_summons():
@@ -211,7 +213,7 @@ func begin_attack(id: String) -> bool:
     if skill.shape=="pull": pull_monsters(id)
     attack_started.emit(id,attack_origin,attack_facing,attack_reach)
     if skill.get("element","")!="" and skill.shape in ["area","drop","chain"]:
-        effect_requested.emit("element",{"position":attack_origin,"facing":attack_facing,"reach":attack_reach,"element":skill.element,"shape":skill.shape,"both":skill.get("both",false)})
+        effect_requested.emit("element",{"position":attack_origin,"facing":attack_facing,"reach":attack_reach,"element":skill.element,"shape":skill.shape,"both":skill.get("both",false),"delay":windup})
     return true
 func attack_facing_now() -> int: return player.facing
 func cancel():
@@ -341,6 +343,7 @@ func launch_stars(id: String):
             star.critical=roll[1]
             player.get_parent().add_child(star)
             star.global_position=origin+Vector2(0,-25)
+            effect_requested.emit("launch",{"position":star.global_position,"element":star.element,"style":star.style,"facing":attack_facing})
             if origin!=attack_origin: star.modulate=Color("b4a4eb")
 func projectile_hit(star,e):
     var id=star.skill_id

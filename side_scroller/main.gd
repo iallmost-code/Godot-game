@@ -32,8 +32,10 @@ func _ready():
     effects=preload("res://visuals/combat_effects.gd").new()
     effects.z_index=12
     add_child(effects)
-    combat.attack_started.connect(func(id,origin,direction,reach): effects.show_attack(id,origin,direction,reach))
-    combat.impact.connect(effects.show_damage)
+    combat.attack_started.connect(func(id,origin,direction,reach): effects.show_attack(id,origin,direction,reach,combat.windup))
+    combat.impact.connect(func(pos,amount,critical):
+        effects.show_damage(pos,amount,critical)
+        effects.show_hit(pos,critical))
     player.damaged.connect(func(amount): effects.show_player_damage(player.global_position+Vector2(0,-75),amount))
     player.evaded.connect(func(text): effects.show_evade(player.global_position+Vector2(0,-75),text))
     combat.effect_requested.connect(effects.show_effect)

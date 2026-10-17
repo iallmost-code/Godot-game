@@ -111,15 +111,19 @@ func _physics_process(delta):
     var pose = "idle"
     if not is_on_floor(): pose = "jump"
     elif absf(velocity.x) > 15: pose = "run"
-    if attack_timer > 0: pose = "attack"
+    if attack_timer > 0 or combat!=null and combat.active!="": pose = "attack"
     elif damage_recoil>0 or stun_time>0: pose="hurt"
-    if combat!=null and combat.active!="": visual.attack_style=combat.active
+    if combat!=null and combat.active!="":
+        visual.attack_style=combat.active
+        visual.set_attack_clock(combat.elapsed,combat.swing_end,combat.windup)
+    else: visual.attack_elapsed=-1.0
     if state!=null and state.bonus("invisible")>0: visual.modulate.a = 0.3
     elif hurt_timer > 0 and int(hurt_timer*12)%2 == 0: visual.modulate.a = 0.55
     else: visual.modulate.a = 1
     var visual_facing=combat.attack_facing if combat!=null and combat.active!="" else facing
     if state!=null:
         visual.appearance=appearance_for(state)
+        visual.set_equipment(state.equipment.weapon)
     if pose=="run": walk_phase+=absf(velocity.x)*delta/150.0
     else: walk_phase=0.0
     visual.walk_phase=walk_phase

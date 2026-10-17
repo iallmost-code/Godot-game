@@ -81,8 +81,9 @@ Progress and controls save in this browser's local project data. **Menu → Save
 
 - **Towns and starting areas:** add a fixed entry in `data/maps.gd` (`definition()`), with platforms, spawns, portals and optional enemies. Captain Elowen (job advancement) is placed by `world/map_controller.gd` in the `town` map.
 - **Hunting grounds and bosses:** one row in `REGIONS` in `data/maps.gd`. Monster stats are in `data/enemy_stats.gd` (`ROSTER` and `BOSSES`).
-- **Monster art:** monsters are drawn in code by `visuals/mob_art.gd` (one template per body type). To use a sprite instead, follow the `sprite` path in `actors/enemy.gd` used by the Mossling.
-- **Player art:** Mage and Archer reuse the thief sprite sheet with a tint and a drawn staff/bow. Add `mage`/`archer` atlases to `visuals/character_visual.gd` and `visuals/atlas_layout.gd` to replace them.
+- **Monster art:** sixteen common body families use the painted `art/monster_atlas.png`, with regions in `visuals/monster_layout.gd` and palette/idle motion in `visuals/mob_art.gd`. Bosses and special variants retain their individual vector features; Mossling, Lantern Bloom and Rootwarden retain their existing sprite art.
+- **Player art:** four dedicated unarmed body sheets (`art/*_body.png`), frame/foot/hand anchors in `visuals/body_layout.gd`, and separate equipment in `art/weapons_atlas.png` / `visuals/weapon_layout.gd`. All seven weapon types have normal and upgraded art shared with inventory icons. Attacks follow the real combat clock through windup, strike, follow-through and recovery.
+- **Combat effects:** `art/combat_atlas.png` / `visuals/attack_art.gd` contain slash, thrust, wave, impact and elemental art. Projectiles have fading trails; spell and melee effects wait for their combat windup.
 - **Skills:** every skill is one entry in `data/catalog.gd`; display names are in `RENAMES` and `FAMILY_NAMES`.
 
 ## Development checks

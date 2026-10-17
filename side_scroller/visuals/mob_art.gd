@@ -1,6 +1,7 @@
 extends RefCounted
 # Vector monster art. Every template draws in local space with the feet at (0,0),
 # facing right; the caller passes facing and size so one template serves many monsters.
+const Painted=preload("res://visuals/monster_layout.gd")
 const OUTLINE=Color("2b2233")
 
 static func oval(points: int,center: Vector2,rx: float,ry: float,start=0.0,end=TAU) -> PackedVector2Array:
@@ -52,6 +53,16 @@ static func draw(c: CanvasItem,p: Dictionary,t: float,facing: int,flash: float,s
     var size: float=p.get("size",1.0)
     var bob=sin(t*4.0)*1.2
     c.draw_set_transform(Vector2(0,bob if body in ["wraith","fish","clock","bat","idol","bird"] or p.get("behavior","")=="flyer" else 0),0,Vector2(facing*size,size))
+    # Boss silhouettes and special variants retain their authored vector features.
+    if Painted.DATA.has(body) and not p.get("boss",false) and not p.get("horns",false) and not p.get("flame",false) and not p.get("statue",false) and p.get("weapon","")=="":
+        var art=Painted.DATA[body]
+        var dimensions=art.rect.size*(float(art.height)/art.rect.size.y)
+        var squash=sin(t*6)*0.025
+        var offset=bob if body in ["wraith","fish","clock","bat"] else 0.0
+        c.draw_set_transform(Vector2(0,offset),sin(t*4)*0.018,Vector2(facing*size*(1-squash),size*(1+squash)))
+        c.draw_texture_rect_region(Painted.ART,Rect2(Vector2(-dimensions.x/2,-dimensions.y),dimensions),art.rect,main.lightened(0.30))
+        c.draw_set_transform(Vector2.ZERO)
+        return
     match body:
         "snail":
             var crawl=sin(t*5)*1.5

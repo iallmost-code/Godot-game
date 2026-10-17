@@ -1,4 +1,5 @@
 extends Node2D
+const AttackArt=preload("res://visuals/attack_art.gd")
 const EFFECT_ART=preload("res://art/effects.png")
 const SLASH_REGION=Rect2(0,0,850,724)
 const WAVE_REGION=Rect2(850,90,1322,535)
@@ -43,11 +44,12 @@ func effect_burst(pos: Vector2,radius: float,color: Color):
 func add_shape(kind: String,data: Dictionary):
     if shapes.size()>=40: shapes.pop_front()
     data.kind=kind
-    data.age=0.0
+    data.age=-data.get("delay",0.0)
     shapes.append(data)
 func show_effect(kind: String,data: Dictionary):
     var color=ELEMENT_COLORS.get(data.get("element",""),ELEMENT_COLORS[""])
     match kind:
+        "launch": add_shape("muzzle",{"position":data.position,"color":color,"index":AttackArt.element_index(data.get("element","")),"style":data.get("style","star")})
         "heal": show_heal(data.position,data.amount)
         "aura": add_shape("aura",{"position":data.position,"color":color,"radius":46})
         "burst": add_shape("burst",{"position":data.position,"color":color,"radius":data.get("radius",80)})
@@ -55,15 +57,17 @@ func show_effect(kind: String,data: Dictionary):
         "element":
             var reach=data.reach
             var center=data.position+Vector2(0 if data.both else data.facing*reach/2,0)
-            add_shape("rain" if data.shape=="drop" else "burst",{"position":center,"color":color,"radius":reach if data.both else reach/2,"width":reach*(2 if data.both else 1)})
-func show_attack(id: String,origin: Vector2,facing: int,reach=-1.0):
+            add_shape("rain" if data.shape=="drop" else "element_burst",{"position":center,"color":color,"radius":reach if data.both else reach/2,"width":reach*(2 if data.both else 1),"index":AttackArt.element_index(data.get("element","")),"delay":data.get("delay",0.0)})
+func show_hit(pos: Vector2,critical=false):
+    add_shape("impact",{"position":pos,"radius":28 if critical else 19,"color":Color("ffcf78") if critical else Color.WHITE})
+func show_attack(id: String,origin: Vector2,facing: int,reach=-1.0,windup=0.08):
     var skill=preload("res://data/catalog.gd").skill(id)
     if skill.is_empty() or skill.get("shape","melee")=="projectile": return
     if effects.size()>=30: effects.pop_front()
     if reach<0: reach=skill.reach
     var fx=skill.get("fx","slash")
     if fx in ["burst","rain","lightning","aura","heal"] and skill.get("element","")!="": return
-    effects.append({"id":id,"fx":fx,"position":origin,"facing":facing,"reach":reach,"age":0.0,"both":skill.get("both",false)})
+    effects.append({"id":id,"fx":fx,"position":origin,"facing":facing,"reach":reach,"age":-windup,"both":skill.get("both",false)})
 func _process(delta):
     for e in effects.duplicate():
         e.age+=delta
@@ -83,59 +87,72 @@ func _process(delta):
     queue_redraw()
 func _draw():
     for e in effects:
-        var fade=1-e.age/0.42
-        var p=e.position+Vector2(0,-30)
-        var face=e.facing
+        if e.age<0:
+            var point=e.position+Vector2(e.facing*20,-32)
+            AttackArt.draw(self,3,Rect2(point-Vector2(9,9),Vector2(18,18)),Color(1,1,1,0.3))
+            continue
+        var fade=clampf((0.42-e.age)/0.18,0,1)
+        var growth=0.8+0.2*minf(1,e.age/0.08)
         var tint=Color(1,1,1,fade)
-        if e.fx in ["burst","rain","lightning","aura","heal"]:
-            draw_set_transform(Vector2.ZERO)
-            var color=Color(0.9,0.95,1,fade*0.5)
-            var r=e.reach*(1.0 if e.both else 0.5)
-            var center=e.position+Vector2(0 if e.both else face*r,-30)
-            draw_set_transform(center,0,Vector2(1,0.35))
-            draw_circle(Vector2.ZERO,r*(0.6+0.4*(1-fade)),color)
-            draw_arc(Vector2.ZERO,r*(0.6+0.4*(1-fade)),0,TAU,40,Color(1,1,1,fade),3,true)
-        elif e.fx=="wave" or e.id=="wave":
+        var sides=[e.facing,-e.facing] if e.both else [e.facing]
+        for face in sides:
             draw_set_transform(e.position,0,Vector2(face,1))
-            draw_texture_rect_region(EFFECT_ART,Rect2(0,-115,e.reach,115),WAVE_REGION,tint)
-        elif e.fx=="thrust" or e.id=="thrust":
-            draw_set_transform(p,0,Vector2(face,1))
-            draw_texture_rect_region(EFFECT_ART,Rect2(0,-28,e.reach,48),WAVE_REGION,tint)
-        else:
-            draw_set_transform(p,0,Vector2(face,1))
-            draw_texture_rect_region(EFFECT_ART,Rect2(0,-65,e.reach,130),SLASH_REGION,tint)
-        draw_set_transform(Vector2.ZERO)
+            if e.fx in ["burst","rain","lightning","aura","heal"]:
+                var radius=e.reach*(1.0 if e.both else 0.5)
+                AttackArt.draw(self,7,Rect2(0,-radius*0.8,radius*2,radius*1.2),Color(1,1,1,fade*0.8))
+            elif e.fx=="wave" or e.id=="wave":
+                AttackArt.draw(self,2,Rect2(0,-125,e.reach,135),tint)
+            elif e.fx=="thrust" or e.id=="thrust":
+                AttackArt.draw(self,1,Rect2(0,-61,e.reach*growth,49),tint)
+            else:
+                AttackArt.draw(self,0,Rect2(3,-116,e.reach*growth,128),tint)
+            draw_set_transform(Vector2.ZERO)
     for shape in shapes:
-        var fade=1.0-shape.age/0.5
+        if shape.age<0: continue
+        var fade=clampf((0.5-shape.age)/0.22,0,1)
         var color: Color=shape.get("color",Color.WHITE)
+        var progress=shape.age/0.5
         match shape.kind:
+            "impact":
+                var r=shape.radius*(0.65+progress*0.5)
+                AttackArt.draw(self,3,Rect2(shape.position-Vector2(r,r),Vector2(r*2,r*2)),Color(color,fade))
+            "muzzle":
+                if shape.age>0.16: continue
+                var r=14.0 if shape.style=="arrow" else 23.0
+                AttackArt.draw(self,shape.index,Rect2(shape.position-Vector2(r,r),Vector2(r*2,r*2)),Color(1,1,1,(1-shape.age/0.16)*0.8))
             "aura":
-                draw_arc(shape.position+Vector2(0,-35),shape.radius*(0.6+shape.age),0,TAU,40,Color(color,fade),4,true)
-                draw_arc(shape.position+Vector2(0,-35),shape.radius*(0.3+shape.age*1.5),0,TAU,40,Color(color,fade*0.6),2,true)
+                var r=shape.radius*(0.9+progress*0.3)
+                draw_set_transform(shape.position+Vector2(0,-30),shape.age*0.4)
+                AttackArt.draw(self,7,Rect2(-r,-r,r*2,r*2),Color(color,fade*0.8))
+                draw_set_transform(Vector2.ZERO)
             "heal":
                 for i in range(6):
-                    var a=i*TAU/6+shape.age*3
-                    var p=shape.position+Vector2(cos(a)*shape.radius*0.6,-40-shape.age*80+sin(a)*10)
-                    draw_line(p+Vector2(-5,0),p+Vector2(5,0),Color(color,fade),3)
-                    draw_line(p+Vector2(0,-5),p+Vector2(0,5),Color(color,fade),3)
-            "burst":
-                draw_set_transform(shape.position+Vector2(0,-25),0,Vector2(1,0.45))
-                var r=shape.radius*(0.5+shape.age)
-                draw_circle(Vector2.ZERO,r,Color(color,fade*0.35))
-                draw_arc(Vector2.ZERO,r,0,TAU,40,Color(color,fade),4,true)
-                draw_set_transform(Vector2.ZERO)
+                    var angle=i*TAU/6+shape.age*3
+                    var point=shape.position+Vector2(cos(angle)*shape.radius*0.6,-40-shape.age*80+sin(angle)*10)
+                    draw_line(point+Vector2(-5,0),point+Vector2(5,0),Color(color,fade),3)
+                    draw_line(point+Vector2(0,-5),point+Vector2(0,5),Color(color,fade),3)
+            "burst","element_burst":
+                var r=shape.radius*(0.8+progress*0.2)
+                var origin=shape.position+Vector2(-r,-r*0.8-25)
+                AttackArt.draw(self,shape.get("index",3),Rect2(origin,Vector2(r*2,r*1.4)),Color(1,1,1,fade*0.9))
             "rain":
-                var w=shape.get("width",400.0)
-                for i in range(14):
-                    var x=shape.position.x-w/2+fmod(i*97.0,w)
-                    var y=shape.position.y-260+fmod(shape.age*900+i*53,260)
-                    draw_line(Vector2(x,y),Vector2(x-10,y+34),Color(color,fade),4,true)
-                    draw_circle(Vector2(x-10,y+34),5,Color(color,fade))
+                var width=shape.get("width",400.0)
+                for i in range(10):
+                    var x=shape.position.x-width/2+fmod(i*97.0,width)
+                    var y=shape.position.y-240+fmod(shape.age*650+i*53,250)
+                    draw_line(Vector2(x,y-22),Vector2(x-8,y+16),Color(color,fade*0.5),3,true)
+                    AttackArt.draw(self,shape.get("index",5),Rect2(x-23,y-18,38,46),Color(1,1,1,fade))
             "chain":
-                var pts: Array=shape.points
-                for i in range(pts.size()-1):
-                    var a: Vector2=pts[i]
-                    var b: Vector2=pts[i+1]
-                    var mid=(a+b)/2+Vector2(randf_range(-14,14),randf_range(-14,14))
-                    draw_polyline(PackedVector2Array([a,mid,b]),Color(color,fade),4,true)
-                    draw_polyline(PackedVector2Array([a,mid,b]),Color(1,1,1,fade),1.5,true)
+                var points: Array=shape.points
+                for i in range(points.size()-1):
+                    var a: Vector2=points[i]
+                    var b: Vector2=points[i+1]
+                    var chain=PackedVector2Array([a])
+                    for step in range(1,6):
+                        var offset=sin(i*7.0+step*2.3+int(shape.age*18)*1.7)*12
+                        chain.append(a.lerp(b,step/6.0)+Vector2(0,offset))
+                    chain.append(b)
+                    draw_polyline(chain,Color(color,fade*0.3),10,true)
+                    draw_polyline(chain,Color(color,fade),4,true)
+                    draw_polyline(chain,Color(1,1,1,fade),1.5,true)
+                    AttackArt.draw(self,3,Rect2(b-Vector2(16,16),Vector2(32,32)),Color(1,1,1,fade))

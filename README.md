@@ -14,6 +14,6 @@ Current project source: [`side_scroller/`](side_scroller/). Full controls, class
 
 Default controls: **arrows** move, **Up** interacts, **Shift** jumps/double jumps, **Space** attacks, **Z X C V A D F** use skills, **I/M/K/S** open Inventory/Map/Skills/Stats.
 
-Full town names and travel guide: [World guide](side_scroller/WORLD_GUIDE.md). This is the first playable world pass; Pirate content is excluded and character artwork is unchanged.
+Full town names and travel guide: [World guide](side_scroller/WORLD_GUIDE.md). This is the first playable world pass; Pirate content is excluded. The current visual pass adds four dedicated character sheets, separate equipped weapons, attack poses, projectile trails, elemental effects and painted common monsters.
 
 The original 3D crypt project remains at the repository root for preservation; the new standalone ZIP contains only the new 2D project.
