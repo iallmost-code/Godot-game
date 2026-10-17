@@ -124,8 +124,10 @@ func _draw():
     var boss_profile=profile.duplicate()
     boss_profile["boss"]=true
     var shake=Vector2(sin(age*40)*2,0) if phase=="windup" else Vector2.ZERO
-    draw_set_transform(shake)
-    MobArt.draw(self,boss_profile,age,facing,hurt_flash/0.15,{"frozen":has_status("freeze")})
+    var painted=preload("res://visuals/boss_layout.gd")
+    if not painted.draw(self,definition_id,phase=="windup" or flash>0 or charge_time>0,facing,hurt_flash/0.15,has_status("freeze"),shake):
+        draw_set_transform(shake)
+        MobArt.draw(self,boss_profile,age,facing,hurt_flash/0.15,{"frozen":has_status("freeze")})
     draw_set_transform(Vector2.ZERO)
     var radius=slam_radius()
     if phase=="windup" and pattern=="slam" or flash>0 and flash_kind=="slam":

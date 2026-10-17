@@ -97,9 +97,15 @@ func _draw():
         var sides=[e.facing,-e.facing] if e.both else [e.facing]
         for face in sides:
             draw_set_transform(e.position,0,Vector2(face,1))
-            if e.fx in ["burst","rain","lightning","aura","heal"]:
+            if e.fx=="rain":
+                # Physical rain (Arrow Storm/Bolt Eruption) has no element event.
+                for i in range(8):
+                    var x=fmod(i*97.0,maxf(1,e.reach))
+                    var y=-230+fmod(e.age*650+i*41,230)
+                    AttackArt.draw_named(self,"rain_arrows",Rect2(x-22,y-32,44,64),Color(1,1,1,fade))
+            elif e.fx in ["burst","lightning","aura","heal"]:
                 var radius=e.reach*(1.0 if e.both else 0.5)
-                AttackArt.draw(self,7,Rect2(0,-radius*0.8,radius*2,radius*1.2),Color(1,1,1,fade*0.8))
+                AttackArt.draw_named(self,"burst_arcane",Rect2(0,-radius*0.8,radius*2,radius*1.2),Color(1,1,1,fade*0.8))
             elif e.fx=="wave" or e.id=="wave":
                 AttackArt.draw(self,2,Rect2(0,-125,e.reach,135),tint)
             elif e.fx=="thrust" or e.id=="thrust":
@@ -123,25 +129,26 @@ func _draw():
             "aura":
                 var r=shape.radius*(0.9+progress*0.3)
                 draw_set_transform(shape.position+Vector2(0,-30),shape.age*0.4)
-                AttackArt.draw(self,7,Rect2(-r,-r,r*2,r*2),Color(color,fade*0.8))
+                AttackArt.draw_named(self,"buff_aura",Rect2(-r,-r,r*2,r*2),Color(1,1,1,fade*0.8))
                 draw_set_transform(Vector2.ZERO)
             "heal":
                 for i in range(6):
                     var angle=i*TAU/6+shape.age*3
                     var point=shape.position+Vector2(cos(angle)*shape.radius*0.6,-40-shape.age*80+sin(angle)*10)
-                    draw_line(point+Vector2(-5,0),point+Vector2(5,0),Color(color,fade),3)
-                    draw_line(point+Vector2(0,-5),point+Vector2(0,5),Color(color,fade),3)
+                    AttackArt.draw_named(self,"heal_sparkles",Rect2(point-Vector2(14,14),Vector2(28,28)),Color(1,1,1,fade))
             "burst","element_burst":
                 var r=shape.radius*(0.8+progress*0.2)
                 var origin=shape.position+Vector2(-r,-r*0.8-25)
-                AttackArt.draw(self,shape.get("index",3),Rect2(origin,Vector2(r*2,r*1.4)),Color(1,1,1,fade*0.9))
+                AttackArt.draw_named(self,"burst_"+AttackArt.element_for_color(color),Rect2(origin,Vector2(r*2,r*1.4)),Color(1,1,1,fade*0.9))
             "rain":
                 var width=shape.get("width",400.0)
                 for i in range(10):
                     var x=shape.position.x-width/2+fmod(i*97.0,width)
                     var y=shape.position.y-240+fmod(shape.age*650+i*53,250)
-                    draw_line(Vector2(x,y-22),Vector2(x-8,y+16),Color(color,fade*0.5),3,true)
-                    AttackArt.draw(self,shape.get("index",5),Rect2(x-23,y-18,38,46),Color(1,1,1,fade))
+                    var rain_kind="rain_"+AttackArt.element_for_color(color)
+                    if not AttackArt.EFFECTS.has(rain_kind): rain_kind="rain_holy"
+                    var holy=rain_kind=="rain_holy"
+                    AttackArt.draw_named(self,rain_kind,Rect2(x-26,y-62 if holy else y-32,52,112 if holy else 64),Color(1,1,1,fade))
             "chain":
                 var points: Array=shape.points
                 for i in range(points.size()-1):
@@ -152,6 +159,9 @@ func _draw():
                         var offset=sin(i*7.0+step*2.3+int(shape.age*18)*1.7)*12
                         chain.append(a.lerp(b,step/6.0)+Vector2(0,offset))
                     chain.append(b)
+                    draw_set_transform(a,(b-a).angle())
+                    AttackArt.draw_named(self,"chain_lightning",Rect2(0,-15,a.distance_to(b),30),Color(1,1,1,fade))
+                    draw_set_transform(Vector2.ZERO)
                     draw_polyline(chain,Color(color,fade*0.3),10,true)
                     draw_polyline(chain,Color(color,fade),4,true)
                     draw_polyline(chain,Color(1,1,1,fade),1.5,true)
