@@ -19,11 +19,11 @@ for path in sorted(root.rglob('*')):
         continue
     if path.suffix in {'.tmp', '.json', '.import'}:
         continue
-    if path.suffix not in {'.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid'}:
+    if path.suffix not in {'.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid', '.ttf', '.gdshader'}:
         raise SystemExit(f'Unexpected project file: {path}')
     if path.suffix in {'.gd', '.tscn', '.godot', '.tres'}:
         text = path.read_text()
-        for ref in re.findall(r'res://([A-Za-z0-9_./-]+\.(?:gd|tscn|svg|png|tres))', text):
+        for ref in re.findall(r'res://([A-Za-z0-9_./-]+\.(?:gdshader|gd|tscn|svg|png|tres|ttf))', text):
             if not (root / ref).is_file():
                 raise SystemExit(f'Missing dependency {ref} referenced by {path.name}')
     files.append(path)

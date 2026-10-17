@@ -28,35 +28,58 @@ func cancel():
     refresh()
 func refresh():
     Style.clear(self)
-    add_child(Style.label("CHARACTER STATS",24,Color("f4d48a")))
     var stats=state.derived_stats()
-    add_child(Style.label("Level %d   •   %s   •   %d points available" % [state.level,state.job.capitalize(),remaining_points()]))
-    var explanations={"STR":"Melee damage and maximum health","DEX":"Additional melee damage","INT":"Maximum mana","LUK":"Critical hit chance (25% cap)"}
-    if state.archetype=="thief":
-        explanations.LUK="Throwing damage and critical chance"
-        explanations.STR="Maximum health and defense"
+    var columns=HBoxContainer.new()
+    columns.add_theme_constant_override("separation",12)
+    add_child(columns)
+    var left=VBoxContainer.new()
+    left.custom_minimum_size.x=460
+    columns.add_child(left)
+    left.add_child(Style.section("CHARACTER STATS"))
+    Style.data_row(left,"JOB",preload("res://data/catalog.gd").jobs()[state.job].name,true)
+    Style.data_row(left,"LEVEL",str(state.level),true)
+    Style.data_row(left,"HP","%d / %d" % [state.hp,stats.max_hp],true)
+    Style.data_row(left,"MP","%d / %d" % [state.mp,stats.max_mp],true)
+    left.add_child(Style.section("ABILITY POINTS     %d available" % remaining_points()))
     for key in ["STR","DEX","INT","LUK"]:
         var row=HBoxContainer.new()
-        add_child(row)
-        var text=Style.label("%s    %d %s" % [key,state.attributes[key],"+ %d pending" % draft[key] if draft.get(key,0)>0 else ""])
-        text.custom_minimum_size.x=240
+        left.add_child(row)
+        var text=Style.label("%s   %d%s" % [key,state.attributes[key]," (+%d)" % draft[key] if draft.get(key,0)>0 else ""],15)
+        text.custom_minimum_size.x=195
         row.add_child(text)
-        var explain=Style.label(explanations[key],14,Color("acc6c6"))
-        explain.custom_minimum_size.x=270
-        row.add_child(explain)
         for amount in [1,5,-1]:
             var button=Style.button("All" if amount==-1 else "+%d" % amount,func(): stage(key,amount))
+            button.custom_minimum_size.x=76
             button.disabled=remaining_points()==0
-            button.tooltip_text="Add all remaining points to "+key+" in this draft." if amount==-1 else "Add up to %d remaining points to %s." % [amount,key]
+            button.tooltip_text="Stage all remaining points in "+key if amount==-1 else "Stage up to %d points in %s" % [amount,key]
             row.add_child(button)
+    var actions=HBoxContainer.new()
+    left.add_child(actions)
+    actions.add_child(Style.button("Confirm points",func(): confirm()))
+    actions.add_child(Style.button("Cancel draft",cancel))
+    left.add_child(Style.label(note if note!="" else "Points apply only after confirmation.",13))
+    left.add_child(Style.label("STR: melee / HP   DEX: secondary damage
+INT: mana   LUK: throwing / critical chance",13))
+    var right=VBoxContainer.new()
+    right.custom_minimum_size.x=355
+    columns.add_child(right)
+    right.add_child(Style.section("DETAILED STATS"))
     var proposed=state.attributes.duplicate()
     for key in draft: proposed[key]+=draft[key]
     var hp_gain=2*draft.get("STR",0)
     var mp_gain=2*draft.get("INT",0)
     var atk_gain=draft.get("LUK" if state.archetype=="thief" else "STR",0)+int(proposed.DEX/4.0)-int(state.attributes.DEX/4.0)
-    add_child(Style.label("Attack %d -> %d     Defense %d -> %d\nMax HP %d -> %d     Max MP %d -> %d\nCritical chance %.1f%% -> %.1f%%" % [stats.attack,stats.attack+atk_gain,stats.defense,stats.defense+int(proposed.STR/10.0)-int(state.attributes.STR/10.0),stats.max_hp,stats.max_hp+hp_gain,stats.max_mp,stats.max_mp+mp_gain,stats.crit*100,minf(0.25,0.05+0.002*(proposed.LUK-4))*100],18))
-    var actions=HBoxContainer.new()
-    add_child(actions)
-    actions.add_child(Style.button("Confirm points",func(): confirm()))
-    actions.add_child(Style.button("Cancel draft",cancel))
-    add_child(Style.label(note,15,Color("e8cf8e")))
+    var next_attack=stats.attack+atk_gain
+    Style.data_row(right,"ATTACK","%d -> %d" % [stats.attack,next_attack])
+    Style.data_row(right,"DEFENSE","%d -> %d" % [stats.defense,stats.defense+int(proposed.STR/10.0)-int(state.attributes.STR/10.0)])
+    Style.data_row(right,"MAX HP","%d -> %d" % [stats.max_hp,stats.max_hp+hp_gain])
+    Style.data_row(right,"MAX MP","%d -> %d" % [stats.max_mp,stats.max_mp+mp_gain])
+    Style.data_row(right,"CRITICAL RATE","%.1f%% -> %.1f%%" % [stats.crit*100,minf(0.25,0.05+0.002*(proposed.LUK-4))*100])
+    Style.data_row(right,"CRIT DAMAGE","150% of a normal hit")
+    right.add_child(Style.section("DAMAGE PREVIEW",true))
+    Style.data_row(right,"BASIC HIT",str(next_attack))
+    Style.data_row(right,"BASIC CRIT",str(int(next_attack*1.5)))
+    right.add_child(Style.label("Skill damage = attack × skill power.
+Ranks add 15% base attack per rank.
+Critical hits multiply the result by 1.5.
+Preview includes pending points.",13))

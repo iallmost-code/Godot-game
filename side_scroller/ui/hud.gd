@@ -9,6 +9,7 @@ var mp_bar
 var xp_bar
 var status
 var skills: Array=[]
+var menu_buttons={}
 var notice
 var notice_time=0.0
 var map_label
@@ -41,10 +42,12 @@ func bind(s,c,b=null):
     root_control.add_child(map_label)
     var top=HBoxContainer.new()
     top.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-    top.position=Vector2(-410,22)
+    top.position=Vector2(-500,22)
     root_control.add_child(top)
-    for id in ["stats","skills","inventory"]:
-        top.add_child(Style.button(id.capitalize(),func(): menu_requested.emit(id)))
+    for id in ["stats","skills","inventory","map"]:
+        var menu_button=Style.button(id.capitalize(),func(): menu_requested.emit(id))
+        top.add_child(menu_button)
+        menu_buttons[id]=menu_button
     top.add_child(Style.button("Menu",func(): menu_requested.emit("controls")))
     boss_panel=PanelContainer.new()
     boss_panel.position=Vector2(340,145)
@@ -125,6 +128,9 @@ func refresh():
             boss_label.text="Rootwarden  •  %d / %d" % [boss_target.hp,boss_target.max_hp]
             boss_bar.max_value=boss_target.max_hp
             boss_bar.value=boss_target.hp
+    for id in menu_buttons:
+        var shortcut=OS.get_keycode_string(bindings.current()["menu_"+id]) if bindings!=null else ""
+        menu_buttons[id].text=id.capitalize()+" ["+shortcut+"]"
     var stats=state.derived_stats()
     status.text="LV %d  %s  •  HP %d/%d  MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
     hp_bar.max_value=stats.max_hp

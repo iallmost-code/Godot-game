@@ -43,6 +43,7 @@ func _ready():
     menu=preload("res://ui/menu.gd").new()
     add_child(menu)
     menu.setup(state,bindings)
+    menu.player=player
     hud.menu_requested.connect(menu.open_panel)
     combat.feedback.connect(hud.show_notice)
     player.interact_requested.connect(func(): if map!=null: map.interact())
@@ -92,10 +93,11 @@ func change_map(id: String,spawn: String) -> bool:
         map.queue_free()
     map=next
     map_id=id
+    menu.world_map_id=id
     combat.cancel()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     effects.effects.clear()
-    effects.numbers.clear()
+    effects.clear_numbers()
     player.reset_at(map.spawn_position(spawn))
     hud.map_label.text=definition.title
     hud.boss_target=next.boss

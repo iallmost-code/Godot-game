@@ -17,9 +17,15 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Jump; press again in air for boosted double jump | Shift |
 | Basic sword/spear attack or star throw (hold to repeat) | Space |
 | Assigned skills | Z / X / C |
-| Menus | Escape or top-right buttons |
+| Inventory | I |
+| World / area map | M |
+| Skills | K |
+| Character stats | S |
+| Menu / close window | Escape or top-right buttons |
 
-Rebind controls through **Menu → Controls**. Escape cancels a pending key capture. Each action needs a unique key; restore defaults is available. Open menus pause the game.
+Menus use a silver frame, blue headers and green stat rows. Drag the dark title bar to move the window. The same shortcut closes its panel; another menu shortcut switches panels. Inventory uses a selectable equipment grid: click an item to inspect it, then Equip. The map shows all three connected areas, your location, portals and the boss location.
+
+Rebind all gameplay and menu shortcuts through **Menu → Controls**. Escape cancels a pending key capture. Each action needs a unique key; restore defaults is available. Open menus pause the game.
 
 ## Your first journey
 
@@ -34,11 +40,11 @@ Rebind controls through **Menu → Controls**. Escape cancels a pending key capt
 
 9. Around **level 15**, continue to the far-right portal in Whisperwood to enter **Briar Hollow**. Thornlings and briar lanterns are tougher and drop better equipment. **Rootwarden**, the first miniboss, guards the far end; level 25+ and upgraded gear are recommended. Jump over the marked ground slam and dodge the seed volley. Victory grants a class-appropriate weapon, potions, coins and XP. The boss returns after 45 seconds. The left portal returns to the far end of Whisperwood.
 
-Death sends you back to town at full health with collected loot and progression kept. No XP penalty. Town regenerates health and monsters stay in the forest. Enemy warning markers give you time to jump away.
+Death sends you back to town at full health with collected loot and progression kept. No XP penalty. Town regenerates health and monsters stay in the forest. Enemy warning markers give you time to jump away. Damage numbers stack, pop and float upward: orange/yellow means a normal hit, deep red means a critical hit. These display actual damage; this visual update keeps combat balance unchanged. Detailed Stats shows the current damage calculation and a preview including pending points.
 
 ## Saves
 
-Progress and controls save in this browser's local project data. They are not synchronized with GitHub. **Menu → Save** provides explicit save and JSON backup export/import. Keep a JSON backup before clearing browser site data or switching devices. Import backups into the matching Warrior or Thief slot; cross-class imports are rejected to protect the other character. Older Warrior and Thief backups remain compatible. Twin Stars is removed; invested Twin Stars points are refunded once and its old hotbar slot is cleared. Corrupt saves are rejected and backed up when possible.
+Progress and controls save in this browser's local project data. They are not synchronized with GitHub. **Menu → Save** provides explicit save and JSON backup export/import. Keep a JSON backup before clearing browser site data or switching devices. Import backups into the matching Warrior or Thief slot; cross-class imports are rejected to protect the other character. Older Warrior and Thief backups remain compatible. Missing menu shortcuts are added on import; if an old custom gameplay key uses I/M/K/S, it is preserved and that menu receives a free shortcut. Twin Stars is removed; invested Twin Stars points are refunded once and its old hotbar slot is cleared. Corrupt saves are rejected and backed up when possible.
 
 ## Current scope
 

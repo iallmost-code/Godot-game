@@ -4,12 +4,30 @@ const SLASH_REGION=Rect2(0,0,850,724)
 const WAVE_REGION=Rect2(850,90,1322,535)
 var effects: Array=[]
 var numbers: Array=[]
+func clear_numbers():
+    for number in numbers:
+        if is_instance_valid(number.get("visual")): number.visual.queue_free()
+    numbers.clear()
+func add_number(pos: Vector2,text: String,critical: bool,celebration=false):
+    if numbers.size()>=60:
+        var oldest=numbers.pop_front()
+        oldest.visual.queue_free()
+    # New hits enter at the bottom. Shift every still-visible line upward,
+    # including fading lines, so eight-star partner volleys never reuse a row.
+    for number in numbers:
+        if absf(number.origin.x-pos.x)<48:
+            number.position.y-=42
+            number.visual.position=number.position+Vector2(0,-number.age*46)
+    var visual=preload("res://visuals/damage_number.gd").new()
+    visual.setup(text,critical,celebration)
+    var stacked=pos
+    visual.position=stacked
+    add_child(visual)
+    numbers.append({"position":stacked,"origin":pos,"critical":critical,"age":0.0,"visual":visual})
 func show_damage(pos: Vector2,amount: int,critical: bool):
-    if numbers.size()>=60: numbers.pop_front()
-    numbers.append({"position":pos+Vector2(randf_range(-12,12),0),"amount":amount,"critical":critical,"age":0.0})
+    add_number(pos,str(amount),critical)
 func show_level_up(pos: Vector2):
-    if numbers.size()>=60: numbers.pop_front()
-    numbers.append({"position":pos+Vector2(-35,-70),"amount":0,"critical":true,"age":0.0,"text":"LEVEL UP!"})
+    add_number(pos+Vector2(0,-70),"LEVEL UP!",true,true)
 func show_attack(id: String,origin: Vector2,facing: int,reach=-1.0):
     if id in ["star","shadow_partner","star_fan"]: return
     if effects.size()>=30: effects.pop_front()
@@ -21,7 +39,13 @@ func _process(delta):
         if e.age>0.42: effects.erase(e)
     for n in numbers.duplicate():
         n.age+=delta
-        if n.age>0.95: numbers.erase(n)
+        if n.age>1.1:
+            n.visual.queue_free()
+            numbers.erase(n)
+        else:
+            n.visual.position=n.position+Vector2(0,-n.age*46)
+            n.visual.scale=Vector2.ONE*(1.0+0.18*maxf(0,1-n.age/0.16))
+            n.visual.modulate.a=clampf((1.1-n.age)/0.32,0,1)
     queue_redraw()
 func _draw():
     for e in effects:
@@ -39,12 +63,3 @@ func _draw():
             draw_set_transform(p,0,Vector2(face,1))
             draw_texture_rect_region(EFFECT_ART,Rect2(0,-65,e.reach,130),SLASH_REGION,tint)
         draw_set_transform(Vector2.ZERO)
-    var font=ThemeDB.fallback_font
-    for n in numbers:
-        var pos=n.position+Vector2(0,-n.age*60)
-        var text=n.get("text",str(n.amount)+( "!" if n.critical else ""))
-        var size=27 if n.critical else 23
-        var color=Color("ffe88b") if n.critical else Color("fff9e4")
-        color.a=minf(1,(1-n.age)*3)
-        draw_string_outline(font,pos,text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,4,Color(0.2,0.16,0.27,color.a))
-        draw_string(font,pos,text,HORIZONTAL_ALIGNMENT_LEFT,-1,size,color)
