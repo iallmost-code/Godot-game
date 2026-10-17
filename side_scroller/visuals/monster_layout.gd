@@ -1,5 +1,7 @@
 extends RefCounted
 const ART=preload("res://art/monster_atlas.png")
+const ART_2=preload("res://art/monster_atlas_2.png")
+const LYCAN=preload("res://art/moonfang_lycan.png")
 const DATA={
     "snail":{"rect":Rect2(25,70,308,250),"height":34},
     "mushroom":{"rect":Rect2(349,60,258,258),"height":43},
@@ -17,4 +19,14 @@ const DATA={
     "skeleton":{"rect":Rect2(370,922,214,296),"height":62},
     "wolf":{"rect":Rect2(616,935,323,287),"height":43},
     "teddy":{"rect":Rect2(980,937,222,287),"height":57},
+    "drake":{"rect":Rect2(31,64,377,318),"height":48,"texture":ART_2},
+    "drake_winged":{"rect":Rect2(427,22,427,365),"height":66,"texture":ART_2},
+    "yeti":{"rect":Rect2(873,30,367,351),"height":59,"texture":ART_2},
+    "yeti_horned":{"rect":Rect2(25,410,398,376),"height":65,"texture":ART_2},
+    "ape":{"rect":Rect2(452,406,420,385),"height":57,"texture":ART_2},
+    "toy":{"rect":Rect2(906,401,331,384),"height":63,"texture":ART_2},
+    "centaur":{"rect":Rect2(14,789,410,450),"height":76,"texture":ART_2},
+    "bird":{"rect":Rect2(431,810,469,432),"height":61,"texture":ART_2},
+    "monk":{"rect":Rect2(880,803,357,430),"height":70,"texture":ART_2},
+    "wolf_upright":{"rect":Rect2(57,6,1145,1246),"height":76,"texture":LYCAN},
 }
