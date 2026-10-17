@@ -92,8 +92,10 @@ func skill_name(id: String) -> String:
         return {"spear":"Spear Combo","dagger":"Dagger Slash","staff":"Staff Strike"}.get(weapon_type(),"Sword Combo")
     if id=="arrow" and weapon_type()=="crossbow": return "Fire Bolt"
     return Catalog.skill(id).get("name",id)
+# Early levels are quick; from level 120 each level takes four times the base curve.
 func xp_required(at_level: int) -> int:
-    return int(15+10*at_level+1.1*at_level*at_level+0.004*at_level*at_level*at_level)
+    var base=15+10*at_level+1.1*at_level*at_level+0.004*at_level*at_level*at_level
+    return int(base*(1.0+minf(3.0,at_level/40.0)))
 func add_xp(amount: int):
     if amount <= 0 or level >= Catalog.MAX_LEVEL: return
     xp += amount

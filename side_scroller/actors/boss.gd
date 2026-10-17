@@ -118,7 +118,7 @@ func try_contact_damage():
     var offset=player.global_position-global_position
     var size=profile.get("size",3.0)
     if absf(offset.x)<18*size and offset.y>-40*size and offset.y<20:
-        player.receive_damage(attack_damage(1.2 if charge_time>0 else 0.7),Vector2((1 if offset.x>=0 else -1)*160,-90),self)
+        player.receive_damage(attack_damage(1.1 if charge_time>0 else 0.45),Vector2((1 if offset.x>=0 else -1)*160,-90),self)
 func art_height() -> float: return 60.0*profile.get("size",3.0)
 func _draw():
     var boss_profile=profile.duplicate()

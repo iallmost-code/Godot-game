@@ -1,6 +1,6 @@
-# Windswept — Spearbound
+# Windswept
 
-An original, single-player 2D side-scrolling RPG prototype for **Godot Web Editor 4.7.2**. Uses the Compatibility renderer, original chibi sprites, bold cartoon outlines and layered pixel-style scenery, and no external assets or plugins.
+An original, single-player 2D side-scrolling RPG for **Godot Web Editor 4.7.2**, built on the classic job-tree formula: four classes, ten advancement paths, level 200, hunting grounds and bosses. Uses the Compatibility renderer and no external assets or plugins. All class, job, skill, monster and boss names are original.
 
 ## Import the playable project
 
@@ -14,41 +14,70 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | --- | --- |
 | Move | Left / Right arrows |
 | Interact with portal or instructor | Up arrow |
-| Jump; press again in air for boosted double jump | Shift |
-| Basic sword/spear attack or star throw (hold to repeat) | Space |
-| Assigned skills | Z / X / C |
-| Inventory | I |
-| World / area map | M |
-| Skills | K |
-| Character stats | S |
+| Jump; press again in air for a boosted double jump | Shift |
+| Basic attack (sword/spear/dagger/staff swing, star or arrow; hold to repeat) | Space |
+| Skill hotkeys | Z, X, C, V, A, D, F |
+| Inventory / Map / Skills / Stats | I / M / K / S |
 | Menu / close window | Escape or top-right buttons |
 
-Menus use a silver frame, blue headers and green stat rows. Drag the dark title bar to move the window. The same shortcut closes its panel; another menu shortcut switches panels. Inventory uses a selectable equipment grid: click an item to inspect it, then Equip. The map shows all three connected areas, your location, portals and the boss location.
+Rebind every key in **Menu → Controls**. Open menus pause the game.
 
-Rebind all gameplay and menu shortcuts through **Menu → Controls**. Escape cancels a pending key capture. Each action needs a unique key; restore defaults is available. Open menus pause the game.
+## Classes and jobs
 
-## Your first journey
+Pick a class in **Menu → Characters**. Each class has its own save slot. Advance by standing beside **Captain Elowen** in Willowbridge and pressing **Up**. At the second job you choose a path, and that choice is permanent.
 
-1. Begin as a level-1 Beginner on the Warrior route in **Willowbridge**, carrying a sword. To try the throwing-star Thief, open **Menu → Characters → Play / Continue: Thief**. The two slots keep their own character progress and controls; switching saves the current character. Space and double jump are available immediately. **Z/X/C start unassigned**.
-2. Go right to the glowing arch. Press Up nearby to enter the **Whisperwood**.
-3. Defeat mosslings and lantern blooms for XP. Walk over drops to collect coins, potions, and equipment. Potion button heals you; mana regenerates over time.
-4. Spend attribute points in Stats (STR, DEX, INT, LUK). Each row has **+1, +5, and All**; +5 uses up to five remaining points and All puts every remaining point into that attribute. Review the preview, then Confirm points, or Cancel draft. Warrior weapon damage scales with STR; throwing damage scales with LUK, with a smaller DEX contribution to both. Compare and equip class-appropriate drops in Inventory.
-5. At **level 10**, return to town, stand beside **Captain Elowen**, and **press Up** (clicking the NPC does not interact). Confirm your route's advancement. Warriors receive a sword and **Z: Crescent Sweep / X: Driving Thrust**. Thieves receive a claw and **X: Shadow Fan** (Z is free). Skills are assigned automatically.
-6. Use Skills to increase ranks and assign or swap learned skills onto Z/X/C. **Driving Thrust lunges roughly 64 pixels forward**, respects walls, and pushes monsters. Thieves have actual traveling star projectiles, job-based basic volleys and a three-star fan; walls block projectiles. Stars need no ammunition.
-7. On the **Warrior route**, at **level 30**, return to Elowen to advance to Spearman and receive a spear. Learn **Spear Mastery**, then earn more second-job skill points by leveling and learn **Ground Wave**. Assign it to Z or C. Replacing Z with Ground Wave frees Sweep for another slot; clicking another slot moves the skill, or swaps it with that slot’s current skill, so the same skill never occupies two slots.
-8. The prototype now goes to **level 100**. Thief advancements with Elowen: **Thief 10 → Assassin 30 → Hermit 60 → Night Lord 100**. Basic attacks throw **1 → 2 → 3 → 4 stars** respectively. Hermit automatically learns **Shadow Partner on C**: a shadow follows behind you for **60 seconds** and mirrors every star you throw, giving **6 basic stars at third job** and **8 at fourth job**. Shadow Fan is mirrored too. Menus pause the timer; death, character switching and restarting end the summon. Warrior third/fourth jobs and Hyper skills remain future content.
+| Class | 1st job | 2nd job (Lv 30) | 3rd job (Lv 70) | 4th job (Lv 120) |
+| --- | --- | --- | --- | --- |
+| Warrior | Squire (Lv 10) | Duelist | Warlord | Champion |
+| | | Shieldbearer | Runeknight | Templar |
+| | | Lancer | Wyrm Knight | Dread Knight |
+| Mage | Initiate (Lv 8) | Ember Adept (fire/poison) | Cinder Magus | Inferno Archon |
+| | | Frost Adept (ice/lightning) | Storm Magus | Tempest Archon |
+| | | Acolyte (holy/healing) | Oracle | Hierarch |
+| Archer | Scout (Lv 10) | Tracker (bow) | Falconer | Windmaster |
+| | | Arbalist (crossbow) | Deadeye | Sharpshooter |
+| Thief | Prowler (Lv 10) | Stalker (claw) | Shadeweaver | Nightblade |
+| | | Brigand (dagger) | Cutthroat | Duskreaper |
 
-9. Around **level 15**, continue to the far-right portal in Whisperwood to enter **Briar Hollow**. Thornlings and briar lanterns are tougher and drop better equipment. **Rootwarden**, the first miniboss, guards the far end; level 25+ and upgraded gear are recommended. Jump over the marked ground slam and dodge the seed volley. Victory grants a class-appropriate weapon, potions, coins and XP. The boss returns after 45 seconds. The left portal returns to the far end of Whisperwood.
+Each advancement grants 1 skill point and a job weapon; every level after that grants 3 skill points for your current job. Novices earn up to 9 points for Shell Toss, Second Wind and Quickstep. Every level grants 5 attribute points. Main stats: Warrior **STR**, Mage **INT**, Archer **DEX**, Thief **LUK**.
 
-Death sends you back to town at full health with collected loot and progression kept. No XP penalty. Town regenerates health and monsters stay in the forest. Enemy warning markers give you time to jump away. Damage numbers stack, pop and float upward: orange/yellow means a normal hit, deep red means a critical hit, and purple negative numbers show HP lost to enemy hits. Monster names show their level. Contact, melee attacks, lantern shots and boss attacks all damage you; armor reduces each hit to a minimum of 1, with 0.8 seconds of invulnerability after a hit. Enemy attack = type base attack + 2 × (enemy level − 1), then the attack modifier applies (contact 60%, regular melee/projectile 100%, boss slam 140%, boss seeds 75%) before armor. Levels are fixed by type: Mossling 3, Lantern Bloom 6, Thornling 18, Briar Lantern 22 and Rootwarden 25. Starter enemies stay weak as your character grows. Detailed Stats shows the current damage calculation and a preview including pending points.
+There are 242 skills: attacks (melee, projectiles, area blasts, spells that fall from the sky, chain lightning, charges), buffs, passives, summons (Light Drake, Silverwing, Firebird, Dread Eye, Scarecrow decoys…), heals, Blink, Wayshrine (return to town), Shadow Twin, Momentum combo orbs and elemental Brands. Open **Skills (K)** to spend points (+1 or +5), read each skill's numbers and assign attacks and buffs to any hotkey. Later jobs show a preview of each path you could pick.
+
+## Hunting grounds and bosses
+
+From Willowbridge, open **Map (M)** and use **Travel** to fly to any hunting ground. Each ground has a portal back to town and portals to its boss lairs.
+
+| Region | Levels | Monsters | Bosses |
+| --- | --- | --- | --- |
+| Whisperwood / Briar Hollow | 3-25 | Mossling, Lantern Bloom, Thornling, Briar Lantern | Rootwarden |
+| Dewdrop Meadow | 1-12 | Pebble/Azure/Ember Snail, Puffspore, Stumpkin, Jellop, Tangerine Cap, Bristle Hog | Grand Shellmaw |
+| Mossvale Thicket | 12-25 | Gloom Stump, Inkling, Mossy Cap, Hatchet Stump, Horned Cap, Tusker Boar | Elder Stumpus, Gelatinous Monarch |
+| Rotfen Marsh | 25-45 | Rotcap, Wisp/Shade Wraith, Cinder Boar, Swamp Gator, Canopy Ape, Rubble Golem | Mother Cap, Blight Mother Cap |
+| Emberpeak Canyon | 45-70 | Azure/Crimson/Frost Drake, Dune Lizard, Obsidian Golem | Lesser Hellwing |
+| Frostspire Peaks | 60-85 | Frost Cub, Rime Wolf, Snowhorn, Moonfang Lycan | — |
+| Clockwork Spire | 80-110 | Tick Sentinel, Stitched/Dread Bruin, Grim Clockwork, Phantom Timepiece | Chronovore |
+| Bonepit Mine | 100-125 | Bonewalker, Bone Archer, Bone Captain, Magma Golem | Crimson Hellwing, Molten Colossus |
+| Tidegrave Depths | 110-135 | Reef Snapper, Gloomfin, Tide Inkling, Coral Golem | Abyssal Leviathan |
+| Skyreach Plateau | 125-160 | Storm/Cinder Centaur, Twinhead Birk, Bone/Skyscale Wyvern | Thornscale Wyrm |
+| Timeless Sanctum | 155-200 | Memory Warden, Oblivion Monk, Chrono Guardian, Gloam Sentinel | Gloam Idol |
+
+Monsters walk, hop, charge, cast, fly or tank. Bosses cycle through telegraphed patterns: **SLAM** and **LOW SWEEP** (jump over them), volleys, rain from above (move out of the red circles), summoned minions and charges. At half health they enrage and attack faster. Bosses resist stuns and freezes but not poison, armor breaks or weakening. Bosses always drop a weapon for your class; regular monsters drop coins, potions and level-banded gear.
+
+Status effects shown as coloured dots over monsters: stun, freeze, poison (never kills), slow, silence, wither (harmless), weaken, armor break, snare, blind and mock (more damage and experience). You can dodge (**MISS**), block (**BLOCK**) and revive with Rebirth (**REBIRTH**).
+
+Death returns you to town at full health with all progress kept.
 
 ## Saves
 
-Progress and controls save in this browser's local project data. They are not synchronized with GitHub. **Menu → Save** provides explicit save and JSON backup export/import. Keep a JSON backup before clearing browser site data or switching devices. Import backups into the matching Warrior or Thief slot; cross-class imports are rejected to protect the other character. Older Warrior and Thief backups remain compatible. Missing menu shortcuts are added on import; if an old custom gameplay key uses I/M/K/S, it is preserved and that menu receives a free shortcut. Twin Stars is removed; invested Twin Stars points are refunded once and its old hotbar slot is cleared. Corrupt saves are rejected and backed up when possible.
+Progress and controls save in this browser's local project data. **Menu → Save** offers explicit saves and JSON backup export/import into the matching class slot. Saves from the earlier two-class version load automatically: jobs above the new thresholds step back (for example a level-65 Hermit becomes a Stalker until level 70), retired skills are removed, and **every skill point is refunded** once.
 
-## Current scope
+## Adding towns, art and content
 
-One town, two hunting maps, four regular monster variants, the Rootwarden miniboss, a sword Warrior/Spearman route, four Thief advancements with growing basic volleys and a timed Shadow Partner, separate character slots, eight-frame walking cycles, heavy Warrior second-job mob attacks, bulk stat allocation, a ranked skill tree, equipment, loot, double jump, key configuration, and saves. Additional second/fourth-job Thief skills, third/fourth Warrior jobs, Hyper gameplay, quests, multiplayer, and final production art remain future content. Art uses original chibi sprites, bold outlines, mushroom cottages, chunky grass terrain and layered backgrounds inspired by classic side-scrolling RPGs.
+- **Towns and starting areas:** add a fixed entry in `data/maps.gd` (`definition()`), with platforms, spawns, portals and optional enemies. Captain Elowen (job advancement) is placed by `world/map_controller.gd` in the `town` map.
+- **Hunting grounds and bosses:** one row in `REGIONS` in `data/maps.gd`. Monster stats are in `data/enemy_stats.gd` (`ROSTER` and `BOSSES`).
+- **Monster art:** monsters are drawn in code by `visuals/mob_art.gd` (one template per body type). To use a sprite instead, follow the `sprite` path in `actors/enemy.gd` used by the Mossling.
+- **Player art:** Mage and Archer reuse the thief sprite sheet with a tint and a drawn staff/bow. Add `mage`/`archer` atlases to `visuals/character_visual.gd` and `visuals/atlas_layout.gd` to replace them.
+- **Skills:** every skill is one entry in `data/catalog.gd`; display names are in `RENAMES` and `FAMILY_NAMES`.
 
 ## Development checks
 
@@ -59,4 +88,4 @@ godot --headless --editor --import --quit
 godot --headless --script res://tests/runner.gd
 ```
 
-The runner prints positive check counts and exits nonzero for failing assertions. Engine script errors must also be treated as failures even when Godot returns zero. Native checks and visual capture do not alone establish Web Editor compatibility.
+The runner prints positive check counts and exits nonzero for failing assertions. It casts every skill of every fourth-job path and visits every hunting ground and boss arena. Engine script errors must also be treated as failures even when Godot returns zero. Native checks and visual capture do not alone establish Web Editor compatibility.

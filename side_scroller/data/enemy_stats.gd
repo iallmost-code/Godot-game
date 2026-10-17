@@ -84,10 +84,10 @@ const BOSSES={
     "lesser_hellwing":["Lesser Hellwing",80,"bat","3a2a3a","d24f4a",3.0,60,["rain","charge","volley"],""],
     "crimson_hellwing":["Crimson Hellwing",115,"bat","8a1f2a","ffb35c",3.6,70,["rain","charge","volley","beam"],""],
     "chronovore":["Chronovore",125,"clock","6a5ab8","f2ecff",3.6,75,["beam","rain","summon","slam"],"tick_sentinel"],
-    "abyssal_leviathan":["Abyssal Leviathan",130,"fish","2a4a7a","8fd6ff",4.0,80,["charge","volley","beam"],"gloomfin"],
-    "molten_colossus":["Molten Colossus",140,"colossus","4a3a32","ff8a4c",4.0,90,["slam","rain","beam","summon"],"magma_golem"],
-    "thornscale_wyrm":["Thornscale Wyrm",170,"wyrm","3a5a4a","d24f4a",4.2,110,["beam","rain","slam","volley","summon"],"bone_wyvern"],
-    "gloam_idol":["Gloam Idol",190,"idol","2a2440","ff9ad6",3.6,130,["beam","rain","slam","volley","summon","charge"],"gloam_sentinel"],
+    "abyssal_leviathan":["Abyssal Leviathan",130,"fish","2a4a7a","8fd6ff",3.4,80,["charge","volley","beam"],"gloomfin"],
+    "molten_colossus":["Molten Colossus",140,"colossus","4a3a32","ff8a4c",2.6,90,["slam","rain","beam","summon"],"magma_golem"],
+    "thornscale_wyrm":["Thornscale Wyrm",170,"wyrm","3a5a4a","d24f4a",3.4,110,["beam","rain","slam","volley","summon"],"bone_wyvern"],
+    "gloam_idol":["Gloam Idol",190,"idol","3a2f5c","ff9ad6",3.0,130,["beam","rain","slam","volley","summon","charge"],"gloam_sentinel"],
 }
 static func hp_for(level: int) -> int: return int(20+9*level+0.35*level*level)
 static func xp_for(level: int) -> int: return int(12+4*level+0.05*level*level)
@@ -103,7 +103,7 @@ static func profile(id: String) -> Dictionary:
     if BOSSES.has(id):
         var b=BOSSES[id]
         return {"name":b[0],"level":b[1],"body":b[2],"color":Color(b[3]),"accent":Color(b[4]),"size":b[5],"boss":true,
-            "base_attack":8+int(b[1]/6.0),"hp":hp_for(b[1])*b[6],"xp":xp_for(b[1])*30,"patterns":b[7],"minion":b[8]}
+            "base_attack":8+int(b[1]/6.0),"hp":hp_for(b[1])*b[6]*2,"xp":xp_for(b[1])*30,"patterns":b[7],"minion":b[8]}
     return {"name":"Monster","level":1,"base_attack":4,"hp":40,"xp":20,"behavior":"walker","body":"slime","color":Color("8fd6b6"),"accent":Color.WHITE,"size":1.0}
 static func damage(id: String,level: int,multiplier=1.0) -> int:
     var base=profile(id).base_attack

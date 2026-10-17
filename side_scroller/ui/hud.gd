@@ -71,6 +71,8 @@ func bind(s,c,b=null):
     left.custom_minimum_size.x=360
     row.add_child(left)
     status=Style.label("",15,Color("f4d48a"))
+    status.clip_text=true
+    status.custom_minimum_size.x=360
     left.add_child(status)
     hp_bar=create_bar(left,Color("ea8391"))
     mp_bar=create_bar(left,Color("71b7df"))

@@ -265,15 +265,19 @@ static func draw(c: CanvasItem,p: Dictionary,t: float,facing: int,flash: float,s
             eyes(c,Vector2(14,-33),0.1,3,p.get("boss",false))
             c.draw_arc(Vector2(20,-27),3,0.4,PI-0.4,6,OUTLINE,1.5)
         "centaur":
-            legs(c,[-20,-12,4,10],-18,main.darkened(0.2),t,4)
-            blob(c,Vector2(-6,-26),22,11,main)
-            poly(c,[Vector2(-26,-28),Vector2(-38,-18+sin(t*5)*3),Vector2(-26,-22)],accent)
-            box(c,Rect2(6,-58,14,30),main.lightened(0.15))
-            blob(c,Vector2(13,-66),8,8,Color("e9c9a3"))
-            c.draw_circle(Vector2(16,-67),1.6,OUTLINE)
-            poly(c,[Vector2(5,-70),Vector2(13,-80),Vector2(21,-70)],accent,1.5)
-            c.draw_line(Vector2(20,-50),Vector2(36,-62),Color("8a6a4a"),3)
-            c.draw_circle(Vector2(37,-63),4,Color(accent,0.8))
+            legs(c,[-22,-12,6,14],-20,main.darkened(0.25),t,6)
+            poly(c,[Vector2(-28,-30),Vector2(-42,-16+sin(t*5)*4),Vector2(-36,-12),Vector2(-26,-24)],accent)
+            blob(c,Vector2(-6,-28),24,12,main)
+            poly(c,[Vector2(4,-34),Vector2(2,-58),Vector2(20,-58),Vector2(18,-30)],main.lightened(0.12))
+            c.draw_line(Vector2(4,-46),Vector2(18,-46),accent,3)
+            blob(c,Vector2(11,-66),8,8,Color("e9c9a3"))
+            poly(c,[Vector2(3,-68),Vector2(11,-80),Vector2(19,-68),Vector2(11,-72)],accent,1.5)
+            c.draw_circle(Vector2(14,-67),1.6,OUTLINE)
+            c.draw_line(Vector2(18,-50),Vector2(30,-56),OUTLINE,5,true)
+            c.draw_line(Vector2(18,-50),Vector2(30,-56),Color("e9c9a3"),3,true)
+            c.draw_line(Vector2(30,-80),Vector2(30,-24),Color("6b4a2c"),3)
+            blob(c,Vector2(30,-84),5,5,accent,1.5)
+            c.draw_circle(Vector2(30,-84),9,Color(accent,0.25))
         "bird":
             var f=sin(t*12)*12
             poly(c,[Vector2(-6,-30),Vector2(-26,-50-f),Vector2(4,-34)],main.darkened(0.15))
@@ -305,16 +309,24 @@ static func draw(c: CanvasItem,p: Dictionary,t: float,facing: int,flash: float,s
             eyes(c,Vector2(1,-61),4,2.4,true,accent)
             legs(c,[-6,6],-16,main.darkened(0.3),t,4)
         "colossus":
+            # Six stone arms around a molten core, idol-like head.
             for i in range(3):
                 for side in [-1,1]:
-                    var y=-56+i*12
-                    var reach=26+sin(t*2+i+side)*6
-                    c.draw_line(Vector2(side*16,y),Vector2(side*(16+reach),y-10+i*6),OUTLINE,9,true)
-                    c.draw_line(Vector2(side*16,y),Vector2(side*(16+reach),y-10+i*6),main.lightened(0.1),7,true)
-            box(c,Rect2(-18,-70,36,70),main)
-            box(c,Rect2(-13,-90,26,22),main.lightened(0.1))
-            eyes(c,Vector2(0,-80),6,3,true,accent)
-            for crack in [[Vector2(-10,-60),Vector2(0,-46)],[Vector2(0,-46),Vector2(10,-56)],[Vector2(-6,-30),Vector2(6,-18)]]:
+                    var y=-62+i*14
+                    var swing=sin(t*2+i*1.3+side)*8
+                    var hand=Vector2(side*(44+i*4),y-14+i*8+swing)
+                    var elbow=Vector2(side*30,y-4+swing*0.5)
+                    c.draw_polyline(PackedVector2Array([Vector2(side*14,y),elbow,hand]),OUTLINE,11,true)
+                    c.draw_polyline(PackedVector2Array([Vector2(side*14,y),elbow,hand]),main.lightened(0.12),8,true)
+                    blob(c,hand,6,6,main.lightened(0.05),1.5)
+                    c.draw_circle(hand,2.5,Color(accent,0.8))
+            poly(c,[Vector2(-20,0),Vector2(-24,-40),Vector2(-16,-74),Vector2(16,-74),Vector2(24,-40),Vector2(20,0)],main)
+            blob(c,Vector2(0,-42),10,14,Color(accent,0.35),0)
+            blob(c,Vector2(0,-42),6,9,accent,0)
+            poly(c,[Vector2(-15,-74),Vector2(-18,-92),Vector2(-8,-100),Vector2(8,-100),Vector2(18,-92),Vector2(15,-74)],main.lightened(0.1))
+            poly(c,[Vector2(-10,-100),Vector2(-6,-112),Vector2(0,-104),Vector2(6,-112),Vector2(10,-100)],accent,1.5)
+            eyes(c,Vector2(0,-88),6,3,true,accent)
+            for crack in [[Vector2(-14,-62),Vector2(-6,-52)],[Vector2(8,-24),Vector2(16,-14)],[Vector2(-12,-20),Vector2(-4,-10)]]:
                 c.draw_line(crack[0],crack[1],accent,2.5)
         "wyrm":
             legs(c,[-14,14],-14,main.darkened(0.25),t,8)
@@ -330,14 +342,25 @@ static func draw(c: CanvasItem,p: Dictionary,t: float,facing: int,flash: float,s
                 blob(c,head,8,6,main.lightened(0.08),1.5)
                 c.draw_circle(head+Vector2(3,-2),1.8,accent)
         "idol":
-            blob(c,Vector2(0,-30),22,26,main)
-            for i in range(5):
-                var a=-PI/2+i*TAU/5
-                c.draw_line(Vector2(0,-30),Vector2(0,-30)+Vector2(cos(a),sin(a))*14,accent,2)
-            c.draw_arc(Vector2(0,-30),30+sin(t*3)*2,0,TAU,32,Color(accent,0.6),2)
-            eyes(c,Vector2(0,-36),7,3,false,accent)
-            c.draw_line(Vector2(-20,-26),Vector2(-30,-36+sin(t*4)*4),OUTLINE,5,true)
-            c.draw_line(Vector2(20,-26),Vector2(30,-36-sin(t*4)*4),OUTLINE,5,true)
+            # Small, round and smug: a floating star-eyed idol with a halo.
+            c.draw_arc(Vector2(0,-62),14,PI,TAU,20,Color(accent,0.8),3,true)
+            legs(c,[-8,8],-10,main.darkened(0.2),t,6)
+            blob(c,Vector2(0,-30),22,24,main)
+            blob(c,Vector2(0,-24),14,14,main.lightened(0.18),0)
+            for side in [-1,1]:
+                blob(c,Vector2(side*8,-36),5,6,Color.WHITE,1.5)
+                c.draw_circle(Vector2(side*8+1,-35),2.6,accent.darkened(0.3))
+                c.draw_circle(Vector2(side*8+2,-37),1,Color.WHITE)
+            c.draw_arc(Vector2(0,-26),5,0.3,PI-0.3,10,OUTLINE,2)
+            var star=[]
+            for i in range(10):
+                var a=-PI/2+i*PI/5
+                star.append(Vector2(0,-14)+Vector2(cos(a),sin(a))*(6 if i%2==0 else 2.6))
+            c.draw_colored_polygon(PackedVector2Array(star),accent)
+            c.draw_line(Vector2(-20,-28),Vector2(-30,-40+sin(t*4)*4),OUTLINE,6,true)
+            c.draw_line(Vector2(-20,-28),Vector2(-30,-40+sin(t*4)*4),main,4,true)
+            c.draw_line(Vector2(20,-28),Vector2(30,-40-sin(t*4)*4),OUTLINE,6,true)
+            c.draw_line(Vector2(20,-28),Vector2(30,-40-sin(t*4)*4),main,4,true)
         _:
             blob(c,Vector2(0,-15),20,15,main)
             eyes(c,Vector2(3,-16),6,3)
