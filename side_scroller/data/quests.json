@@ -1,0 +1,4028 @@
+{
+  "quests": [
+    {
+      "id": "town_mending_the_welcome_table",
+      "title": "Mending the Welcome Table",
+      "chain": "A Table for Travelers",
+      "town": "town",
+      "npc": "Granny Moss",
+      "npc_look": "elderly woman, silver bun, green shawl, cream skirt, woven basket",
+      "min_level": 2,
+      "type": "collect",
+      "target": "stumpkin",
+      "count": 12,
+      "intro": [
+        "The welcome table has a wobble. Every new adventurer sets a cup on it, and every cup leans toward the floor.",
+        "Bring me 12 stump bark from Stumpkin in Whisperwheat Fields."
+      ],
+      "progress": "I still need the rest of the stump bark. Take your time on the trail.",
+      "complete": [
+        "That bark will make sturdy shims. A feast should challenge your appetite, not your balance."
+      ],
+      "reward": {
+        "xp": 240,
+        "coins": 24,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "town_a_ribbon_at_each_place",
+      "item": "stump_bark",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "town_a_ribbon_at_each_place",
+      "title": "A Ribbon at Each Place",
+      "chain": "A Table for Travelers",
+      "town": "town",
+      "npc": "Granny Moss",
+      "npc_look": "elderly woman, silver bun, green shawl, cream skirt, woven basket",
+      "min_level": 2,
+      "type": "collect",
+      "target": "bristle_hog",
+      "count": 16,
+      "intro": [
+        "The table stands straight, but the festival ribbons have wandered off with the hogs.",
+        "Bring me 16 pig ribbon from Bristle Hog in Whisperwheat Fields."
+      ],
+      "progress": "I still need the rest of the pig ribbon. Take your time on the trail.",
+      "complete": [
+        "Pink suits the tables beautifully. The hogs can choose their own decorations next year."
+      ],
+      "reward": {
+        "xp": 400,
+        "coins": 32,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "town_caps_for_the_rain",
+      "item": "pig_ribbon",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "town_caps_for_the_rain",
+      "title": "Caps for the Rain",
+      "chain": "A Table for Travelers",
+      "town": "town",
+      "npc": "Granny Moss",
+      "npc_look": "elderly woman, silver bun, green shawl, cream skirt, woven basket",
+      "min_level": 2,
+      "type": "collect",
+      "target": "puffspore",
+      "count": 20,
+      "intro": [
+        "A shower is coming. Broad mushroom caps will shelter the bread while the ovens cool.",
+        "Bring me 20 mushroom cap from Puffspore in Whisperwheat Fields."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Dry bread, dry benches, and a sky doing its best to interfere. We are ready."
+      ],
+      "reward": {
+        "xp": 600,
+        "coins": 40,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "town_one_quiet_supper",
+      "item": "mushroom_cap",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "town_one_quiet_supper",
+      "title": "One Quiet Supper",
+      "chain": "A Table for Travelers",
+      "town": "town",
+      "npc": "Granny Moss",
+      "npc_look": "elderly woman, silver bun, green shawl, cream skirt, woven basket",
+      "min_level": 4,
+      "type": "hunt",
+      "target": "jellop",
+      "count": 24,
+      "intro": [
+        "Jellops are bouncing along the serving path. Clear a little room so the youngest travelers can carry their bowls.",
+        "Defeat 24 Jellop in Whisperwheat Fields."
+      ],
+      "progress": "There are still Jellop along the approach. Return when the path is clear.",
+      "complete": [
+        "The first chair is yours. Take this vest; there is always another newcomer who needs a welcome."
+      ],
+      "reward": {
+        "xp": 1176,
+        "coins": 96,
+        "item": "starter_armor",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "firstlight_a_lesson_that_lasts",
+      "title": "A Lesson That Lasts",
+      "chain": "The First Trail Book",
+      "town": "firstlight",
+      "npc": "Tutor Fen",
+      "npc_look": "bespectacled scholar man, brown vest, blue scarf, book",
+      "min_level": 1,
+      "type": "collect",
+      "target": "pebble_snail",
+      "count": 12,
+      "intro": [
+        "Our first-trail guide washes away in the rain. Shell powder makes ink cling to the page.",
+        "Bring me 12 snail shell from Pebble Snail in Snailgrass Path."
+      ],
+      "progress": "I still need the rest of the snail shell. Take your time on the trail.",
+      "complete": [
+        "Now the directions will survive their first puddle. That is more than my old boots managed."
+      ],
+      "reward": {
+        "xp": 192,
+        "coins": 12,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "firstlight_mind_the_blue_ones",
+      "item": "snail_shell",
+      "target_map": "firstlight_trail"
+    },
+    {
+      "id": "firstlight_mind_the_blue_ones",
+      "title": "Mind the Blue Ones",
+      "chain": "The First Trail Book",
+      "town": "firstlight",
+      "npc": "Tutor Fen",
+      "npc_look": "bespectacled scholar man, brown vest, blue scarf, book",
+      "min_level": 1,
+      "type": "hunt",
+      "target": "azure_snail",
+      "count": 16,
+      "intro": [
+        "The new trail markers lead straight through a crowd of Azure Snails. Help me make a safe practice route.",
+        "Defeat 16 Azure Snail in Snailgrass Path."
+      ],
+      "progress": "There are still Azure Snail along the approach. Return when the path is clear.",
+      "complete": [
+        "A clear path is a better first lesson than a surprise shell to the ankle."
+      ],
+      "reward": {
+        "xp": 320,
+        "coins": 16,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "firstlight_a_cover_against_drizzle",
+      "target_map": "firstlight_trail"
+    },
+    {
+      "id": "firstlight_a_cover_against_drizzle",
+      "title": "A Cover Against Drizzle",
+      "chain": "The First Trail Book",
+      "town": "firstlight",
+      "npc": "Tutor Fen",
+      "npc_look": "bespectacled scholar man, brown vest, blue scarf, book",
+      "min_level": 3,
+      "type": "collect",
+      "target": "puffspore",
+      "count": 20,
+      "intro": [
+        "The pages are finished. A pressed mushroom cap will make a pleasantly waterproof cover.",
+        "Bring me 20 mushroom cap from Puffspore in Snailgrass Path."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "It smells faintly of the woods. A guidebook ought to."
+      ],
+      "reward": {
+        "xp": 720,
+        "coins": 60,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "firstlight_the_last_field_lesson",
+      "item": "mushroom_cap",
+      "target_map": "firstlight_trail"
+    },
+    {
+      "id": "firstlight_the_last_field_lesson",
+      "title": "The Last Field Lesson",
+      "chain": "The First Trail Book",
+      "town": "firstlight",
+      "npc": "Tutor Fen",
+      "npc_look": "bespectacled scholar man, brown vest, blue scarf, book",
+      "min_level": 1,
+      "type": "hunt",
+      "target": "ember_snail",
+      "count": 24,
+      "intro": [
+        "One final stretch needs clearing before the next class arrives. Leave the shore flowers standing, please.",
+        "Defeat 24 Ember Snail in Snailgrass Path."
+      ],
+      "progress": "There are still Ember Snail along the approach. Return when the path is clear.",
+      "complete": [
+        "The new class will find a kinder trail. Keep this gear as proof that you helped write their first chapter."
+      ],
+      "reward": {
+        "xp": 672,
+        "coins": 24,
+        "item": "starter_armor",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "firstlight_trail"
+    },
+    {
+      "id": "gullhaven_light_for_the_late_ferry",
+      "title": "Light for the Late Ferry",
+      "chain": "The Returning Lantern",
+      "town": "gullhaven",
+      "npc": "Ropemaker Tams",
+      "npc_look": "weathered harbor man, blue cap, teal coat, rope coil",
+      "min_level": 3,
+      "type": "collect",
+      "target": "ember_snail",
+      "count": 12,
+      "intro": [
+        "The late ferry follows our red harbor lantern. Its reflector cracked in last night's wind.",
+        "Bring me 12 snail shell from Ember Snail in Saltwind Road."
+      ],
+      "progress": "I still need the rest of the snail shell. Take your time on the trail.",
+      "complete": [
+        "Polished shells will scatter the light across the water. A little patience makes a bright beacon."
+      ],
+      "reward": {
+        "xp": 288,
+        "coins": 36,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "gullhaven_flags_above_the_pier",
+      "item": "snail_shell",
+      "target_map": "gullhaven_trail"
+    },
+    {
+      "id": "gullhaven_flags_above_the_pier",
+      "title": "Flags Above the Pier",
+      "chain": "The Returning Lantern",
+      "town": "gullhaven",
+      "npc": "Ropemaker Tams",
+      "npc_look": "weathered harbor man, blue cap, teal coat, rope coil",
+      "min_level": 3,
+      "type": "collect",
+      "target": "bristle_hog",
+      "count": 16,
+      "intro": [
+        "The hogs carried off our signal ribbons. The harbor looks as though it has forgotten how to wave.",
+        "Bring me 16 pig ribbon from Bristle Hog in Saltwind Road."
+      ],
+      "progress": "I still need the rest of the pig ribbon. Take your time on the trail.",
+      "complete": [
+        "There we are: three flags for arrival, one for hot tea. The last signal is unofficial."
+      ],
+      "reward": {
+        "xp": 480,
+        "coins": 48,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "gullhaven_a_seal_against_salt",
+      "item": "pig_ribbon",
+      "target_map": "gullhaven_trail"
+    },
+    {
+      "id": "gullhaven_a_seal_against_salt",
+      "title": "A Seal Against Salt",
+      "chain": "The Returning Lantern",
+      "town": "gullhaven",
+      "npc": "Ropemaker Tams",
+      "npc_look": "weathered harbor man, blue cap, teal coat, rope coil",
+      "min_level": 5,
+      "type": "collect",
+      "target": "jellop",
+      "count": 20,
+      "intro": [
+        "Salt spray gets into every lantern seam. Bring clear gel so I can seal the new reflector.",
+        "Bring me 20 slime goo from Jellop in Saltwind Road."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "No more damp wick. The keeper will sleep better, and so will the ferry crew."
+      ],
+      "reward": {
+        "xp": 990,
+        "coins": 100,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "gullhaven_a_clear_walk_home",
+      "item": "slime_goo",
+      "target_map": "gullhaven_trail"
+    },
+    {
+      "id": "gullhaven_a_clear_walk_home",
+      "title": "A Clear Walk Home",
+      "chain": "The Returning Lantern",
+      "town": "gullhaven",
+      "npc": "Ropemaker Tams",
+      "npc_look": "weathered harbor man, blue cap, teal coat, rope coil",
+      "min_level": 3,
+      "type": "hunt",
+      "target": "tangerine_cap",
+      "count": 24,
+      "intro": [
+        "Mushrooms are crowding the approach from Saltwind Road. The passengers deserve a clear walk home.",
+        "Defeat 24 Tangerine Cap in Saltwind Road."
+      ],
+      "progress": "There are still Tangerine Cap along the approach. Return when the path is clear.",
+      "complete": [
+        "There is the ferry bell. Take this, and join us when the gangplank settles."
+      ],
+      "reward": {
+        "xp": 1008,
+        "coins": 72,
+        "item": "starter_armor",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "gullhaven_trail"
+    },
+    {
+      "id": "starbough_the_observatory_shutters",
+      "title": "The Observatory Shutters",
+      "chain": "Stars Between the Leaves",
+      "town": "starbough",
+      "npc": "Astronomer Iven",
+      "npc_look": "elderly mage man, navy robe, blue pointed hat, silver beard, staff",
+      "min_level": 10,
+      "type": "collect",
+      "target": "gloom_stump",
+      "count": 18,
+      "intro": [
+        "The canopy observatory is opening again. First, its shutters need bark that can bend with the branches.",
+        "Bring me 18 stump bark from Gloom Stump in Canopy Stair."
+      ],
+      "progress": "I still need the rest of the stump bark. Take your time on the trail.",
+      "complete": [
+        "Flexible and strong. The trees have been solving building problems longer than we have."
+      ],
+      "reward": {
+        "xp": 1026,
+        "coins": 180,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "starbough_a_softer_telescope_shade",
+      "item": "stump_bark",
+      "target_map": "starbough_trail"
+    },
+    {
+      "id": "starbough_a_softer_telescope_shade",
+      "title": "A Softer Telescope Shade",
+      "chain": "Stars Between the Leaves",
+      "town": "starbough",
+      "npc": "Astronomer Iven",
+      "npc_look": "elderly mage man, navy robe, blue pointed hat, silver beard, staff",
+      "min_level": 10,
+      "type": "collect",
+      "target": "mossy_cap",
+      "count": 22,
+      "intro": [
+        "Dew keeps settling on the lens. A broad cap will shelter it without hiding the northern stars.",
+        "Bring me 22 mushroom cap from Mossy Cap in Canopy Stair."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "A telescope wearing a mushroom hat. I will call it practical and refuse further questions."
+      ],
+      "reward": {
+        "xp": 1567,
+        "coins": 220,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "starbough_steady_the_star_glass",
+      "item": "mushroom_cap",
+      "target_map": "starbough_trail"
+    },
+    {
+      "id": "starbough_steady_the_star_glass",
+      "title": "Steady the Star Glass",
+      "chain": "Stars Between the Leaves",
+      "town": "starbough",
+      "npc": "Astronomer Iven",
+      "npc_look": "elderly mage man, navy robe, blue pointed hat, silver beard, staff",
+      "min_level": 10,
+      "type": "collect",
+      "target": "jellop",
+      "count": 26,
+      "intro": [
+        "The lens mount rattles whenever the branch sways. Clear gel will cushion its little brass cradle.",
+        "Bring me 26 slime goo from Jellop in Canopy Stair."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "There: not a tremble. Even the faint stars should hold still long enough to count."
+      ],
+      "reward": {
+        "xp": 2223,
+        "coins": 260,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "starbough_opening_night",
+      "item": "slime_goo",
+      "target_map": "starbough_trail"
+    },
+    {
+      "id": "starbough_opening_night",
+      "title": "Opening Night",
+      "chain": "Stars Between the Leaves",
+      "town": "starbough",
+      "npc": "Astronomer Iven",
+      "npc_look": "elderly mage man, navy robe, blue pointed hat, silver beard, staff",
+      "min_level": 10,
+      "type": "hunt",
+      "target": "stumpkin",
+      "count": 30,
+      "intro": [
+        "Stumpkins have gathered beneath the observation steps. Clear the entrance before our evening visitors arrive.",
+        "Defeat 30 Stumpkin in Canopy Stair."
+      ],
+      "progress": "There are still Stumpkin along the approach. Return when the path is clear.",
+      "complete": [
+        "Our first constellation is visible. This is for you; the view is for everyone."
+      ],
+      "reward": {
+        "xp": 2992,
+        "coins": 300,
+        "item": "cape_lv10",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "starbough_trail"
+    },
+    {
+      "id": "ironridge_a_new_bell_handle",
+      "title": "A New Bell Handle",
+      "chain": "The Bell on the Ridge",
+      "town": "ironridge",
+      "npc": "Smith Orsa",
+      "npc_look": "bearded blacksmith man, dark apron, copper goggles, lowered hammer",
+      "min_level": 12,
+      "type": "collect",
+      "target": "hatchet_stump",
+      "count": 18,
+      "intro": [
+        "The ridge bell warns miners when the weather turns. Its handle split clean through this morning.",
+        "Bring me 18 stump bark from Hatchet Stump in Emberstep Ridge."
+      ],
+      "progress": "I still need the rest of the stump bark. Take your time on the trail.",
+      "complete": [
+        "This grain will hold. A warning bell should not need a warning of its own."
+      ],
+      "reward": {
+        "xp": 1206,
+        "coins": 216,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "ironridge_the_clapper_pin",
+      "item": "stump_bark",
+      "target_map": "ironridge_trail"
+    },
+    {
+      "id": "ironridge_the_clapper_pin",
+      "title": "The Clapper Pin",
+      "chain": "The Bell on the Ridge",
+      "town": "ironridge",
+      "npc": "Smith Orsa",
+      "npc_look": "bearded blacksmith man, dark apron, copper goggles, lowered hammer",
+      "min_level": 12,
+      "type": "collect",
+      "target": "tusker_boar",
+      "count": 22,
+      "intro": [
+        "A tough tusk pin will keep the clapper from slipping in its mount. The ridge boars have plenty to spare.",
+        "Bring me 22 boar tusk from Tusker Boar in Emberstep Ridge."
+      ],
+      "progress": "I still need the rest of the boar tusk. Take your time on the trail.",
+      "complete": [
+        "A snug fit, and not a scrap wasted. That is good smithing."
+      ],
+      "reward": {
+        "xp": 1842,
+        "coins": 264,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "ironridge_clear_the_bell_path",
+      "item": "boar_tusk",
+      "target_map": "ironridge_trail"
+    },
+    {
+      "id": "ironridge_clear_the_bell_path",
+      "title": "Clear the Bell Path",
+      "chain": "The Bell on the Ridge",
+      "town": "ironridge",
+      "npc": "Smith Orsa",
+      "npc_look": "bearded blacksmith man, dark apron, copper goggles, lowered hammer",
+      "min_level": 12,
+      "type": "hunt",
+      "target": "gloom_stump",
+      "count": 26,
+      "intro": [
+        "The repair crew cannot reach the bell while stumps crowd the ridge path. Give them some working room.",
+        "Defeat 26 Gloom Stump in Emberstep Ridge."
+      ],
+      "progress": "There are still Gloom Stump along the approach. Return when the path is clear.",
+      "complete": [
+        "The crew made it up with all their tools and most of their sandwiches."
+      ],
+      "reward": {
+        "xp": 2613,
+        "coins": 312,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "ironridge_the_first_ring",
+      "target_map": "ironridge_trail"
+    },
+    {
+      "id": "ironridge_the_first_ring",
+      "title": "The First Ring",
+      "chain": "The Bell on the Ridge",
+      "town": "ironridge",
+      "npc": "Smith Orsa",
+      "npc_look": "bearded blacksmith man, dark apron, copper goggles, lowered hammer",
+      "min_level": 12,
+      "type": "collect",
+      "target": "stumpkin",
+      "count": 30,
+      "intro": [
+        "We need a final bundle of dry bark for the sheltered firing pit. Then the repaired collar can be tempered.",
+        "Bring me 30 stump bark from Stumpkin in Emberstep Ridge."
+      ],
+      "progress": "I still need the rest of the stump bark. Take your time on the trail.",
+      "complete": [
+        "Hear that? The whole ridge can. Wear this with the thanks of everyone who works above the clouds."
+      ],
+      "reward": {
+        "xp": 3517,
+        "coins": 360,
+        "item": "hat_lv10",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "stump_bark",
+      "target_map": "ironridge_trail"
+    },
+    {
+      "id": "shadecross_ink_that_keeps_its_word",
+      "title": "Ink That Keeps Its Word",
+      "chain": "Letters in the Gutter",
+      "town": "shadecross",
+      "npc": "Courier Venn",
+      "npc_look": "young courier woman, plum hood, brown satchel",
+      "min_level": 12,
+      "type": "collect",
+      "target": "inkling",
+      "count": 18,
+      "intro": [
+        "Rain turned an entire delivery bag into one large blot. Inkling residue will help set a fresh batch of ink.",
+        "Bring me 18 ectoplasm from Inkling in Gutterlane."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "The address stays put when wet. That is an excellent quality in an address."
+      ],
+      "reward": {
+        "xp": 1206,
+        "coins": 216,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "shadecross_the_dry_delivery_route",
+      "item": "ectoplasm",
+      "target_map": "shadecross_trail"
+    },
+    {
+      "id": "shadecross_the_dry_delivery_route",
+      "title": "The Dry Delivery Route",
+      "chain": "Letters in the Gutter",
+      "town": "shadecross",
+      "npc": "Courier Venn",
+      "npc_look": "young courier woman, plum hood, brown satchel",
+      "min_level": 12,
+      "type": "hunt",
+      "target": "swamp_gator",
+      "count": 22,
+      "intro": [
+        "A gator is treating the gutter crossing as a private doorstep. Clear the route before the evening post.",
+        "Defeat 22 Swamp Gator in Gutterlane."
+      ],
+      "progress": "There are still Swamp Gator along the approach. Return when the path is clear.",
+      "complete": [
+        "The letters will reach the upper stairs without acquiring tooth marks."
+      ],
+      "reward": {
+        "xp": 1842,
+        "coins": 264,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "shadecross_caps_for_the_post_box",
+      "target_map": "shadecross_trail"
+    },
+    {
+      "id": "shadecross_caps_for_the_post_box",
+      "title": "Caps for the Post Box",
+      "chain": "Letters in the Gutter",
+      "town": "shadecross",
+      "npc": "Courier Venn",
+      "npc_look": "young courier woman, plum hood, brown satchel",
+      "min_level": 12,
+      "type": "collect",
+      "target": "horned_cap",
+      "count": 26,
+      "intro": [
+        "The box above Gutterlane has lost its roof. A broad cap will keep tomorrow's letters dry.",
+        "Bring me 26 mushroom cap from Horned Cap in Gutterlane."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "A fine little roof. Please do not tell the landlord we improved the building."
+      ],
+      "reward": {
+        "xp": 2613,
+        "coins": 312,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "shadecross_the_last_undelivered_letter",
+      "item": "mushroom_cap",
+      "target_map": "shadecross_trail"
+    },
+    {
+      "id": "shadecross_the_last_undelivered_letter",
+      "title": "The Last Undelivered Letter",
+      "chain": "Letters in the Gutter",
+      "town": "shadecross",
+      "npc": "Courier Venn",
+      "npc_look": "young courier woman, plum hood, brown satchel",
+      "min_level": 14,
+      "type": "hunt",
+      "target": "wisp_wraith",
+      "count": 30,
+      "intro": [
+        "Wisps are gathering where the night couriers change bags. Help me keep that corner bright and safe.",
+        "Defeat 30 Wisp Wraith in Gutterlane."
+      ],
+      "progress": "There are still Wisp Wraith along the approach. Return when the path is clear.",
+      "complete": [
+        "The last letter was an invitation to supper. It would have been a shame to lose it. This is yours."
+      ],
+      "reward": {
+        "xp": 4042,
+        "coins": 420,
+        "item": "gloves_lv10",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "shadecross_trail"
+    },
+    {
+      "id": "hollowroot_a_careful_little_sample",
+      "title": "A Careful Little Sample",
+      "chain": "A Light Under the Roots",
+      "town": "hollowroot",
+      "npc": "Apothecary Nessa",
+      "npc_look": "alchemist woman, silver hair, violet robe, green vial",
+      "min_level": 20,
+      "type": "collect",
+      "target": "rotcap",
+      "count": 18,
+      "intro": [
+        "The root lanterns are dimming. A measured sample of rotcap spores will tell me whether damp is the cause.",
+        "Bring me 18 mushroom cap from Rotcap in Rootcellar Depths."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Damp, as suspected. The spores are troublesome, but they are not keeping secrets."
+      ],
+      "reward": {
+        "xp": 2016,
+        "coins": 360,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "hollowroot_warmth_in_the_wick",
+      "item": "mushroom_cap",
+      "target_map": "hollowroot_trail"
+    },
+    {
+      "id": "hollowroot_warmth_in_the_wick",
+      "title": "Warmth in the Wick",
+      "chain": "A Light Under the Roots",
+      "town": "hollowroot",
+      "npc": "Apothecary Nessa",
+      "npc_look": "alchemist woman, silver hair, violet robe, green vial",
+      "min_level": 20,
+      "type": "collect",
+      "target": "cinder_boar",
+      "count": 22,
+      "intro": [
+        "A boar-tusk wick holder can withstand the lantern's hotter cleansing flame. Keep your gloves on while gathering it.",
+        "Bring me 22 boar tusk from Cinder Boar in Rootcellar Depths."
+      ],
+      "progress": "I still need the rest of the boar tusk. Take your time on the trail.",
+      "complete": [
+        "These will last through a dozen winters. I shall label the drawer before I forget what they are."
+      ],
+      "reward": {
+        "xp": 3080,
+        "coins": 440,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "hollowroot_room_for_the_lamplighter",
+      "item": "boar_tusk",
+      "target_map": "hollowroot_trail"
+    },
+    {
+      "id": "hollowroot_room_for_the_lamplighter",
+      "title": "Room for the Lamplighter",
+      "chain": "A Light Under the Roots",
+      "town": "hollowroot",
+      "npc": "Apothecary Nessa",
+      "npc_look": "alchemist woman, silver hair, violet robe, green vial",
+      "min_level": 20,
+      "type": "hunt",
+      "target": "horned_cap",
+      "count": 26,
+      "intro": [
+        "The lamplighter needs clear footing under the low roots. Send the horned caps away from the work path.",
+        "Defeat 26 Horned Cap in Rootcellar Depths."
+      ],
+      "progress": "There are still Horned Cap along the approach. Return when the path is clear.",
+      "complete": [
+        "He has reached the last post. There is already a warm line of light through the hollow."
+      ],
+      "reward": {
+        "xp": 4368,
+        "coins": 520,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "hollowroot_the_gentle_glow",
+      "target_map": "hollowroot_trail"
+    },
+    {
+      "id": "hollowroot_the_gentle_glow",
+      "title": "The Gentle Glow",
+      "chain": "A Light Under the Roots",
+      "town": "hollowroot",
+      "npc": "Apothecary Nessa",
+      "npc_look": "alchemist woman, silver hair, violet robe, green vial",
+      "min_level": 22,
+      "type": "collect",
+      "target": "wisp_wraith",
+      "count": 30,
+      "intro": [
+        "A trace of wisp essence will soften the flame so it does not trouble the nesting birds.",
+        "Bring me 30 ectoplasm from Wisp Wraith in Rootcellar Depths."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "Warm light, quiet nests, and a safe road home. A good evening's work deserves good gear."
+      ],
+      "reward": {
+        "xp": 6510,
+        "coins": 660,
+        "item": "shoes_lv10",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "ectoplasm",
+      "target_map": "hollowroot_trail"
+    },
+    {
+      "id": "sunpetal_the_missing_picnic_pegs",
+      "title": "The Missing Picnic Pegs",
+      "chain": "The Tide Picnic",
+      "town": "sunpetal",
+      "npc": "Baker Miri",
+      "npc_look": "plump baker woman, white bonnet, cream apron, bread basket",
+      "min_level": 15,
+      "type": "collect",
+      "target": "reef_snapper",
+      "count": 18,
+      "intro": [
+        "Our picnic cloths need new pegs before the tide wind arrives. Clean crab claws make surprisingly good clips.",
+        "Bring me 18 crab claw from Reef Snapper in Sunpetal Strand."
+      ],
+      "progress": "I still need the rest of the crab claw. Take your time on the trail.",
+      "complete": [
+        "Firm enough for a sea breeze, gentle enough for linen. I wish all kitchen tools were so agreeable."
+      ],
+      "reward": {
+        "xp": 1494,
+        "coins": 270,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "sunpetal_shade_for_the_cakes",
+      "item": "crab_claw",
+      "target_map": "sunpetal_trail"
+    },
+    {
+      "id": "sunpetal_shade_for_the_cakes",
+      "title": "Shade for the Cakes",
+      "chain": "The Tide Picnic",
+      "town": "sunpetal",
+      "npc": "Baker Miri",
+      "npc_look": "plump baker woman, white bonnet, cream apron, bread basket",
+      "min_level": 15,
+      "type": "collect",
+      "target": "tangerine_cap",
+      "count": 22,
+      "intro": [
+        "The little cakes will melt in the afternoon sun. Broad orange caps will make cheerful shades.",
+        "Bring me 22 mushroom cap from Tangerine Cap in Sunpetal Strand."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "They look like tiny parasols. The children may remember the shades longer than the cakes."
+      ],
+      "reward": {
+        "xp": 2282,
+        "coins": 330,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "sunpetal_a_jar_for_every_jam",
+      "item": "mushroom_cap",
+      "target_map": "sunpetal_trail"
+    },
+    {
+      "id": "sunpetal_a_jar_for_every_jam",
+      "title": "A Jar for Every Jam",
+      "chain": "The Tide Picnic",
+      "town": "sunpetal",
+      "npc": "Baker Miri",
+      "npc_look": "plump baker woman, white bonnet, cream apron, bread basket",
+      "min_level": 17,
+      "type": "collect",
+      "target": "jellop",
+      "count": 26,
+      "intro": [
+        "The jam jars need a fresh seal for the walk along the strand. Clear gel will do nicely.",
+        "Bring me 26 slime goo from Jellop in Sunpetal Strand."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "No leaking jam today. My apron may finally get an uneventful afternoon."
+      ],
+      "reward": {
+        "xp": 3666,
+        "coins": 442,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "sunpetal_the_picnic_path",
+      "item": "slime_goo",
+      "target_map": "sunpetal_trail"
+    },
+    {
+      "id": "sunpetal_the_picnic_path",
+      "title": "The Picnic Path",
+      "chain": "The Tide Picnic",
+      "town": "sunpetal",
+      "npc": "Baker Miri",
+      "npc_look": "plump baker woman, white bonnet, cream apron, bread basket",
+      "min_level": 15,
+      "type": "hunt",
+      "target": "ember_snail",
+      "count": 30,
+      "intro": [
+        "Clear the last stretch of the strand while I carry out the baskets. Leave room for the tide to come in.",
+        "Defeat 30 Ember Snail in Sunpetal Strand."
+      ],
+      "progress": "There are still Ember Snail along the approach. Return when the path is clear.",
+      "complete": [
+        "Everything is ready. Take this, find a comfortable rock, and save some room for a second cake."
+      ],
+      "reward": {
+        "xp": 4357,
+        "coins": 450,
+        "item": "cape_lv10",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "sunpetal_trail"
+    },
+    {
+      "id": "skylume_a_quiet_launch",
+      "title": "A Quiet Launch",
+      "chain": "The Kite That Came Home",
+      "town": "skylume",
+      "npc": "Weather Reader Pell",
+      "npc_look": "bespectacled scholar man, slate vest, gold scarf, book",
+      "min_level": 25,
+      "type": "hunt",
+      "target": "canopy_ape",
+      "count": 18,
+      "intro": [
+        "The weather kite has been grounded since the apes took over its launch stairs. Help me reclaim the steps.",
+        "Defeat 18 Canopy Ape in Cloudspire Steps."
+      ],
+      "progress": "There are still Canopy Ape along the approach. Return when the path is clear.",
+      "complete": [
+        "A clear launch at last. I have missed hearing the kite string sing."
+      ],
+      "reward": {
+        "xp": 2574,
+        "coins": 450,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "skylume_a_patch_for_the_tail",
+      "target_map": "skylume_trail"
+    },
+    {
+      "id": "skylume_a_patch_for_the_tail",
+      "title": "A Patch for the Tail",
+      "chain": "The Kite That Came Home",
+      "town": "skylume",
+      "npc": "Weather Reader Pell",
+      "npc_look": "bespectacled scholar man, slate vest, gold scarf, book",
+      "min_level": 25,
+      "type": "collect",
+      "target": "mossy_cap",
+      "count": 22,
+      "intro": [
+        "The kite's tail tore on a branch. Pressed cap fibers make a light patch that will not pull it sideways.",
+        "Bring me 22 mushroom cap from Mossy Cap in Cloudspire Steps."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Light as a leaf and much less likely to fly away on its own."
+      ],
+      "reward": {
+        "xp": 3932,
+        "coins": 550,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "skylume_the_knot_keeper",
+      "item": "mushroom_cap",
+      "target_map": "skylume_trail"
+    },
+    {
+      "id": "skylume_the_knot_keeper",
+      "title": "The Knot Keeper",
+      "chain": "The Kite That Came Home",
+      "town": "skylume",
+      "npc": "Weather Reader Pell",
+      "npc_look": "bespectacled scholar man, slate vest, gold scarf, book",
+      "min_level": 25,
+      "type": "collect",
+      "target": "jellop",
+      "count": 26,
+      "intro": [
+        "Cloud damp loosens every knot. A thin coat of gel will hold the weather line without making it heavy.",
+        "Bring me 26 slime goo from Jellop in Cloudspire Steps."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "Steady line, steady readings. We may finally know whether tomorrow calls for cloaks."
+      ],
+      "reward": {
+        "xp": 5577,
+        "coins": 650,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "skylume_two_feathers_to_balance",
+      "item": "slime_goo",
+      "target_map": "skylume_trail"
+    },
+    {
+      "id": "skylume_two_feathers_to_balance",
+      "title": "Two Feathers to Balance",
+      "chain": "The Kite That Came Home",
+      "town": "skylume",
+      "npc": "Weather Reader Pell",
+      "npc_look": "bespectacled scholar man, slate vest, gold scarf, book",
+      "min_level": 27,
+      "type": "collect",
+      "target": "twinhead_birk",
+      "count": 30,
+      "intro": [
+        "A matched pair of feathers will balance the kite's little wind vane. Twinheads leave such useful souvenirs.",
+        "Bring me 30 feather from Twinhead Birk in Cloudspire Steps."
+      ],
+      "progress": "I still need the rest of the feather. Take your time on the trail.",
+      "complete": [
+        "The kite is home above the clouds. This is your share of the weather office's small but grateful budget."
+      ],
+      "reward": {
+        "xp": 8190,
+        "coins": 810,
+        "item": "hat_lv10",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "feather",
+      "target_map": "skylume_trail"
+    },
+    {
+      "id": "frostmere_reading_the_frost",
+      "title": "Reading the Frost",
+      "chain": "The Hearth at Whitefang",
+      "town": "frostmere",
+      "npc": "Warden Hest",
+      "npc_look": "winter warden man, fur-trimmed blue coat, white hair",
+      "min_level": 35,
+      "type": "collect",
+      "target": "frost_cub",
+      "count": 18,
+      "intro": [
+        "The wayhouse hearth has gone cold. Ice caught in the flue will tell us where the draft is failing.",
+        "Bring me 18 ice shard from Frost Cub in Whitefang Pass."
+      ],
+      "progress": "I still need the rest of the ice shard. Take your time on the trail.",
+      "complete": [
+        "The frost is heaviest at the bend. We have found the trouble without losing a chimney brush."
+      ],
+      "reward": {
+        "xp": 3834,
+        "coins": 630,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "frostmere_a_safe_wood_run",
+      "item": "ice_shard",
+      "target_map": "frostmere_trail"
+    },
+    {
+      "id": "frostmere_a_safe_wood_run",
+      "title": "A Safe Wood Run",
+      "chain": "The Hearth at Whitefang",
+      "town": "frostmere",
+      "npc": "Warden Hest",
+      "npc_look": "winter warden man, fur-trimmed blue coat, white hair",
+      "min_level": 35,
+      "type": "hunt",
+      "target": "rime_wolf",
+      "count": 22,
+      "intro": [
+        "The wood carriers cannot cross the pass while the wolves hold the narrow stretch. Open a path for them.",
+        "Defeat 22 Rime Wolf in Whitefang Pass."
+      ],
+      "progress": "There are still Rime Wolf along the approach. Return when the path is clear.",
+      "complete": [
+        "The sleds are moving again. A warm hearth begins with a safe journey."
+      ],
+      "reward": {
+        "xp": 5857,
+        "coins": 770,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "frostmere_the_last_frozen_collar",
+      "target_map": "frostmere_trail"
+    },
+    {
+      "id": "frostmere_the_last_frozen_collar",
+      "title": "The Last Frozen Collar",
+      "chain": "The Hearth at Whitefang",
+      "town": "frostmere",
+      "npc": "Warden Hest",
+      "npc_look": "winter warden man, fur-trimmed blue coat, white hair",
+      "min_level": 35,
+      "type": "collect",
+      "target": "snowhorn",
+      "count": 26,
+      "intro": [
+        "Snowhorn ice is dense enough to brace the flue while its new collar sets. Bring only what you can carry safely.",
+        "Bring me 26 ice shard from Snowhorn in Whitefang Pass."
+      ],
+      "progress": "I still need the rest of the ice shard. Take your time on the trail.",
+      "complete": [
+        "A strong brace. I had rather hoped the repair would not require my standing on the roof."
+      ],
+      "reward": {
+        "xp": 8307,
+        "coins": 910,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "frostmere_keep_the_hearth_road_open",
+      "item": "ice_shard",
+      "target_map": "frostmere_trail"
+    },
+    {
+      "id": "frostmere_keep_the_hearth_road_open",
+      "title": "Keep the Hearth Road Open",
+      "chain": "The Hearth at Whitefang",
+      "town": "frostmere",
+      "npc": "Warden Hest",
+      "npc_look": "winter warden man, fur-trimmed blue coat, white hair",
+      "min_level": 35,
+      "type": "hunt",
+      "target": "frost_cub",
+      "count": 30,
+      "intro": [
+        "One more sweep of the wayhouse road will let the evening travelers reach us before the snow thickens.",
+        "Defeat 30 Frost Cub in Whitefang Pass."
+      ],
+      "progress": "There are still Frost Cub along the approach. Return when the path is clear.",
+      "complete": [
+        "There is a fire in the hearth again. Your gear should keep a little of that warmth with you."
+      ],
+      "reward": {
+        "xp": 11182,
+        "coins": 1050,
+        "item": "gloves_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "frostmere_trail"
+    },
+    {
+      "id": "tickletop_a_missing_minute",
+      "title": "A Missing Minute",
+      "chain": "The Clock That Took a Holiday",
+      "town": "tickletop",
+      "npc": "Tinker Bea",
+      "npc_look": "engineer woman, brass goggles, teal overalls, wrench",
+      "min_level": 35,
+      "type": "collect",
+      "target": "tick_sentinel",
+      "count": 18,
+      "intro": [
+        "The town clock has stopped at teatime. A pleasant hour, but we cannot keep it forever.",
+        "Bring me 18 gear cog from Tick Sentinel in Clockwork Warrens."
+      ],
+      "progress": "I still need the rest of the gear cog. Take your time on the trail.",
+      "complete": [
+        "These cogs still have a good deal of honest work in them."
+      ],
+      "reward": {
+        "xp": 3834,
+        "coins": 630,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "tickletop_padding_for_the_pendulum",
+      "item": "gear_cog",
+      "target_map": "tickletop_trail"
+    },
+    {
+      "id": "tickletop_padding_for_the_pendulum",
+      "title": "Padding for the Pendulum",
+      "chain": "The Clock That Took a Holiday",
+      "town": "tickletop",
+      "npc": "Tinker Bea",
+      "npc_look": "engineer woman, brass goggles, teal overalls, wrench",
+      "min_level": 35,
+      "type": "collect",
+      "target": "stitched_bruin",
+      "count": 22,
+      "intro": [
+        "The pendulum knocks against its housing. Soft stuffing from the wandering toys will quiet it.",
+        "Bring me 22 cursed doll from Stitched Bruin in Clockwork Warrens."
+      ],
+      "progress": "I still need the rest of the cursed doll. Take your time on the trail.",
+      "complete": [
+        "A gentle tick instead of a clang. The neighbors may forgive me yet."
+      ],
+      "reward": {
+        "xp": 5857,
+        "coins": 770,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "tickletop_clear_the_service_landing",
+      "item": "cursed_doll",
+      "target_map": "tickletop_trail"
+    },
+    {
+      "id": "tickletop_clear_the_service_landing",
+      "title": "Clear the Service Landing",
+      "chain": "The Clock That Took a Holiday",
+      "town": "tickletop",
+      "npc": "Tinker Bea",
+      "npc_look": "engineer woman, brass goggles, teal overalls, wrench",
+      "min_level": 35,
+      "type": "hunt",
+      "target": "grim_clockwork",
+      "count": 26,
+      "intro": [
+        "Clockworks are blocking the maintenance landing. I need enough room to carry a very stubborn pendulum.",
+        "Defeat 26 Grim Clockwork in Clockwork Warrens."
+      ],
+      "progress": "There are still Grim Clockwork along the approach. Return when the path is clear.",
+      "complete": [
+        "The landing is clear. The pendulum remains stubborn, but it is now my problem."
+      ],
+      "reward": {
+        "xp": 8307,
+        "coins": 910,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "tickletop_the_minute_hand_returns",
+      "target_map": "tickletop_trail"
+    },
+    {
+      "id": "tickletop_the_minute_hand_returns",
+      "title": "The Minute Hand Returns",
+      "chain": "The Clock That Took a Holiday",
+      "town": "tickletop",
+      "npc": "Tinker Bea",
+      "npc_look": "engineer woman, brass goggles, teal overalls, wrench",
+      "min_level": 37,
+      "type": "collect",
+      "target": "phantom_timepiece",
+      "count": 30,
+      "intro": [
+        "The clock's guide crystal has faded. A few bright fragments will help its hand find the right minute.",
+        "Bring me 30 star fragment from Phantom Timepiece in Clockwork Warrens."
+      ],
+      "progress": "I still need the rest of the star fragment. Take your time on the trail.",
+      "complete": [
+        "It is no longer teatime. A pity, but a well-earned one. Take this for getting us moving."
+      ],
+      "reward": {
+        "xp": 11970,
+        "coins": 1110,
+        "item": "shoes_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "star_fragment",
+      "target_map": "tickletop_trail"
+    },
+    {
+      "id": "brasswatch_the_station_gate",
+      "title": "The Station Gate",
+      "chain": "A Promise in Brass",
+      "town": "brasswatch",
+      "npc": "Forgekeeper Dorr",
+      "npc_look": "bearded blacksmith man, navy apron, copper goggles, lowered hammer",
+      "min_level": 40,
+      "type": "collect",
+      "target": "tick_sentinel",
+      "count": 18,
+      "intro": [
+        "The station gate jammed while the school group was crossing. We need sound replacement cogs.",
+        "Bring me 18 gear cog from Tick Sentinel in Starfall Fields."
+      ],
+      "progress": "I still need the rest of the gear cog. Take your time on the trail.",
+      "complete": [
+        "Good teeth on these. A gate ought to open without a debate."
+      ],
+      "reward": {
+        "xp": 4536,
+        "coins": 720,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "brasswatch_a_bed_for_the_rails",
+      "item": "gear_cog",
+      "target_map": "brasswatch_trail"
+    },
+    {
+      "id": "brasswatch_a_bed_for_the_rails",
+      "title": "A Bed for the Rails",
+      "chain": "A Promise in Brass",
+      "town": "brasswatch",
+      "npc": "Forgekeeper Dorr",
+      "npc_look": "bearded blacksmith man, navy apron, copper goggles, lowered hammer",
+      "min_level": 40,
+      "type": "collect",
+      "target": "rubble_golem",
+      "count": 22,
+      "intro": [
+        "The gate post is settling. Firm stone packing will stop the rails from twisting with it.",
+        "Bring me 22 golem rock from Rubble Golem in Starfall Fields."
+      ],
+      "progress": "I still need the rest of the golem rock. Take your time on the trail.",
+      "complete": [
+        "Solid footing. That is half of every repair, and nearly all of every sensible plan."
+      ],
+      "reward": {
+        "xp": 6930,
+        "coins": 880,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "brasswatch_the_work_crew_s_way",
+      "item": "golem_rock",
+      "target_map": "brasswatch_trail"
+    },
+    {
+      "id": "brasswatch_the_work_crew_s_way",
+      "title": "The Work Crew's Way",
+      "chain": "A Promise in Brass",
+      "town": "brasswatch",
+      "npc": "Forgekeeper Dorr",
+      "npc_look": "bearded blacksmith man, navy apron, copper goggles, lowered hammer",
+      "min_level": 40,
+      "type": "hunt",
+      "target": "grim_clockwork",
+      "count": 26,
+      "intro": [
+        "Clear the approach while the crew raises the post. Nobody needs a clockwork inspecting the scaffolding.",
+        "Defeat 26 Grim Clockwork in Starfall Fields."
+      ],
+      "progress": "There are still Grim Clockwork along the approach. Return when the path is clear.",
+      "complete": [
+        "The post is straight again. The foreman has stopped pretending it always was."
+      ],
+      "reward": {
+        "xp": 9828,
+        "coins": 1040,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "brasswatch_the_brass_seal",
+      "target_map": "brasswatch_trail"
+    },
+    {
+      "id": "brasswatch_the_brass_seal",
+      "title": "The Brass Seal",
+      "chain": "A Promise in Brass",
+      "town": "brasswatch",
+      "npc": "Forgekeeper Dorr",
+      "npc_look": "bearded blacksmith man, navy apron, copper goggles, lowered hammer",
+      "min_level": 40,
+      "type": "collect",
+      "target": "obsidian_golem",
+      "count": 30,
+      "intro": [
+        "Heat-resistant stone will line the little casting mould for the new gate seal.",
+        "Bring me 30 golem rock from Obsidian Golem in Starfall Fields."
+      ],
+      "progress": "I still need the rest of the golem rock. Take your time on the trail.",
+      "complete": [
+        "A gate that keeps its promise: open for travelers, closed against the night. This is for your part in it."
+      ],
+      "reward": {
+        "xp": 13230,
+        "coins": 1200,
+        "item": "cape_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "golem_rock",
+      "target_map": "brasswatch_trail"
+    },
+    {
+      "id": "lanternvale_the_lantern_walk",
+      "title": "The Lantern Walk",
+      "chain": "The Lantern With No Name",
+      "town": "lanternvale",
+      "npc": "Lantern Boy Nilo",
+      "npc_look": "young lantern boy, yellow raincoat, brown boots, small lantern",
+      "min_level": 40,
+      "type": "hunt",
+      "target": "canopy_ape",
+      "count": 18,
+      "intro": [
+        "The festival lanterns are ready, but the apes keep shaking the path ropes. Will you make the walk quiet?",
+        "Defeat 18 Canopy Ape in Foxfire Hollow."
+      ],
+      "progress": "There are still Canopy Ape along the approach. Return when the path is clear.",
+      "complete": [
+        "Now people can look at the lanterns instead of their feet."
+      ],
+      "reward": {
+        "xp": 4536,
+        "coins": 720,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "lanternvale_a_little_green_roof",
+      "target_map": "lanternvale_trail"
+    },
+    {
+      "id": "lanternvale_a_little_green_roof",
+      "title": "A Little Green Roof",
+      "chain": "The Lantern With No Name",
+      "town": "lanternvale",
+      "npc": "Lantern Boy Nilo",
+      "npc_look": "young lantern boy, yellow raincoat, brown boots, small lantern",
+      "min_level": 40,
+      "type": "collect",
+      "target": "mossy_cap",
+      "count": 22,
+      "intro": [
+        "I made a lantern for someone who cannot come home this year. It needs a cap roof to survive the dew.",
+        "Bring me 22 mushroom cap from Mossy Cap in Foxfire Hollow."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Green is her favorite. I think she would approve."
+      ],
+      "reward": {
+        "xp": 6930,
+        "coins": 880,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "lanternvale_a_light_that_travels",
+      "item": "mushroom_cap",
+      "target_map": "lanternvale_trail"
+    },
+    {
+      "id": "lanternvale_a_light_that_travels",
+      "title": "A Light That Travels",
+      "chain": "The Lantern With No Name",
+      "town": "lanternvale",
+      "npc": "Lantern Boy Nilo",
+      "npc_look": "young lantern boy, yellow raincoat, brown boots, small lantern",
+      "min_level": 42,
+      "type": "collect",
+      "target": "wisp_wraith",
+      "count": 26,
+      "intro": [
+        "The storyteller says wisp essence helps a lantern glow through mist. Just enough for one small wick.",
+        "Bring me 26 ectoplasm from Wisp Wraith in Foxfire Hollow."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "It shines without smoke. Perhaps it will be seen from farther away."
+      ],
+      "reward": {
+        "xp": 10452,
+        "coins": 1092,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "lanternvale_a_place_above_the_valley",
+      "item": "ectoplasm",
+      "target_map": "lanternvale_trail"
+    },
+    {
+      "id": "lanternvale_a_place_above_the_valley",
+      "title": "A Place Above the Valley",
+      "chain": "The Lantern With No Name",
+      "town": "lanternvale",
+      "npc": "Lantern Boy Nilo",
+      "npc_look": "young lantern boy, yellow raincoat, brown boots, small lantern",
+      "min_level": 40,
+      "type": "hunt",
+      "target": "horned_cap",
+      "count": 30,
+      "intro": [
+        "The highest hanging post is crowded with horned caps. Clear a place for our last lantern.",
+        "Defeat 30 Horned Cap in Foxfire Hollow."
+      ],
+      "progress": "There are still Horned Cap along the approach. Return when the path is clear.",
+      "complete": [
+        "I named it Safe Journey. Take this; I wanted the person who helped to have something that lasts."
+      ],
+      "reward": {
+        "xp": 13230,
+        "coins": 1200,
+        "item": "hat_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "lanternvale_trail"
+    },
+    {
+      "id": "tideglass_the_viewing_window",
+      "title": "The Viewing Window",
+      "chain": "A Window on the Reef",
+      "town": "tideglass",
+      "npc": "Diver Corven",
+      "npc_look": "traveling merchant man, burgundy coat, broad hat, travel pack",
+      "min_level": 40,
+      "type": "collect",
+      "target": "reef_snapper",
+      "count": 18,
+      "intro": [
+        "The reef viewing window is loose. Strong little claw clips will hold its frame during repairs.",
+        "Bring me 18 crab claw from Reef Snapper in Coral Cathedral."
+      ],
+      "progress": "I still need the rest of the crab claw. Take your time on the trail.",
+      "complete": [
+        "Visitors will be able to lean close without making me nervous."
+      ],
+      "reward": {
+        "xp": 4536,
+        "coins": 720,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "tideglass_living_stone_supports",
+      "item": "crab_claw",
+      "target_map": "tideglass_trail"
+    },
+    {
+      "id": "tideglass_living_stone_supports",
+      "title": "Living Stone Supports",
+      "chain": "A Window on the Reef",
+      "town": "tideglass",
+      "npc": "Diver Corven",
+      "npc_look": "traveling merchant man, burgundy coat, broad hat, travel pack",
+      "min_level": 40,
+      "type": "collect",
+      "target": "coral_golem",
+      "count": 22,
+      "intro": [
+        "The window needs supports that belong in salt water. Reef stone will weather gently alongside the coral.",
+        "Bring me 22 golem rock from Coral Golem in Coral Cathedral."
+      ],
+      "progress": "I still need the rest of the golem rock. Take your time on the trail.",
+      "complete": [
+        "A repair should suit its home. These stones look as though they have always been here."
+      ],
+      "reward": {
+        "xp": 6930,
+        "coins": 880,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "tideglass_the_clear_water_seal",
+      "item": "golem_rock",
+      "target_map": "tideglass_trail"
+    },
+    {
+      "id": "tideglass_the_clear_water_seal",
+      "title": "The Clear-Water Seal",
+      "chain": "A Window on the Reef",
+      "town": "tideglass",
+      "npc": "Diver Corven",
+      "npc_look": "traveling merchant man, burgundy coat, broad hat, travel pack",
+      "min_level": 40,
+      "type": "collect",
+      "target": "tide_inkling",
+      "count": 26,
+      "intro": [
+        "A thin inkling-resin seal will keep sand out of the viewing groove. Bring a clean sample.",
+        "Bring me 26 ectoplasm from Tide Inkling in Coral Cathedral."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "The glass slides smoothly. No more grinding sound to frighten the little fish."
+      ],
+      "reward": {
+        "xp": 9828,
+        "coins": 1040,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "tideglass_the_first_visitors",
+      "item": "ectoplasm",
+      "target_map": "tideglass_trail"
+    },
+    {
+      "id": "tideglass_the_first_visitors",
+      "title": "The First Visitors",
+      "chain": "A Window on the Reef",
+      "town": "tideglass",
+      "npc": "Diver Corven",
+      "npc_look": "traveling merchant man, burgundy coat, broad hat, travel pack",
+      "min_level": 42,
+      "type": "hunt",
+      "target": "gloomfin",
+      "count": 30,
+      "intro": [
+        "Clear the approach while I lead the first visitors down. They have waited all season to see this reef.",
+        "Defeat 30 Gloomfin in Coral Cathedral."
+      ],
+      "progress": "There are still Gloomfin along the approach. Return when the path is clear.",
+      "complete": [
+        "One child has already called it a garden with fins. Keep this, with the reef keeper's thanks."
+      ],
+      "reward": {
+        "xp": 14070,
+        "coins": 1260,
+        "item": "gloves_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "tideglass_trail"
+    },
+    {
+      "id": "wyrmrest_the_broken_waymarker",
+      "title": "The Broken Waymarker",
+      "chain": "A Nest Above the Road",
+      "town": "wyrmrest",
+      "npc": "Pathkeeper Sera",
+      "npc_look": "ranger woman, auburn braid, forest-green cloak, bow on back",
+      "min_level": 60,
+      "type": "collect",
+      "target": "azure_drake",
+      "count": 18,
+      "intro": [
+        "A drake nest has appeared above the road. Blue scales will make a marker travelers can see without disturbing it.",
+        "Bring me 18 scale from Azure Drake in Wyrmwood Reach."
+      ],
+      "progress": "I still need the rest of the scale. Take your time on the trail.",
+      "complete": [
+        "Bright enough for the bend, quiet enough for a nest. That is what we need."
+      ],
+      "reward": {
+        "xp": 7776,
+        "coins": 1080,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 3
+      },
+      "next": "wyrmrest_the_warm_stone_crossing",
+      "item": "scale",
+      "target_map": "wyrmrest_trail"
+    },
+    {
+      "id": "wyrmrest_the_warm_stone_crossing",
+      "title": "The Warm Stone Crossing",
+      "chain": "A Nest Above the Road",
+      "town": "wyrmrest",
+      "npc": "Pathkeeper Sera",
+      "npc_look": "ranger woman, auburn braid, forest-green cloak, bow on back",
+      "min_level": 60,
+      "type": "hunt",
+      "target": "crimson_drake",
+      "count": 22,
+      "intro": [
+        "Crimson drakes are gathering at the only safe crossing. Open a narrow way for the pack carriers.",
+        "Defeat 22 Crimson Drake in Wyrmwood Reach."
+      ],
+      "progress": "There are still Crimson Drake along the approach. Return when the path is clear.",
+      "complete": [
+        "The carriers are through. We can share a mountain without sharing every stepping stone."
+      ],
+      "reward": {
+        "xp": 11880,
+        "coins": 1320,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 4
+      },
+      "next": "wyrmrest_a_cool_shelter_roof",
+      "target_map": "wyrmrest_trail"
+    },
+    {
+      "id": "wyrmrest_a_cool_shelter_roof",
+      "title": "A Cool Shelter Roof",
+      "chain": "A Nest Above the Road",
+      "town": "wyrmrest",
+      "npc": "Pathkeeper Sera",
+      "npc_look": "ranger woman, auburn braid, forest-green cloak, bow on back",
+      "min_level": 60,
+      "type": "collect",
+      "target": "frost_drake",
+      "count": 26,
+      "intro": [
+        "Pale scales will keep the little roadside shelter cool when the south wind turns warm.",
+        "Bring me 26 scale from Frost Drake in Wyrmwood Reach."
+      ],
+      "progress": "I still need the rest of the scale. Take your time on the trail.",
+      "complete": [
+        "A roof fit for a place of rest. The drakes have taught us something useful again."
+      ],
+      "reward": {
+        "xp": 16848,
+        "coins": 1560,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 5
+      },
+      "next": "wyrmrest_the_wind_bell",
+      "item": "scale",
+      "target_map": "wyrmrest_trail"
+    },
+    {
+      "id": "wyrmrest_the_wind_bell",
+      "title": "The Wind Bell",
+      "chain": "A Nest Above the Road",
+      "town": "wyrmrest",
+      "npc": "Pathkeeper Sera",
+      "npc_look": "ranger woman, auburn braid, forest-green cloak, bow on back",
+      "min_level": 62,
+      "type": "collect",
+      "target": "twinhead_birk",
+      "count": 30,
+      "intro": [
+        "Soft feathers will keep the shelter's wind bell from startling the hatchlings overhead.",
+        "Bring me 30 feather from Twinhead Birk in Wyrmwood Reach."
+      ],
+      "progress": "I still need the rest of the feather. Take your time on the trail.",
+      "complete": [
+        "The bell is gentle, the road is marked, and the nest is quiet. Take this for a considerate journey."
+      ],
+      "reward": {
+        "xp": 23730,
+        "coins": 1860,
+        "item": "shoes_lv50",
+        "consumable": "hp_3",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "feather",
+      "target_map": "wyrmrest_trail"
+    },
+    {
+      "id": "peachspire_room_beneath_the_boughs",
+      "title": "Room Beneath the Boughs",
+      "chain": "The Peach Festival Basket",
+      "town": "peachspire",
+      "npc": "Baker Omi",
+      "npc_look": "plump baker woman, white bonnet, lavender apron, bread basket",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "canopy_ape",
+      "count": 18,
+      "intro": [
+        "The festival tables belong under the peach trees. The apes seem to have booked every branch above them.",
+        "Defeat 18 Canopy Ape in Peachwind Terrace."
+      ],
+      "progress": "There are still Canopy Ape along the approach. Return when the path is clear.",
+      "complete": [
+        "The branches are quiet. We can set the tables without wearing the decorations."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "peachspire_the_basket_lining",
+      "target_map": "peachspire_trail"
+    },
+    {
+      "id": "peachspire_the_basket_lining",
+      "title": "The Basket Lining",
+      "chain": "The Peach Festival Basket",
+      "town": "peachspire",
+      "npc": "Baker Omi",
+      "npc_look": "plump baker woman, white bonnet, lavender apron, bread basket",
+      "min_level": 45,
+      "type": "collect",
+      "target": "stitched_bruin",
+      "count": 22,
+      "intro": [
+        "The old picnic baskets need soft lining. Clean stuffing from the wandering bears will protect the fruit.",
+        "Bring me 22 cursed doll from Stitched Bruin in Peachwind Terrace."
+      ],
+      "progress": "I still need the rest of the cursed doll. Take your time on the trail.",
+      "complete": [
+        "Soft enough for the ripest peach. I shall save the prettiest basket for the oldest guest."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "peachspire_a_brush_for_the_glaze",
+      "item": "cursed_doll",
+      "target_map": "peachspire_trail"
+    },
+    {
+      "id": "peachspire_a_brush_for_the_glaze",
+      "title": "A Brush for the Glaze",
+      "chain": "The Peach Festival Basket",
+      "town": "peachspire",
+      "npc": "Baker Omi",
+      "npc_look": "plump baker woman, white bonnet, lavender apron, bread basket",
+      "min_level": 47,
+      "type": "collect",
+      "target": "twinhead_birk",
+      "count": 26,
+      "intro": [
+        "A feather brush will spread the honey glaze without bruising the little cakes.",
+        "Bring me 26 feather from Twinhead Birk in Peachwind Terrace."
+      ],
+      "progress": "I still need the rest of the feather. Take your time on the trail.",
+      "complete": [
+        "A very fine brush. I promise it will be washed before any honey is involved."
+      ],
+      "reward": {
+        "xp": 12090,
+        "coins": 1222,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "peachspire_the_evening_basket_run",
+      "item": "feather",
+      "target_map": "peachspire_trail"
+    },
+    {
+      "id": "peachspire_the_evening_basket_run",
+      "title": "The Evening Basket Run",
+      "chain": "The Peach Festival Basket",
+      "town": "peachspire",
+      "npc": "Baker Omi",
+      "npc_look": "plump baker woman, white bonnet, lavender apron, bread basket",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "rime_wolf",
+      "count": 30,
+      "intro": [
+        "Clear the terrace path so the baskets can reach the outer tables before the evening wind.",
+        "Defeat 30 Rime Wolf in Peachwind Terrace."
+      ],
+      "progress": "There are still Rime Wolf along the approach. Return when the path is clear.",
+      "complete": [
+        "There is a place set for you. Until supper, take this as a small taste of our gratitude."
+      ],
+      "reward": {
+        "xp": 15382,
+        "coins": 1350,
+        "item": "cape_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "peachspire_trail"
+    },
+    {
+      "id": "reedhaven_a_path_to_the_sluice",
+      "title": "A Path to the Sluice",
+      "chain": "The Singing Sluice",
+      "town": "reedhaven",
+      "npc": "Reed Farmer Eda",
+      "npc_look": "farmer woman, straw hat, ochre overalls, seed pouch",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "swamp_gator",
+      "count": 18,
+      "intro": [
+        "The reed beds are drying at the far end. Clear the sluice path so I can find what is blocking the water.",
+        "Defeat 18 Swamp Gator in Reedwater Marsh."
+      ],
+      "progress": "There are still Swamp Gator along the approach. Return when the path is clear.",
+      "complete": [
+        "The gate is jammed, but the channel is sound. That is a kinder problem than I feared."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "reedhaven_a_filter_of_fibers",
+      "target_map": "reedhaven_trail"
+    },
+    {
+      "id": "reedhaven_a_filter_of_fibers",
+      "title": "A Filter of Fibers",
+      "chain": "The Singing Sluice",
+      "town": "reedhaven",
+      "npc": "Reed Farmer Eda",
+      "npc_look": "farmer woman, straw hat, ochre overalls, seed pouch",
+      "min_level": 45,
+      "type": "collect",
+      "target": "mossy_cap",
+      "count": 22,
+      "intro": [
+        "Pressed cap fibers will catch silt without starving the reeds of water.",
+        "Bring me 22 mushroom cap from Mossy Cap in Reedwater Marsh."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "A clean little filter. The water is already running brighter."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "reedhaven_the_gate_seal",
+      "item": "mushroom_cap",
+      "target_map": "reedhaven_trail"
+    },
+    {
+      "id": "reedhaven_the_gate_seal",
+      "title": "The Gate Seal",
+      "chain": "The Singing Sluice",
+      "town": "reedhaven",
+      "npc": "Reed Farmer Eda",
+      "npc_look": "farmer woman, straw hat, ochre overalls, seed pouch",
+      "min_level": 45,
+      "type": "collect",
+      "target": "inkling",
+      "count": 26,
+      "intro": [
+        "The sluice collar needs flexible resin. Inkling residue will hold through wet and dry weather alike.",
+        "Bring me 26 ectoplasm from Inkling in Reedwater Marsh."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "A seal that bends instead of cracking. The best repairs know how to give a little."
+      ],
+      "reward": {
+        "xp": 11427,
+        "coins": 1170,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "reedhaven_water_before_moonrise",
+      "item": "ectoplasm",
+      "target_map": "reedhaven_trail"
+    },
+    {
+      "id": "reedhaven_water_before_moonrise",
+      "title": "Water Before Moonrise",
+      "chain": "The Singing Sluice",
+      "town": "reedhaven",
+      "npc": "Reed Farmer Eda",
+      "npc_look": "farmer woman, straw hat, ochre overalls, seed pouch",
+      "min_level": 47,
+      "type": "hunt",
+      "target": "wisp_wraith",
+      "count": 30,
+      "intro": [
+        "Clear the last channel bend while I open the gate. The night reeds need their first drink before moonrise.",
+        "Defeat 30 Wisp Wraith in Reedwater Marsh."
+      ],
+      "progress": "There are still Wisp Wraith along the approach. Return when the path is clear.",
+      "complete": [
+        "Hear them rustle? That is the sound we were missing. Take this for bringing it back."
+      ],
+      "reward": {
+        "xp": 16275,
+        "coins": 1410,
+        "item": "hat_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "reedhaven_trail"
+    },
+    {
+      "id": "saffron_a_sunshade_that_holds",
+      "title": "A Sunshade That Holds",
+      "chain": "The Well Between Journeys",
+      "town": "saffron",
+      "npc": "Caravaner Yaro",
+      "npc_look": "traveling merchant man, indigo coat, broad hat, travel pack",
+      "min_level": 45,
+      "type": "collect",
+      "target": "dune_lizard",
+      "count": 18,
+      "intro": [
+        "The caravan well has lost its sunshade ties. Tough lizard-hide strips will hold through the dry wind.",
+        "Bring me 18 lizard tail from Dune Lizard in Sunscar Dunes."
+      ],
+      "progress": "I still need the rest of the lizard tail. Take your time on the trail.",
+      "complete": [
+        "A little shade makes a long road feel shorter."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "saffron_stones_around_the_well",
+      "item": "lizard_tail",
+      "target_map": "saffron_trail"
+    },
+    {
+      "id": "saffron_stones_around_the_well",
+      "title": "Stones Around the Well",
+      "chain": "The Well Between Journeys",
+      "town": "saffron",
+      "npc": "Caravaner Yaro",
+      "npc_look": "traveling merchant man, indigo coat, broad hat, travel pack",
+      "min_level": 45,
+      "type": "collect",
+      "target": "rubble_golem",
+      "count": 22,
+      "intro": [
+        "The well rim is crumbling. Bring sound stone so small hands can reach the bucket safely.",
+        "Bring me 22 golem rock from Rubble Golem in Sunscar Dunes."
+      ],
+      "progress": "I still need the rest of the golem rock. Take your time on the trail.",
+      "complete": [
+        "A steady rim and no sharp edges. The children will find it easier now."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "saffron_the_water_carrier_s_path",
+      "item": "golem_rock",
+      "target_map": "saffron_trail"
+    },
+    {
+      "id": "saffron_the_water_carrier_s_path",
+      "title": "The Water Carrier's Path",
+      "chain": "The Well Between Journeys",
+      "town": "saffron",
+      "npc": "Caravaner Yaro",
+      "npc_look": "traveling merchant man, indigo coat, broad hat, travel pack",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "cinder_boar",
+      "count": 26,
+      "intro": [
+        "The water carriers need the approach cleared. Even an empty pail feels heavy when a boar is arguing with it.",
+        "Defeat 26 Cinder Boar in Sunscar Dunes."
+      ],
+      "progress": "There are still Cinder Boar along the approach. Return when the path is clear.",
+      "complete": [
+        "The first water cart has reached the shade. We can finally stop counting every cup."
+      ],
+      "reward": {
+        "xp": 11427,
+        "coins": 1170,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "saffron_the_well_s_little_flag",
+      "target_map": "saffron_trail"
+    },
+    {
+      "id": "saffron_the_well_s_little_flag",
+      "title": "The Well's Little Flag",
+      "chain": "The Well Between Journeys",
+      "town": "saffron",
+      "npc": "Caravaner Yaro",
+      "npc_look": "traveling merchant man, indigo coat, broad hat, travel pack",
+      "min_level": 47,
+      "type": "collect",
+      "target": "twinhead_birk",
+      "count": 30,
+      "intro": [
+        "A feather vane will show travelers where the windbreak begins. It need not be grand, only visible.",
+        "Bring me 30 feather from Twinhead Birk in Sunscar Dunes."
+      ],
+      "progress": "I still need the rest of the feather. Take your time on the trail.",
+      "complete": [
+        "The well is ready for the next caravan. Take this, and remember there is always a cup waiting here."
+      ],
+      "reward": {
+        "xp": 16275,
+        "coins": 1410,
+        "item": "gloves_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "feather",
+      "target_map": "saffron_trail"
+    },
+    {
+      "id": "verdigris_the_uncracked_retort",
+      "title": "The Uncracked Retort",
+      "chain": "A Remedy for Rust",
+      "town": "verdigris",
+      "npc": "Distiller Ilsa",
+      "npc_look": "alchemist woman, silver hair, deep navy robe, green vial",
+      "min_level": 50,
+      "type": "collect",
+      "target": "obsidian_golem",
+      "count": 18,
+      "intro": [
+        "The old still cracked while making anti-rust oil. Obsidian grit will strengthen its replacement.",
+        "Bring me 18 golem rock from Obsidian Golem in Glasscoil Works."
+      ],
+      "progress": "I still need the rest of the golem rock. Take your time on the trail.",
+      "complete": [
+        "A sturdy retort. This time I will warm it slowly and listen to my own advice."
+      ],
+      "reward": {
+        "xp": 6066,
+        "coins": 900,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "verdigris_the_patient_stirrer",
+      "item": "golem_rock",
+      "target_map": "verdigris_trail"
+    },
+    {
+      "id": "verdigris_the_patient_stirrer",
+      "title": "The Patient Stirrer",
+      "chain": "A Remedy for Rust",
+      "town": "verdigris",
+      "npc": "Distiller Ilsa",
+      "npc_look": "alchemist woman, silver hair, deep navy robe, green vial",
+      "min_level": 50,
+      "type": "collect",
+      "target": "tick_sentinel",
+      "count": 22,
+      "intro": [
+        "A slow stir is the secret to the mixture. The stirring clock needs a sound little gear.",
+        "Bring me 22 gear cog from Tick Sentinel in Glasscoil Works."
+      ],
+      "progress": "I still need the rest of the gear cog. Take your time on the trail.",
+      "complete": [
+        "One turn at a time. Alchemy rewards patience more often than it rewards explosions."
+      ],
+      "reward": {
+        "xp": 9267,
+        "coins": 1100,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "verdigris_the_last_measured_drop",
+      "item": "gear_cog",
+      "target_map": "verdigris_trail"
+    },
+    {
+      "id": "verdigris_the_last_measured_drop",
+      "title": "The Last Measured Drop",
+      "chain": "A Remedy for Rust",
+      "town": "verdigris",
+      "npc": "Distiller Ilsa",
+      "npc_look": "alchemist woman, silver hair, deep navy robe, green vial",
+      "min_level": 52,
+      "type": "collect",
+      "target": "shade_wraith",
+      "count": 26,
+      "intro": [
+        "A trace of shade essence keeps moisture from returning to treated metal. A trace, mind you.",
+        "Bring me 26 ectoplasm from Shade Wraith in Glasscoil Works."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "The measure is right. No fumes, no fizz, and no need to apologize to the neighbors."
+      ],
+      "reward": {
+        "xp": 13845,
+        "coins": 1352,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "verdigris_a_clear_workshop_lane",
+      "item": "ectoplasm",
+      "target_map": "verdigris_trail"
+    },
+    {
+      "id": "verdigris_a_clear_workshop_lane",
+      "title": "A Clear Workshop Lane",
+      "chain": "A Remedy for Rust",
+      "town": "verdigris",
+      "npc": "Distiller Ilsa",
+      "npc_look": "alchemist woman, silver hair, deep navy robe, green vial",
+      "min_level": 50,
+      "type": "hunt",
+      "target": "rubble_golem",
+      "count": 30,
+      "intro": [
+        "Clear the lane while the cooled jars go to the bridge crew. They cannot carry glass around wandering stone.",
+        "Defeat 30 Rubble Golem in Glasscoil Works."
+      ],
+      "progress": "There are still Rubble Golem along the approach. Return when the path is clear.",
+      "complete": [
+        "The bridge hinges will last another season. This is for the steadier pair of hands in today's work."
+      ],
+      "reward": {
+        "xp": 17692,
+        "coins": 1500,
+        "item": "shoes_lv50",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "verdigris_trail"
+    },
+    {
+      "id": "hourglass_a_quiet_archive_walk",
+      "title": "A Quiet Archive Walk",
+      "chain": "The Hour That Was Kept",
+      "town": "hourglass",
+      "npc": "Keeper Meren",
+      "npc_look": "serene monk, tan robe, blue sash, prayer beads",
+      "min_level": 80,
+      "type": "hunt",
+      "target": "memory_warden",
+      "count": 18,
+      "intro": [
+        "The wardens repeat their old patrol through the reading court. Clear a path for the returning scribes.",
+        "Defeat 18 Memory Warden in Echoes of Tomorrow."
+      ],
+      "progress": "There are still Memory Warden along the approach. Return when the path is clear.",
+      "complete": [
+        "The scribes are inside. An archive sounds healthier with pages turning."
+      ],
+      "reward": {
+        "xp": 11736,
+        "coins": 1440,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 3
+      },
+      "next": "hourglass_stone_for_the_sundial",
+      "target_map": "hourglass_trail"
+    },
+    {
+      "id": "hourglass_stone_for_the_sundial",
+      "title": "Stone for the Sundial",
+      "chain": "The Hour That Was Kept",
+      "town": "hourglass",
+      "npc": "Keeper Meren",
+      "npc_look": "serene monk, tan robe, blue sash, prayer beads",
+      "min_level": 80,
+      "type": "collect",
+      "target": "chrono_guardian",
+      "count": 22,
+      "intro": [
+        "The courtyard sundial lost the stone that holds its face. Bring a piece that has weathered patient years.",
+        "Bring me 22 golem rock from Chrono Guardian in Echoes of Tomorrow."
+      ],
+      "progress": "I still need the rest of the golem rock. Take your time on the trail.",
+      "complete": [
+        "A strong base. Time may pass, but the dial need not wander with it."
+      ],
+      "reward": {
+        "xp": 17930,
+        "coins": 1760,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 4
+      },
+      "next": "hourglass_the_evening_mark",
+      "item": "golem_rock",
+      "target_map": "hourglass_trail"
+    },
+    {
+      "id": "hourglass_the_evening_mark",
+      "title": "The Evening Mark",
+      "chain": "The Hour That Was Kept",
+      "town": "hourglass",
+      "npc": "Keeper Meren",
+      "npc_look": "serene monk, tan robe, blue sash, prayer beads",
+      "min_level": 82,
+      "type": "collect",
+      "target": "gloam_sentinel",
+      "count": 26,
+      "intro": [
+        "A star fragment will catch the last light and mark the hour the old keeper always set aside for visitors.",
+        "Bring me 26 star fragment from Gloam Sentinel in Echoes of Tomorrow."
+      ],
+      "progress": "I still need the rest of the star fragment. Take your time on the trail.",
+      "complete": [
+        "A small glimmer, exactly where he would have put it."
+      ],
+      "reward": {
+        "xp": 26364,
+        "coins": 2132,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 5
+      },
+      "next": "hourglass_the_doors_at_dusk",
+      "item": "star_fragment",
+      "target_map": "hourglass_trail"
+    },
+    {
+      "id": "hourglass_the_doors_at_dusk",
+      "title": "The Doors at Dusk",
+      "chain": "The Hour That Was Kept",
+      "town": "hourglass",
+      "npc": "Keeper Meren",
+      "npc_look": "serene monk, tan robe, blue sash, prayer beads",
+      "min_level": 80,
+      "type": "hunt",
+      "target": "oblivion_monk",
+      "count": 30,
+      "intro": [
+        "Keep the approach clear while we open the archive doors for one evening of shared stories.",
+        "Defeat 30 Oblivion Monk in Echoes of Tomorrow."
+      ],
+      "progress": "There are still Oblivion Monk along the approach. Return when the path is clear.",
+      "complete": [
+        "We have kept the hour without trying to stop it. Take this, and spend your next one well."
+      ],
+      "reward": {
+        "xp": 34230,
+        "coins": 2400,
+        "item": "cape_lv70",
+        "consumable": "hp_3",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "hourglass_trail"
+    },
+    {
+      "id": "moonshrine_shelter_for_the_offering",
+      "title": "Shelter for the Offering",
+      "chain": "Bells for a Quiet Moon",
+      "town": "moonshrine",
+      "npc": "Shrine Attendant Ena",
+      "npc_look": "young shrine keeper woman, white robe, red sash, paper charm",
+      "min_level": 45,
+      "type": "collect",
+      "target": "tangerine_cap",
+      "count": 18,
+      "intro": [
+        "Rain found the offering shelf. A broad cap awning will keep the little paper wishes dry.",
+        "Bring me 18 mushroom cap from Tangerine Cap in Foxmoon Grove."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "A humble roof for humble wishes. It is enough."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "moonshrine_the_bell_walk",
+      "item": "mushroom_cap",
+      "target_map": "moonshrine_trail"
+    },
+    {
+      "id": "moonshrine_the_bell_walk",
+      "title": "The Bell Walk",
+      "chain": "Bells for a Quiet Moon",
+      "town": "moonshrine",
+      "npc": "Shrine Attendant Ena",
+      "npc_look": "young shrine keeper woman, white robe, red sash, paper charm",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "horned_cap",
+      "count": 22,
+      "intro": [
+        "Horned caps crowd the path to the hanging bells. Clear the way before the evening visitors arrive.",
+        "Defeat 22 Horned Cap in Foxmoon Grove."
+      ],
+      "progress": "There are still Horned Cap along the approach. Return when the path is clear.",
+      "complete": [
+        "The path is open. Nobody should need a running start to bring a wish to the shrine."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "moonshrine_a_gentle_bell_light",
+      "target_map": "moonshrine_trail"
+    },
+    {
+      "id": "moonshrine_a_gentle_bell_light",
+      "title": "A Gentle Bell Light",
+      "chain": "Bells for a Quiet Moon",
+      "town": "moonshrine",
+      "npc": "Shrine Attendant Ena",
+      "npc_look": "young shrine keeper woman, white robe, red sash, paper charm",
+      "min_level": 47,
+      "type": "collect",
+      "target": "wisp_wraith",
+      "count": 26,
+      "intro": [
+        "Wisp essence will give the bell lantern a gentle flame that does not scorch the paper ribbons.",
+        "Bring me 26 ectoplasm from Wisp Wraith in Foxmoon Grove."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "It glows softly enough to leave the moon some work to do."
+      ],
+      "reward": {
+        "xp": 12090,
+        "coins": 1222,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "moonshrine_the_last_little_awning",
+      "item": "ectoplasm",
+      "target_map": "moonshrine_trail"
+    },
+    {
+      "id": "moonshrine_the_last_little_awning",
+      "title": "The Last Little Awning",
+      "chain": "Bells for a Quiet Moon",
+      "town": "moonshrine",
+      "npc": "Shrine Attendant Ena",
+      "npc_look": "young shrine keeper woman, white robe, red sash, paper charm",
+      "min_level": 45,
+      "type": "collect",
+      "target": "mossy_cap",
+      "count": 30,
+      "intro": [
+        "The outer wish stand needs a cover too. I would rather no one's hope be the one left in the rain.",
+        "Bring me 30 mushroom cap from Mossy Cap in Foxmoon Grove."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Every wish has a dry place now. This is a practical blessing for the road ahead."
+      ],
+      "reward": {
+        "xp": 15382,
+        "coins": 1350,
+        "item": "hat_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "mushroom_cap",
+      "target_map": "moonshrine_trail"
+    },
+    {
+      "id": "emberlane_the_stall_sign_braces",
+      "title": "The Stall Sign Braces",
+      "chain": "The Market After Dark",
+      "town": "emberlane",
+      "npc": "Night Courier Tess",
+      "npc_look": "young courier woman, dark green hood, brown satchel",
+      "min_level": 45,
+      "type": "collect",
+      "target": "bonewalker",
+      "count": 18,
+      "intro": [
+        "The night market signs have worked loose. Smooth bone braces will make them light but sturdy.",
+        "Bring me 18 bone fragment from Bonewalker in Ashmarket Rooftops."
+      ],
+      "progress": "I still need the rest of the bone fragment. Take your time on the trail.",
+      "complete": [
+        "The lettering is straight again. Our baker will be pleased to stop selling what looks like burnt soup."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "emberlane_the_coal_cart_crossing",
+      "item": "bone_fragment",
+      "target_map": "emberlane_trail"
+    },
+    {
+      "id": "emberlane_the_coal_cart_crossing",
+      "title": "The Coal Cart Crossing",
+      "chain": "The Market After Dark",
+      "town": "emberlane",
+      "npc": "Night Courier Tess",
+      "npc_look": "young courier woman, dark green hood, brown satchel",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "cinder_boar",
+      "count": 22,
+      "intro": [
+        "Clear the cart crossing so the vendors can bring fuel to their little braziers.",
+        "Defeat 22 Cinder Boar in Ashmarket Rooftops."
+      ],
+      "progress": "There are still Cinder Boar along the approach. Return when the path is clear.",
+      "complete": [
+        "Warm stalls make a kinder market. The first kettle is already singing."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "emberlane_glass_for_the_night_lamps",
+      "target_map": "emberlane_trail"
+    },
+    {
+      "id": "emberlane_glass_for_the_night_lamps",
+      "title": "Glass for the Night Lamps",
+      "chain": "The Market After Dark",
+      "town": "emberlane",
+      "npc": "Night Courier Tess",
+      "npc_look": "young courier woman, dark green hood, brown satchel",
+      "min_level": 47,
+      "type": "collect",
+      "target": "shade_wraith",
+      "count": 26,
+      "intro": [
+        "A thin coat of shade resin cuts the glare on the lamp glass. The late readers will thank us.",
+        "Bring me 26 ectoplasm from Shade Wraith in Ashmarket Rooftops."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "Bright enough for prices, soft enough for tired eyes."
+      ],
+      "reward": {
+        "xp": 12090,
+        "coins": 1222,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "emberlane_one_last_delivery_round",
+      "item": "ectoplasm",
+      "target_map": "emberlane_trail"
+    },
+    {
+      "id": "emberlane_one_last_delivery_round",
+      "title": "One Last Delivery Round",
+      "chain": "The Market After Dark",
+      "town": "emberlane",
+      "npc": "Night Courier Tess",
+      "npc_look": "young courier woman, dark green hood, brown satchel",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "horned_cap",
+      "count": 30,
+      "intro": [
+        "The signs are fixed and the lamps are lit. Clear my final delivery stretch, and we can both call it a night.",
+        "Defeat 30 Horned Cap in Ashmarket Rooftops."
+      ],
+      "progress": "There are still Horned Cap along the approach. Return when the path is clear.",
+      "complete": [
+        "The last parcel is home. This was tucked into the courier fund for someone who earns it."
+      ],
+      "reward": {
+        "xp": 15382,
+        "coins": 1350,
+        "item": "gloves_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "emberlane_trail"
+    },
+    {
+      "id": "mistkeep_the_watch_path",
+      "title": "The Watch Path",
+      "chain": "The Unforgotten Watch",
+      "town": "mistkeep",
+      "npc": "Bellkeeper Sumi",
+      "npc_look": "young shrine keeper woman, white robe, blue sash, paper charm",
+      "min_level": 60,
+      "type": "hunt",
+      "target": "memory_warden",
+      "count": 18,
+      "intro": [
+        "The old watch changes at the same hour every night. Clear a path so we can tend its neglected memorial.",
+        "Defeat 18 Memory Warden in Silent Ramparts."
+      ],
+      "progress": "There are still Memory Warden along the approach. Return when the path is clear.",
+      "complete": [
+        "Thank you. A quiet path makes room for quiet thoughts."
+      ],
+      "reward": {
+        "xp": 7776,
+        "coins": 1080,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 3
+      },
+      "next": "mistkeep_ink_for_the_names",
+      "target_map": "mistkeep_trail"
+    },
+    {
+      "id": "mistkeep_ink_for_the_names",
+      "title": "Ink for the Names",
+      "chain": "The Unforgotten Watch",
+      "town": "mistkeep",
+      "npc": "Bellkeeper Sumi",
+      "npc_look": "young shrine keeper woman, white robe, blue sash, paper charm",
+      "min_level": 60,
+      "type": "collect",
+      "target": "oblivion_monk",
+      "count": 22,
+      "intro": [
+        "A trace of temple essence will fix the faded names to fresh memorial paper.",
+        "Bring me 22 ectoplasm from Oblivion Monk in Silent Ramparts."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "The names are legible again. They deserve to be read, not guessed."
+      ],
+      "reward": {
+        "xp": 11880,
+        "coins": 1320,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 4
+      },
+      "next": "mistkeep_the_lantern_approach",
+      "item": "ectoplasm",
+      "target_map": "mistkeep_trail"
+    },
+    {
+      "id": "mistkeep_the_lantern_approach",
+      "title": "The Lantern Approach",
+      "chain": "The Unforgotten Watch",
+      "town": "mistkeep",
+      "npc": "Bellkeeper Sumi",
+      "npc_look": "young shrine keeper woman, white robe, blue sash, paper charm",
+      "min_level": 60,
+      "type": "hunt",
+      "target": "moonfang",
+      "count": 26,
+      "intro": [
+        "Wolves have gathered by the outer lanterns. Send them away while I replace the old wicks.",
+        "Defeat 26 Moonfang Lycan in Silent Ramparts."
+      ],
+      "progress": "There are still Moonfang Lycan along the approach. Return when the path is clear.",
+      "complete": [
+        "The lanterns are ready. No one returning from the road will find the keep dark."
+      ],
+      "reward": {
+        "xp": 16848,
+        "coins": 1560,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 5
+      },
+      "next": "mistkeep_the_bell_s_small_pin",
+      "target_map": "mistkeep_trail"
+    },
+    {
+      "id": "mistkeep_the_bell_s_small_pin",
+      "title": "The Bell's Small Pin",
+      "chain": "The Unforgotten Watch",
+      "town": "mistkeep",
+      "npc": "Bellkeeper Sumi",
+      "npc_look": "young shrine keeper woman, white robe, blue sash, paper charm",
+      "min_level": 62,
+      "type": "collect",
+      "target": "bone_archer",
+      "count": 30,
+      "intro": [
+        "A light bone pin will hold the memorial bell's worn hinge without changing its familiar sound.",
+        "Bring me 30 bone fragment from Bone Archer in Silent Ramparts."
+      ],
+      "progress": "I still need the rest of the bone fragment. Take your time on the trail.",
+      "complete": [
+        "The same clear note as before. Keep this, and carry the watch's thanks into the morning."
+      ],
+      "reward": {
+        "xp": 23730,
+        "coins": 1860,
+        "item": "shoes_lv50",
+        "consumable": "hp_3",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "bone_fragment",
+      "target_map": "mistkeep_trail"
+    },
+    {
+      "id": "copperwick_the_shutter_hinges",
+      "title": "The Shutter Hinges",
+      "chain": "A House That Welcomes Light",
+      "town": "copperwick",
+      "npc": "Mechanic Nell",
+      "npc_look": "engineer woman, brass goggles, rust-orange overalls, wrench",
+      "min_level": 35,
+      "type": "collect",
+      "target": "bonewalker",
+      "count": 18,
+      "intro": [
+        "Hollowlight Estate is opening its windows again. Light bone bushings will spare the old wooden hinges.",
+        "Bring me 18 bone fragment from Bonewalker in Hollowlight Estate."
+      ],
+      "progress": "I still need the rest of the bone fragment. Take your time on the trail.",
+      "complete": [
+        "They swing without a creak. The house sounds almost surprised."
+      ],
+      "reward": {
+        "xp": 3834,
+        "coins": 630,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "copperwick_a_cap_for_the_vent",
+      "item": "bone_fragment",
+      "target_map": "copperwick_trail"
+    },
+    {
+      "id": "copperwick_a_cap_for_the_vent",
+      "title": "A Cap for the Vent",
+      "chain": "A House That Welcomes Light",
+      "town": "copperwick",
+      "npc": "Mechanic Nell",
+      "npc_look": "engineer woman, brass goggles, rust-orange overalls, wrench",
+      "min_level": 35,
+      "type": "collect",
+      "target": "rotcap",
+      "count": 22,
+      "intro": [
+        "The kitchen vent needs a cover before we light the stove. A broad cap will keep the rain from following the smoke in.",
+        "Bring me 22 mushroom cap from Rotcap in Hollowlight Estate."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Smoke out, rain out. A kitchen should keep its priorities simple."
+      ],
+      "reward": {
+        "xp": 5857,
+        "coins": 770,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "copperwick_room_for_the_window_crew",
+      "item": "mushroom_cap",
+      "target_map": "copperwick_trail"
+    },
+    {
+      "id": "copperwick_room_for_the_window_crew",
+      "title": "Room for the Window Crew",
+      "chain": "A House That Welcomes Light",
+      "town": "copperwick",
+      "npc": "Mechanic Nell",
+      "npc_look": "engineer woman, brass goggles, rust-orange overalls, wrench",
+      "min_level": 35,
+      "type": "hunt",
+      "target": "shade_wraith",
+      "count": 26,
+      "intro": [
+        "Clear the front approach while the crew carries the cleaned windows inside.",
+        "Defeat 26 Shade Wraith in Hollowlight Estate."
+      ],
+      "progress": "There are still Shade Wraith along the approach. Return when the path is clear.",
+      "complete": [
+        "Every pane arrived whole. I am counting that as the finest sort of good fortune."
+      ],
+      "reward": {
+        "xp": 8307,
+        "coins": 910,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "copperwick_the_hearth_lamp",
+      "target_map": "copperwick_trail"
+    },
+    {
+      "id": "copperwick_the_hearth_lamp",
+      "title": "The Hearth Lamp",
+      "chain": "A House That Welcomes Light",
+      "town": "copperwick",
+      "npc": "Mechanic Nell",
+      "npc_look": "engineer woman, brass goggles, rust-orange overalls, wrench",
+      "min_level": 37,
+      "type": "collect",
+      "target": "wisp_wraith",
+      "count": 30,
+      "intro": [
+        "A little wisp essence will wake the old welcome lamp. It used to shine for every visitor, even late ones.",
+        "Bring me 30 ectoplasm from Wisp Wraith in Hollowlight Estate."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "There it is, in the front window. This is for helping a tired house look glad to see people again."
+      ],
+      "reward": {
+        "xp": 11970,
+        "coins": 1110,
+        "item": "cape_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "ectoplasm",
+      "target_map": "copperwick_trail"
+    },
+    {
+      "id": "thornscar_the_surveyors_path",
+      "title": "The Surveyors' Path",
+      "chain": "The Trail No One Loses",
+      "town": "thornscar",
+      "npc": "Trail Ranger Rhea",
+      "npc_look": "ranger woman, auburn braid, blue cloak, bow on back",
+      "min_level": 65,
+      "type": "hunt",
+      "target": "rime_wolf",
+      "count": 18,
+      "intro": [
+        "The trail surveyors need a quiet stretch to replace the missing markers. Clear the narrow woodland approach.",
+        "Defeat 18 Rime Wolf in Thornscar Wilds."
+      ],
+      "progress": "There are still Rime Wolf along the approach. Return when the path is clear.",
+      "complete": [
+        "They have reached the first bend. A map improves greatly when someone can stand still to draw it."
+      ],
+      "reward": {
+        "xp": 8694,
+        "coins": 1170,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 3
+      },
+      "next": "thornscar_a_marker_for_the_dark",
+      "target_map": "thornscar_trail"
+    },
+    {
+      "id": "thornscar_a_marker_for_the_dark",
+      "title": "A Marker for the Dark",
+      "chain": "The Trail No One Loses",
+      "town": "thornscar",
+      "npc": "Trail Ranger Rhea",
+      "npc_look": "ranger woman, auburn braid, blue cloak, bow on back",
+      "min_level": 67,
+      "type": "collect",
+      "target": "bone_wyvern",
+      "count": 22,
+      "intro": [
+        "Pale wyvern scales will catch lantern light on the new trail posts. We need markers that show through rain.",
+        "Bring me 22 scale from Bone Wyvern in Thornscar Wilds."
+      ],
+      "progress": "I still need the rest of the scale. Take your time on the trail.",
+      "complete": [
+        "A soft gleam is enough. We are guiding travelers, not announcing a parade."
+      ],
+      "reward": {
+        "xp": 13860,
+        "coins": 1474,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 4
+      },
+      "next": "thornscar_warmth_for_the_resin",
+      "item": "scale",
+      "target_map": "thornscar_trail"
+    },
+    {
+      "id": "thornscar_warmth_for_the_resin",
+      "title": "Warmth for the Resin",
+      "chain": "The Trail No One Loses",
+      "town": "thornscar",
+      "npc": "Trail Ranger Rhea",
+      "npc_look": "ranger woman, auburn braid, blue cloak, bow on back",
+      "min_level": 65,
+      "type": "collect",
+      "target": "cinder_centaur",
+      "count": 26,
+      "intro": [
+        "Warm ore will keep the sealing resin workable on the cold ridge. Handle it with the thick tongs.",
+        "Bring me 26 fire ore from Cinder Centaur in Thornscar Wilds."
+      ],
+      "progress": "I still need the rest of the fire ore. Take your time on the trail.",
+      "complete": [
+        "The seals have set cleanly. We will not find these signs floating in the stream next spring."
+      ],
+      "reward": {
+        "xp": 18837,
+        "coins": 1690,
+        "item": "",
+        "consumable": "hp_3",
+        "consumable_count": 5
+      },
+      "next": "thornscar_the_walk_back_to_the_lodge",
+      "item": "fire_ore",
+      "target_map": "thornscar_trail"
+    },
+    {
+      "id": "thornscar_the_walk_back_to_the_lodge",
+      "title": "The Walk Back to the Lodge",
+      "chain": "The Trail No One Loses",
+      "town": "thornscar",
+      "npc": "Trail Ranger Rhea",
+      "npc_look": "ranger woman, auburn braid, blue cloak, bow on back",
+      "min_level": 65,
+      "type": "hunt",
+      "target": "moonfang",
+      "count": 30,
+      "intro": [
+        "Clear the return trail while the surveyors pack their tools. The final marker should lead them home.",
+        "Defeat 30 Moonfang Lycan in Thornscar Wilds."
+      ],
+      "progress": "There are still Moonfang Lycan along the approach. Return when the path is clear.",
+      "complete": [
+        "A good trail ends at a warm door. Take this for helping us make sure of it."
+      ],
+      "reward": {
+        "xp": 25357,
+        "coins": 1950,
+        "item": "hat_lv50",
+        "consumable": "hp_3",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "thornscar_trail"
+    },
+    {
+      "id": "rainport_a_frame_for_the_buoy",
+      "title": "A Frame for the Buoy",
+      "chain": "The Bell Beneath the Rain",
+      "town": "rainport",
+      "npc": "Dockhand Bren",
+      "npc_look": "weathered harbor man, blue cap, burgundy coat, rope coil",
+      "min_level": 50,
+      "type": "collect",
+      "target": "bonewalker",
+      "count": 18,
+      "intro": [
+        "The wreck-channel buoy needs a light inner frame. Smooth bone pieces will float more kindly than iron.",
+        "Bring me 18 bone fragment from Bonewalker in Lantern Wreck."
+      ],
+      "progress": "I still need the rest of the bone fragment. Take your time on the trail.",
+      "complete": [
+        "Light enough to rise with the tide, strong enough to keep its shape."
+      ],
+      "reward": {
+        "xp": 6066,
+        "coins": 900,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "rainport_the_salvage_crew_s_landing",
+      "item": "bone_fragment",
+      "target_map": "rainport_trail"
+    },
+    {
+      "id": "rainport_the_salvage_crew_s_landing",
+      "title": "The Salvage Crew's Landing",
+      "chain": "The Bell Beneath the Rain",
+      "town": "rainport",
+      "npc": "Dockhand Bren",
+      "npc_look": "weathered harbor man, blue cap, burgundy coat, rope coil",
+      "min_level": 50,
+      "type": "hunt",
+      "target": "bone_archer",
+      "count": 22,
+      "intro": [
+        "Clear the landing so the salvage crew can carry the old bell ashore.",
+        "Defeat 22 Bone Archer in Lantern Wreck."
+      ],
+      "progress": "There are still Bone Archer along the approach. Return when the path is clear.",
+      "complete": [
+        "They have the bell. It has been silent for years, but its bronze is sound."
+      ],
+      "reward": {
+        "xp": 9267,
+        "coins": 1100,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "rainport_a_lantern_in_the_rain",
+      "target_map": "rainport_trail"
+    },
+    {
+      "id": "rainport_a_lantern_in_the_rain",
+      "title": "A Lantern in the Rain",
+      "chain": "The Bell Beneath the Rain",
+      "town": "rainport",
+      "npc": "Dockhand Bren",
+      "npc_look": "weathered harbor man, blue cap, burgundy coat, rope coil",
+      "min_level": 52,
+      "type": "collect",
+      "target": "wisp_wraith",
+      "count": 26,
+      "intro": [
+        "A little wisp essence will keep the buoy lamp visible through the harbor rain.",
+        "Bring me 26 ectoplasm from Wisp Wraith in Lantern Wreck."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "A steady light. The crews will not need to guess at the channel mouth anymore."
+      ],
+      "reward": {
+        "xp": 13845,
+        "coins": 1352,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "rainport_the_first_safe_passage",
+      "item": "ectoplasm",
+      "target_map": "rainport_trail"
+    },
+    {
+      "id": "rainport_the_first_safe_passage",
+      "title": "The First Safe Passage",
+      "chain": "The Bell Beneath the Rain",
+      "town": "rainport",
+      "npc": "Dockhand Bren",
+      "npc_look": "weathered harbor man, blue cap, burgundy coat, rope coil",
+      "min_level": 50,
+      "type": "hunt",
+      "target": "bone_captain",
+      "count": 30,
+      "intro": [
+        "Clear the final approach while we tow the repaired buoy into position.",
+        "Defeat 30 Bone Captain in Lantern Wreck."
+      ],
+      "progress": "There are still Bone Captain along the approach. Return when the path is clear.",
+      "complete": [
+        "The bell is ringing over the water again. Take this with the harbor's thanks, and come in out of the rain."
+      ],
+      "reward": {
+        "xp": 17692,
+        "coins": 1500,
+        "item": "gloves_lv50",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "rainport_trail"
+    },
+    {
+      "id": "bloomkamp_a_ticket_to_repairs",
+      "title": "A Ticket to Repairs",
+      "chain": "The Wonderwheel Opens",
+      "town": "bloomkamp",
+      "npc": "Fairground Pip",
+      "npc_look": "young lantern boy, red raincoat, brown boots, small lantern",
+      "min_level": 50,
+      "type": "collect",
+      "target": "tick_sentinel",
+      "count": 18,
+      "intro": [
+        "The Wonderwheel stopped before opening day. The grown-ups need a few good gears, not another meeting.",
+        "Bring me 18 gear cog from Tick Sentinel in Wonderwheel Park."
+      ],
+      "progress": "I still need the rest of the gear cog. Take your time on the trail.",
+      "complete": [
+        "Those look much more useful than the minutes of a meeting."
+      ],
+      "reward": {
+        "xp": 6066,
+        "coins": 900,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "bloomkamp_soft_seats_for_small_guests",
+      "item": "gear_cog",
+      "target_map": "bloomkamp_trail"
+    },
+    {
+      "id": "bloomkamp_soft_seats_for_small_guests",
+      "title": "Soft Seats for Small Guests",
+      "chain": "The Wonderwheel Opens",
+      "town": "bloomkamp",
+      "npc": "Fairground Pip",
+      "npc_look": "young lantern boy, red raincoat, brown boots, small lantern",
+      "min_level": 50,
+      "type": "collect",
+      "target": "stitched_bruin",
+      "count": 22,
+      "intro": [
+        "The little riding seats need fresh padding. Clean toy stuffing will make the first trip comfortable.",
+        "Bring me 22 cursed doll from Stitched Bruin in Wonderwheel Park."
+      ],
+      "progress": "I still need the rest of the cursed doll. Take your time on the trail.",
+      "complete": [
+        "Soft enough for my little sister. She has very firm opinions about cushions."
+      ],
+      "reward": {
+        "xp": 9267,
+        "coins": 1100,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "bloomkamp_the_rainproof_ticket_box",
+      "item": "cursed_doll",
+      "target_map": "bloomkamp_trail"
+    },
+    {
+      "id": "bloomkamp_the_rainproof_ticket_box",
+      "title": "The Rainproof Ticket Box",
+      "chain": "The Wonderwheel Opens",
+      "town": "bloomkamp",
+      "npc": "Fairground Pip",
+      "npc_look": "young lantern boy, red raincoat, brown boots, small lantern",
+      "min_level": 52,
+      "type": "collect",
+      "target": "jellop",
+      "count": 26,
+      "intro": [
+        "The ticket box leaks whenever the sea wind brings rain. Clear gel will save the paper rolls.",
+        "Bring me 26 slime goo from Jellop in Wonderwheel Park."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "Dry tickets at last. We were nearly selling damp confetti."
+      ],
+      "reward": {
+        "xp": 13845,
+        "coins": 1352,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "bloomkamp_before_the_first_turn",
+      "item": "slime_goo",
+      "target_map": "bloomkamp_trail"
+    },
+    {
+      "id": "bloomkamp_before_the_first_turn",
+      "title": "Before the First Turn",
+      "chain": "The Wonderwheel Opens",
+      "town": "bloomkamp",
+      "npc": "Fairground Pip",
+      "npc_look": "young lantern boy, red raincoat, brown boots, small lantern",
+      "min_level": 50,
+      "type": "hunt",
+      "target": "dread_bruin",
+      "count": 30,
+      "intro": [
+        "Clear the boarding path while the engineer checks the wheel. I want everyone to hear its first bell.",
+        "Defeat 30 Dread Bruin in Wonderwheel Park."
+      ],
+      "progress": "There are still Dread Bruin along the approach. Return when the path is clear.",
+      "complete": [
+        "It is turning! Take this, then come back before sunset. The top seat has the best view."
+      ],
+      "reward": {
+        "xp": 17692,
+        "coins": 1500,
+        "item": "shoes_lv50",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "bloomkamp_trail"
+    },
+    {
+      "id": "farmeadow_labels_for_the_seed_beds",
+      "title": "Labels for the Seed Beds",
+      "chain": "The Supper Garden",
+      "town": "farmeadow",
+      "npc": "Seedkeeper Lotte",
+      "npc_look": "farmer woman, straw hat, green overalls, seed pouch",
+      "min_level": 2,
+      "type": "collect",
+      "target": "stumpkin",
+      "count": 12,
+      "intro": [
+        "The garden labels have washed blank. Dry bark will make new ones that can stand a proper spring shower.",
+        "Bring me 12 stump bark from Stumpkin in Whisperwheat Fields."
+      ],
+      "progress": "I still need the rest of the stump bark. Take your time on the trail.",
+      "complete": [
+        "Now the beans will not be mistaken for onions. Neither plant enjoyed that arrangement."
+      ],
+      "reward": {
+        "xp": 240,
+        "coins": 24,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "farmeadow_a_ribbon_at_the_gate",
+      "item": "stump_bark",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "farmeadow_a_ribbon_at_the_gate",
+      "title": "A Ribbon at the Gate",
+      "chain": "The Supper Garden",
+      "town": "farmeadow",
+      "npc": "Seedkeeper Lotte",
+      "npc_look": "farmer woman, straw hat, green overalls, seed pouch",
+      "min_level": 2,
+      "type": "collect",
+      "target": "bristle_hog",
+      "count": 16,
+      "intro": [
+        "The hogs ran off with the gate ribbons. We need those bright ties to keep visitors out of the seedlings.",
+        "Bring me 16 pig ribbon from Bristle Hog in Whisperwheat Fields."
+      ],
+      "progress": "I still need the rest of the pig ribbon. Take your time on the trail.",
+      "complete": [
+        "A cheerful gate is easier to notice than a stern little sign."
+      ],
+      "reward": {
+        "xp": 400,
+        "coins": 32,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "farmeadow_the_seedling_shelters",
+      "item": "pig_ribbon",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "farmeadow_the_seedling_shelters",
+      "title": "The Seedling Shelters",
+      "chain": "The Supper Garden",
+      "town": "farmeadow",
+      "npc": "Seedkeeper Lotte",
+      "npc_look": "farmer woman, straw hat, green overalls, seed pouch",
+      "min_level": 2,
+      "type": "collect",
+      "target": "puffspore",
+      "count": 20,
+      "intro": [
+        "A cool night is coming. Little cap shelters will keep the tender seedlings from catching the frost.",
+        "Bring me 20 mushroom cap from Puffspore in Whisperwheat Fields."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Every new leaf has a roof. The garden can sleep as soundly as we do."
+      ],
+      "reward": {
+        "xp": 600,
+        "coins": 40,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "farmeadow_the_watering_path",
+      "item": "mushroom_cap",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "farmeadow_the_watering_path",
+      "title": "The Watering Path",
+      "chain": "The Supper Garden",
+      "town": "farmeadow",
+      "npc": "Seedkeeper Lotte",
+      "npc_look": "farmer woman, straw hat, green overalls, seed pouch",
+      "min_level": 4,
+      "type": "hunt",
+      "target": "jellop",
+      "count": 24,
+      "intro": [
+        "Clear the path to the water barrels so the evening round can finish before dark.",
+        "Defeat 24 Jellop in Whisperwheat Fields."
+      ],
+      "progress": "There are still Jellop along the approach. Return when the path is clear.",
+      "complete": [
+        "The beds are watered. Keep this, and visit when the first supper beans are ready."
+      ],
+      "reward": {
+        "xp": 1176,
+        "coins": 96,
+        "item": "starter_armor",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "farmeadow_trail"
+    },
+    {
+      "id": "crownreach_the_cloud_cup_rims",
+      "title": "The Cloud-Cup Rims",
+      "chain": "The Observatory Tea",
+      "town": "crownreach",
+      "npc": "Cloud Tutor Orren",
+      "npc_look": "elderly mage man, violet robe, violet pointed hat, silver beard, staff",
+      "min_level": 2,
+      "type": "collect",
+      "target": "azure_snail",
+      "count": 12,
+      "intro": [
+        "Our observatory cups need their rough rims polished. Fine shell powder will smooth them without scratching the glaze.",
+        "Bring me 12 snail shell from Azure Snail in Gleaming Steps."
+      ],
+      "progress": "I still need the rest of the snail shell. Take your time on the trail.",
+      "complete": [
+        "Smooth enough for a weary visitor's first cup. Little comforts are worth the work."
+      ],
+      "reward": {
+        "xp": 240,
+        "coins": 24,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "crownreach_a_steady_tea_tray",
+      "item": "snail_shell",
+      "target_map": "crownreach_trail"
+    },
+    {
+      "id": "crownreach_a_steady_tea_tray",
+      "title": "A Steady Tea Tray",
+      "chain": "The Observatory Tea",
+      "town": "crownreach",
+      "npc": "Cloud Tutor Orren",
+      "npc_look": "elderly mage man, violet robe, violet pointed hat, silver beard, staff",
+      "min_level": 2,
+      "type": "collect",
+      "target": "jellop",
+      "count": 16,
+      "intro": [
+        "The stair wind makes the tray slide. A thin gel grip will keep the cups safely in their rings.",
+        "Bring me 16 slime goo from Jellop in Gleaming Steps."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "Not a rattle. I can stop walking as though the tray contains sleeping dragons."
+      ],
+      "reward": {
+        "xp": 400,
+        "coins": 32,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "crownreach_shade_above_the_kettle",
+      "item": "slime_goo",
+      "target_map": "crownreach_trail"
+    },
+    {
+      "id": "crownreach_shade_above_the_kettle",
+      "title": "Shade Above the Kettle",
+      "chain": "The Observatory Tea",
+      "town": "crownreach",
+      "npc": "Cloud Tutor Orren",
+      "npc_look": "elderly mage man, violet robe, violet pointed hat, silver beard, staff",
+      "min_level": 4,
+      "type": "collect",
+      "target": "puffspore",
+      "count": 20,
+      "intro": [
+        "A light cap shade will shelter the outside kettle from passing cloud drizzle.",
+        "Bring me 20 mushroom cap from Puffspore in Gleaming Steps."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "The kettle can steam in peace. That is an admirable ambition."
+      ],
+      "reward": {
+        "xp": 840,
+        "coins": 80,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "crownreach_the_guests_first_steps",
+      "item": "mushroom_cap",
+      "target_map": "crownreach_trail"
+    },
+    {
+      "id": "crownreach_the_guests_first_steps",
+      "title": "The Guests' First Steps",
+      "chain": "The Observatory Tea",
+      "town": "crownreach",
+      "npc": "Cloud Tutor Orren",
+      "npc_look": "elderly mage man, violet robe, violet pointed hat, silver beard, staff",
+      "min_level": 2,
+      "type": "hunt",
+      "target": "pebble_snail",
+      "count": 24,
+      "intro": [
+        "Clear the approach before the new star-watchers arrive. I would like their first surprise to be the view.",
+        "Defeat 24 Pebble Snail in Gleaming Steps."
+      ],
+      "progress": "There are still Pebble Snail along the approach. Return when the path is clear.",
+      "complete": [
+        "The cups are ready and the sky is clearing. Take this for lending a hand between the clouds."
+      ],
+      "reward": {
+        "xp": 840,
+        "coins": 48,
+        "item": "starter_armor",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "target_map": "crownreach_trail"
+    },
+    {
+      "id": "rimehaven_where_the_draft_gets_in",
+      "title": "Where the Draft Gets In",
+      "chain": "A Small Warm Welcome",
+      "town": "rimehaven",
+      "npc": "Snow Guide Eirik",
+      "npc_look": "winter warden man, fur-trimmed brown coat, white hair",
+      "min_level": 2,
+      "type": "collect",
+      "target": "frost_cub",
+      "count": 12,
+      "intro": [
+        "The welcome hut is colder than the trail. A few frost samples will show which wall catches the worst draft.",
+        "Bring me 12 ice shard from Frost Cub in Snowbell Trail."
+      ],
+      "progress": "I still need the rest of the ice shard. Take your time on the trail.",
+      "complete": [
+        "The north corner. I had blamed the door, which was quite unfair to it."
+      ],
+      "reward": {
+        "xp": 240,
+        "coins": 24,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 3
+      },
+      "next": "rimehaven_a_smooth_sled_runner",
+      "item": "ice_shard",
+      "target_map": "rimehaven_trail"
+    },
+    {
+      "id": "rimehaven_a_smooth_sled_runner",
+      "title": "A Smooth Sled Runner",
+      "chain": "A Small Warm Welcome",
+      "town": "rimehaven",
+      "npc": "Snow Guide Eirik",
+      "npc_look": "winter warden man, fur-trimmed brown coat, white hair",
+      "min_level": 2,
+      "type": "collect",
+      "target": "azure_snail",
+      "count": 16,
+      "intro": [
+        "The supply sled runner is rough. Shell powder will polish it without taking too much wood away.",
+        "Bring me 16 snail shell from Azure Snail in Snowbell Trail."
+      ],
+      "progress": "I still need the rest of the snail shell. Take your time on the trail.",
+      "complete": [
+        "That will glide. Carrying firewood should not feel like pulling the whole forest."
+      ],
+      "reward": {
+        "xp": 400,
+        "coins": 32,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 4
+      },
+      "next": "rimehaven_the_window_seal",
+      "item": "snail_shell",
+      "target_map": "rimehaven_trail"
+    },
+    {
+      "id": "rimehaven_the_window_seal",
+      "title": "The Window Seal",
+      "chain": "A Small Warm Welcome",
+      "town": "rimehaven",
+      "npc": "Snow Guide Eirik",
+      "npc_look": "winter warden man, fur-trimmed brown coat, white hair",
+      "min_level": 4,
+      "type": "collect",
+      "target": "jellop",
+      "count": 20,
+      "intro": [
+        "A flexible clear seal will keep cold air out without hiding the snowbell flowers outside.",
+        "Bring me 20 slime goo from Jellop in Snowbell Trail."
+      ],
+      "progress": "I still need the rest of the slime goo. Take your time on the trail.",
+      "complete": [
+        "A warmer window with the same lovely view. A fair bargain."
+      ],
+      "reward": {
+        "xp": 840,
+        "coins": 80,
+        "item": "",
+        "consumable": "hp_1",
+        "consumable_count": 5
+      },
+      "next": "rimehaven_tiny_roofs_for_snowbells",
+      "item": "slime_goo",
+      "target_map": "rimehaven_trail"
+    },
+    {
+      "id": "rimehaven_tiny_roofs_for_snowbells",
+      "title": "Tiny Roofs for Snowbells",
+      "chain": "A Small Warm Welcome",
+      "town": "rimehaven",
+      "npc": "Snow Guide Eirik",
+      "npc_look": "winter warden man, fur-trimmed brown coat, white hair",
+      "min_level": 4,
+      "type": "collect",
+      "target": "puffspore",
+      "count": 24,
+      "intro": [
+        "A late frost threatens the flowers around the hut. Small cap roofs will shelter them until morning.",
+        "Bring me 24 mushroom cap from Puffspore in Snowbell Trail."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "Warm guests and sheltered flowers. You have made a small corner of winter kinder. This is for you."
+      ],
+      "reward": {
+        "xp": 1176,
+        "coins": 96,
+        "item": "starter_armor",
+        "consumable": "hp_1",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "mushroom_cap",
+      "target_map": "rimehaven_trail"
+    },
+    {
+      "id": "jadehaven_a_shade_for_each_lantern",
+      "title": "A Shade for Each Lantern",
+      "chain": "The Ricefield Lanterns",
+      "town": "jadehaven",
+      "npc": "Auntie Jun",
+      "npc_look": "elderly woman, silver bun, teal-blue shawl, cream skirt, woven basket",
+      "min_level": 45,
+      "type": "collect",
+      "target": "mossy_cap",
+      "count": 18,
+      "intro": [
+        "The ricefield lanterns need fresh shades before the harvest walk. Broad caps will keep their light low and warm.",
+        "Bring me 18 mushroom cap from Mossy Cap in Jadegrain Fields."
+      ],
+      "progress": "I still need the rest of the mushroom cap. Take your time on the trail.",
+      "complete": [
+        "The path will glow without waking the birds in the reeds."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "jadehaven_the_harvest_approach",
+      "item": "mushroom_cap",
+      "target_map": "jadehaven_trail"
+    },
+    {
+      "id": "jadehaven_the_harvest_approach",
+      "title": "The Harvest Approach",
+      "chain": "The Ricefield Lanterns",
+      "town": "jadehaven",
+      "npc": "Auntie Jun",
+      "npc_look": "elderly woman, silver bun, teal-blue shawl, cream skirt, woven basket",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "tusker_boar",
+      "count": 22,
+      "intro": [
+        "Boars are crowding the approach where the harvest baskets pass. Give the carriers a clear stretch.",
+        "Defeat 22 Tusker Boar in Jadegrain Fields."
+      ],
+      "progress": "There are still Tusker Boar along the approach. Return when the path is clear.",
+      "complete": [
+        "Every basket reached the storehouse. That is a quiet sort of triumph."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "jadehaven_the_stolen_harvest_ties",
+      "target_map": "jadehaven_trail"
+    },
+    {
+      "id": "jadehaven_the_stolen_harvest_ties",
+      "title": "The Stolen Harvest Ties",
+      "chain": "The Ricefield Lanterns",
+      "town": "jadehaven",
+      "npc": "Auntie Jun",
+      "npc_look": "elderly woman, silver bun, teal-blue shawl, cream skirt, woven basket",
+      "min_level": 45,
+      "type": "collect",
+      "target": "canopy_ape",
+      "count": 26,
+      "intro": [
+        "The apes have carried off the pink harvest ties. Bring the recovered ribbons back before they knot them into a hammock.",
+        "Bring me 26 pig ribbon from Canopy Ape in Jadegrain Fields."
+      ],
+      "progress": "I still need the rest of the pig ribbon. Take your time on the trail.",
+      "complete": [
+        "Still mostly straight. I have untangled worse things than an ape's idea of decoration."
+      ],
+      "reward": {
+        "xp": 11427,
+        "coins": 1170,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "jadehaven_a_wish_on_the_evening_wind",
+      "item": "pig_ribbon",
+      "target_map": "jadehaven_trail"
+    },
+    {
+      "id": "jadehaven_a_wish_on_the_evening_wind",
+      "title": "A Wish on the Evening Wind",
+      "chain": "The Ricefield Lanterns",
+      "town": "jadehaven",
+      "npc": "Auntie Jun",
+      "npc_look": "elderly woman, silver bun, teal-blue shawl, cream skirt, woven basket",
+      "min_level": 47,
+      "type": "collect",
+      "target": "twinhead_birk",
+      "count": 30,
+      "intro": [
+        "Soft feathers will balance the hanging wishes so they turn gently instead of tearing in the breeze.",
+        "Bring me 30 feather from Twinhead Birk in Jadegrain Fields."
+      ],
+      "progress": "I still need the rest of the feather. Take your time on the trail.",
+      "complete": [
+        "The field lights are ready. Take this, and think of a good wish before you join the walk."
+      ],
+      "reward": {
+        "xp": 16275,
+        "coins": 1410,
+        "item": "shoes_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "feather",
+      "target_map": "jadehaven_trail"
+    },
+    {
+      "id": "lotusquay_clips_for_the_ferry_awning",
+      "title": "Clips for the Ferry Awning",
+      "chain": "The Crossing at Dusk",
+      "town": "lotusquay",
+      "npc": "Ferryman Sen",
+      "npc_look": "serene monk, dark teal robe, pale blue sash, prayer beads",
+      "min_level": 45,
+      "type": "collect",
+      "target": "reef_snapper",
+      "count": 18,
+      "intro": [
+        "The ferry awning shook loose in the last squall. Strong claw clips will hold its edges through the crossing.",
+        "Bring me 18 crab claw from Reef Snapper in Lotuswater Crossing."
+      ],
+      "progress": "I still need the rest of the crab claw. Take your time on the trail.",
+      "complete": [
+        "A dry bench is a generous welcome after a wet road."
+      ],
+      "reward": {
+        "xp": 5274,
+        "coins": 810,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 3
+      },
+      "next": "lotusquay_the_waiting_steps",
+      "item": "crab_claw",
+      "target_map": "lotusquay_trail"
+    },
+    {
+      "id": "lotusquay_the_waiting_steps",
+      "title": "The Waiting Steps",
+      "chain": "The Crossing at Dusk",
+      "town": "lotusquay",
+      "npc": "Ferryman Sen",
+      "npc_look": "serene monk, dark teal robe, pale blue sash, prayer beads",
+      "min_level": 45,
+      "type": "hunt",
+      "target": "swamp_gator",
+      "count": 22,
+      "intro": [
+        "Clear the waiting steps while I repair the mooring rope. The passengers need somewhere safe to stand.",
+        "Defeat 22 Swamp Gator in Lotuswater Crossing."
+      ],
+      "progress": "There are still Swamp Gator along the approach. Return when the path is clear.",
+      "complete": [
+        "The landing is quiet again. You can hear the lotus leaves brushing the water."
+      ],
+      "reward": {
+        "xp": 8057,
+        "coins": 990,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 4
+      },
+      "next": "lotusquay_the_mooring_seal",
+      "target_map": "lotusquay_trail"
+    },
+    {
+      "id": "lotusquay_the_mooring_seal",
+      "title": "The Mooring Seal",
+      "chain": "The Crossing at Dusk",
+      "town": "lotusquay",
+      "npc": "Ferryman Sen",
+      "npc_look": "serene monk, dark teal robe, pale blue sash, prayer beads",
+      "min_level": 45,
+      "type": "collect",
+      "target": "tide_inkling",
+      "count": 26,
+      "intro": [
+        "A coat of flexible resin will protect the fresh rope where it rests against the quay.",
+        "Bring me 26 ectoplasm from Tide Inkling in Lotuswater Crossing."
+      ],
+      "progress": "I still need the rest of the ectoplasm. Take your time on the trail.",
+      "complete": [
+        "That should last through many crossings. I prefer repairs that give us time to watch the river."
+      ],
+      "reward": {
+        "xp": 11427,
+        "coins": 1170,
+        "item": "",
+        "consumable": "hp_2",
+        "consumable_count": 5
+      },
+      "next": "lotusquay_the_dusk_reflector",
+      "item": "ectoplasm",
+      "target_map": "lotusquay_trail"
+    },
+    {
+      "id": "lotusquay_the_dusk_reflector",
+      "title": "The Dusk Reflector",
+      "chain": "The Crossing at Dusk",
+      "town": "lotusquay",
+      "npc": "Ferryman Sen",
+      "npc_look": "serene monk, dark teal robe, pale blue sash, prayer beads",
+      "min_level": 47,
+      "type": "collect",
+      "target": "gloomfin",
+      "count": 30,
+      "intro": [
+        "A few bright fish scales will restore the little reflector on the last ferry lamp.",
+        "Bring me 30 scale from Gloomfin in Lotuswater Crossing."
+      ],
+      "progress": "I still need the rest of the scale. Take your time on the trail.",
+      "complete": [
+        "There: one clear light across the dusk. Take this, and wave if you pass us on the water."
+      ],
+      "reward": {
+        "xp": 16275,
+        "coins": 1410,
+        "item": "cape_lv30",
+        "consumable": "hp_2",
+        "consumable_count": 6
+      },
+      "next": "",
+      "item": "scale",
+      "target_map": "lotusquay_trail"
+    }
+  ],
+  "npcs": [
+    {
+      "name": "Granny Moss",
+      "town": "town",
+      "x": 1250,
+      "look": "elderly woman, silver bun, green shawl, cream skirt, woven basket",
+      "sprite": "quest_npc_00"
+    },
+    {
+      "name": "Tutor Fen",
+      "town": "firstlight",
+      "x": 450,
+      "look": "bespectacled scholar man, brown vest, blue scarf, book",
+      "sprite": "quest_npc_06"
+    },
+    {
+      "name": "Ropemaker Tams",
+      "town": "gullhaven",
+      "x": 450,
+      "look": "weathered harbor man, blue cap, teal coat, rope coil",
+      "sprite": "quest_npc_02"
+    },
+    {
+      "name": "Astronomer Iven",
+      "town": "starbough",
+      "x": 450,
+      "look": "elderly mage man, navy robe, blue pointed hat, silver beard, staff",
+      "sprite": "quest_npc_09"
+    },
+    {
+      "name": "Smith Orsa",
+      "town": "ironridge",
+      "x": 450,
+      "look": "bearded blacksmith man, dark apron, copper goggles, lowered hammer",
+      "sprite": "quest_npc_04"
+    },
+    {
+      "name": "Courier Venn",
+      "town": "shadecross",
+      "x": 450,
+      "look": "young courier woman, plum hood, brown satchel",
+      "sprite": "quest_npc_05"
+    },
+    {
+      "name": "Apothecary Nessa",
+      "town": "hollowroot",
+      "x": 450,
+      "look": "alchemist woman, silver hair, violet robe, green vial",
+      "sprite": "quest_npc_15"
+    },
+    {
+      "name": "Baker Miri",
+      "town": "sunpetal",
+      "x": 450,
+      "look": "plump baker woman, white bonnet, cream apron, bread basket",
+      "sprite": "quest_npc_01"
+    },
+    {
+      "name": "Weather Reader Pell",
+      "town": "skylume",
+      "x": 450,
+      "look": "bespectacled scholar man, slate vest, gold scarf, book",
+      "sprite": "quest_npc_22"
+    },
+    {
+      "name": "Warden Hest",
+      "town": "frostmere",
+      "x": 450,
+      "look": "winter warden man, fur-trimmed blue coat, white hair",
+      "sprite": "quest_npc_14"
+    },
+    {
+      "name": "Tinker Bea",
+      "town": "tickletop",
+      "x": 450,
+      "look": "engineer woman, brass goggles, teal overalls, wrench",
+      "sprite": "quest_npc_11"
+    },
+    {
+      "name": "Forgekeeper Dorr",
+      "town": "brasswatch",
+      "x": 450,
+      "look": "bearded blacksmith man, navy apron, copper goggles, lowered hammer",
+      "sprite": "quest_npc_20"
+    },
+    {
+      "name": "Lantern Boy Nilo",
+      "town": "lanternvale",
+      "x": 450,
+      "look": "young lantern boy, yellow raincoat, brown boots, small lantern",
+      "sprite": "quest_npc_07"
+    },
+    {
+      "name": "Diver Corven",
+      "town": "tideglass",
+      "x": 450,
+      "look": "traveling merchant man, burgundy coat, broad hat, travel pack",
+      "sprite": "quest_npc_12"
+    },
+    {
+      "name": "Pathkeeper Sera",
+      "town": "wyrmrest",
+      "x": 450,
+      "look": "ranger woman, auburn braid, forest-green cloak, bow on back",
+      "sprite": "quest_npc_13"
+    },
+    {
+      "name": "Baker Omi",
+      "town": "peachspire",
+      "x": 450,
+      "look": "plump baker woman, white bonnet, lavender apron, bread basket",
+      "sprite": "quest_npc_17"
+    },
+    {
+      "name": "Reed Farmer Eda",
+      "town": "reedhaven",
+      "x": 450,
+      "look": "farmer woman, straw hat, ochre overalls, seed pouch",
+      "sprite": "quest_npc_10"
+    },
+    {
+      "name": "Caravaner Yaro",
+      "town": "saffron",
+      "x": 450,
+      "look": "traveling merchant man, indigo coat, broad hat, travel pack",
+      "sprite": "quest_npc_28"
+    },
+    {
+      "name": "Distiller Ilsa",
+      "town": "verdigris",
+      "x": 450,
+      "look": "alchemist woman, silver hair, deep navy robe, green vial",
+      "sprite": "quest_npc_31"
+    },
+    {
+      "name": "Keeper Meren",
+      "town": "hourglass",
+      "x": 450,
+      "look": "serene monk, tan robe, blue sash, prayer beads",
+      "sprite": "quest_npc_08"
+    },
+    {
+      "name": "Shrine Attendant Ena",
+      "town": "moonshrine",
+      "x": 450,
+      "look": "young shrine keeper woman, white robe, red sash, paper charm",
+      "sprite": "quest_npc_03"
+    },
+    {
+      "name": "Night Courier Tess",
+      "town": "emberlane",
+      "x": 450,
+      "look": "young courier woman, dark green hood, brown satchel",
+      "sprite": "quest_npc_21"
+    },
+    {
+      "name": "Bellkeeper Sumi",
+      "town": "mistkeep",
+      "x": 450,
+      "look": "young shrine keeper woman, white robe, blue sash, paper charm",
+      "sprite": "quest_npc_19"
+    },
+    {
+      "name": "Mechanic Nell",
+      "town": "copperwick",
+      "x": 450,
+      "look": "engineer woman, brass goggles, rust-orange overalls, wrench",
+      "sprite": "quest_npc_27"
+    },
+    {
+      "name": "Trail Ranger Rhea",
+      "town": "thornscar",
+      "x": 450,
+      "look": "ranger woman, auburn braid, blue cloak, bow on back",
+      "sprite": "quest_npc_29"
+    },
+    {
+      "name": "Dockhand Bren",
+      "town": "rainport",
+      "x": 450,
+      "look": "weathered harbor man, blue cap, burgundy coat, rope coil",
+      "sprite": "quest_npc_18"
+    },
+    {
+      "name": "Fairground Pip",
+      "town": "bloomkamp",
+      "x": 450,
+      "look": "young lantern boy, red raincoat, brown boots, small lantern",
+      "sprite": "quest_npc_23"
+    },
+    {
+      "name": "Seedkeeper Lotte",
+      "town": "farmeadow",
+      "x": 450,
+      "look": "farmer woman, straw hat, green overalls, seed pouch",
+      "sprite": "quest_npc_26"
+    },
+    {
+      "name": "Cloud Tutor Orren",
+      "town": "crownreach",
+      "x": 450,
+      "look": "elderly mage man, violet robe, violet pointed hat, silver beard, staff",
+      "sprite": "quest_npc_25"
+    },
+    {
+      "name": "Snow Guide Eirik",
+      "town": "rimehaven",
+      "x": 450,
+      "look": "winter warden man, fur-trimmed brown coat, white hair",
+      "sprite": "quest_npc_30"
+    },
+    {
+      "name": "Auntie Jun",
+      "town": "jadehaven",
+      "x": 450,
+      "look": "elderly woman, silver bun, teal-blue shawl, cream skirt, woven basket",
+      "sprite": "quest_npc_16"
+    },
+    {
+      "name": "Ferryman Sen",
+      "town": "lotusquay",
+      "x": 450,
+      "look": "serene monk, dark teal robe, pale blue sash, prayer beads",
+      "sprite": "quest_npc_24"
+    }
+  ]
+}

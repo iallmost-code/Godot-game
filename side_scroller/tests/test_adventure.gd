@@ -37,6 +37,7 @@ func world_checks(t):
         if preload("res://visuals/skill_icon_layout.gd").region(id).size.x<=0: missing.append(id)
     t.check(missing.is_empty(),"every skill has a painted icon")
 func quest_checks(t):
+    Quests.force_builtin=true
     Quests.reset_cache()
     var all=Quests.all()
     t.check(all.size()>=90,"every town has a quest chain (%d quests)" % all.size())
@@ -47,7 +48,7 @@ func quest_checks(t):
         if not Maps.definition(q.town).get("safe",false): broken.append(id)
         if q.reward.has("item") and not Catalog.items().has(q.reward.item): broken.append(id)
     t.check(broken.is_empty(),"quests use real monsters, towns and rewards %s" % str(broken.slice(0,3)))
-    t.check(Quests.givers("frostmere").size()==1 and Quests.givers("town")[0].x==300.0,"each town has a quest giver clear of the other NPCs")
+    giver_check(t,"built-in")
     var s=H.make("warrior",[],3)
     t.check(Quests.status(s,"town_q1")=="available" and Quests.status(s,"town_q2")=="hidden","the first quest is offered; the next waits for it")
     t.check(Quests.marker(s,"town","Old Tobin")=="!","a yellow ! marks an NPC with a new quest")
@@ -74,7 +75,43 @@ func quest_checks(t):
     # JSON quests written for the world are cleaned up and checked.
     var cleaned=Quests.clean({"id":"x","town":"frostmere","npc":"Edda","type":"collect","target":"frost_cub","count":5,"intro":"Hello","reward":{"xp":10,"item":"no_such_item","consumable":"hp_2","consumable_count":3}})
     t.check(cleaned.item=="ice_shard" and not cleaned.reward.has("item") and cleaned.reward.count==3 and cleaned.intro==["Hello"],"quests.json entries are cleaned")
+    json_quest_checks(t)
     t.check(Quests.clean({"id":"y","town":"frostmere_trail","npc":"Edda","type":"hunt","target":"frost_cub"}).is_empty() and Quests.clean({"id":"z","town":"frostmere","npc":"E","type":"hunt","target":"dragon_god"}).is_empty(),"quests in unsafe maps or with unknown monsters are dropped")
+func giver_check(t,label: String):
+    var crowded=[]
+    for town in Maps.all_ids():
+        if not Maps.definition(town).safe: continue
+        if Quests.givers(town).is_empty(): crowded.append(town+" has none")
+        var placed=[]
+        for g in Quests.givers(town):
+            if Quests.blocked(town,g.x,placed): crowded.append(town+" "+g.name)
+            placed.append(g.x)
+    t.check(crowded.is_empty(),"%s: every town has quest givers clear of other NPCs and gates %s" % [label,str(crowded.slice(0,3))])
+# The written quest chains in data/quests.json.
+func json_quest_checks(t):
+    Quests.force_builtin=false
+    Quests.reset_cache()
+    if not FileAccess.file_exists(Quests.JSON_PATH): return
+    var raw=JSON.parse_string(FileAccess.get_file_as_string(Quests.JSON_PATH))
+    t.check(Quests.all().size()==raw.quests.size() and Quests.all().size()>=96,"every quest in quests.json loads (%d)" % Quests.all().size())
+    giver_check(t,"quests.json")
+    var s=H.make("warrior",[],200)
+    var walked=0
+    var town="town"
+    var npc=Quests.givers(town)[0].name
+    for step in 8:
+        var list=Quests.for_npc(s,town,npc).filter(func(id): return Quests.status(s,id)=="available")
+        if list.is_empty(): break
+        var id=list[0]
+        var q=Quests.all()[id]
+        Quests.accept(s,id)
+        if q.type=="hunt":
+            for i in q.count: Quests.on_kill(s,q.target)
+        elif q.type=="collect":
+            for i in q.count: s.collect_reward({"quest_item":q.item})
+        if Quests.complete(s,id).is_empty(): break
+        walked+=1
+    t.check(walked>=3,"a written quest chain can be played through (%d steps)" % walked)
 func scroll_checks(t):
     var s=H.make("warrior",["warrior"],30)
     var weapon=s.equipped.weapon
@@ -107,20 +144,21 @@ func scroll_checks(t):
 func save_checks(t):
     var s=H.make("thief",["thief"],20)
     s.coins=50000
-    t.check(not s.buy_pet("dragon") and s.buy_pet("puppy") and s.pet=="puppy" and s.coins==35000 and not s.buy_pet("puppy"),"pets cost coins and are bought once")
-    t.check(s.set_pet("") and s.pet=="" and not s.set_pet("dragon") and s.set_pet("puppy"),"you can switch to pets you own")
+    t.check(not s.buy_pet("baby_dragon") and s.buy_pet("puppy") and s.pet=="puppy" and s.coins==35000 and not s.buy_pet("puppy"),"pets cost coins and are bought once")
+    t.check(s.set_pet("") and s.pet=="" and not s.set_pet("baby_dragon") and s.set_pet("puppy"),"you can switch to pets you own")
     t.check(s.set_looks({"hair":"braid","hair_color":3,"face":"cool","skin":2}) and not s.set_looks({"hair":"afro","hair_color":0,"face":"default","skin":0}) and not s.set_looks({"hair":"braid","hair_color":99,"face":"default","skin":0}),"looks accept only real options")
     s.remember_town("frostmere")
-    Quests.accept(s,"town_q1")
+    var first=Quests.all().keys().filter(func(id): return Quests.status(s,id)=="available")[0]
+    Quests.accept(s,first)
     s.quest_items["ice_shard"]=4
     s.add_scroll("scroll_cape_10",2)
     var copy=load("res://systems/character_state.gd").new()
-    t.check(copy.load_record(s.to_record()) and copy.town=="frostmere" and copy.pet=="puppy" and copy.looks.hair=="braid" and copy.quests.has("town_q1") and copy.quest_items.ice_shard==4 and copy.scrolls.scroll_cape_10==2,"town, pets, looks, quests and scrolls are saved")
+    t.check(copy.load_record(s.to_record()) and copy.town=="frostmere" and copy.pet=="puppy" and copy.looks.hair=="braid" and copy.quests.has(first) and copy.quest_items.ice_shard==4 and copy.scrolls.scroll_cape_10==2,"town, pets, looks, quests and scrolls are saved")
     var old=s.to_record()
     for key in ["town","quests","quest_items","scrolls","looks","pets","pet"]: old.erase(key)
     var fresh=load("res://systems/character_state.gd").new()
     t.check(fresh.load_record(old) and fresh.town=="town" and fresh.pets.is_empty(),"older saves without the new fields still load")
-    for bad in [{"pet":"dragon"},{"looks":{"hair":"x"}},{"scrolls":{"scroll_fake":1}},{"quest_items":{"ice_shard":-1}},{"town":"frostmere_trail"}]:
+    for bad in [{"pet":"baby_dragon"},{"looks":{"hair":"x"}},{"scrolls":{"scroll_fake":1}},{"quest_items":{"ice_shard":-1}},{"town":"frostmere_trail"}]:
         var record=s.to_record()
         for key in bad: record[key]=bad[key]
         var ok=fresh.load_record(record)
@@ -161,13 +199,18 @@ func game_checks(t):
     p.apply_knockback(Vector2(100,-50))
     t.check(not p.climbing and p.collision_mask==1,"getting hit knocks you off a rope")
     # Quest kills on a map and the quest giver in town.
-    H.reach(game.state,5)
-    t.check(Quests.accept(game.state,"town_q1"),"quests can be accepted in game")
-    var record=null
-    for r in game.map.spawns:
-        if r.id=="mossling": record=r
-    game.map.on_defeated(record.position,"mossling",record)
-    t.check(game.state.quests.town_q1.count==1,"defeating a monster on the map counts for quests")
+    H.reach(game.state,60)
+    var record=game.map.spawns[0]
+    var hunt=""
+    for id in Quests.all():
+        var q=Quests.all()[id]
+        if q.type=="hunt" and q.target==record.id and not q.has("prev"): hunt=id
+    if hunt=="":
+        Quests.all()["test_hunt"]={"id":"test_hunt","town":"town","npc":"Tester","type":"hunt","min_level":1,"target":record.id,"item":"","count":5,"intro":["x"],"progress":"x","complete":["x"],"next":"","title":"Test","reward":{"xp":1}}
+        hunt="test_hunt"
+    t.check(Quests.accept(game.state,hunt),"quests can be accepted in game")
+    game.map.on_defeated(record.position,record.id,record)
+    t.check(game.state.quests[hunt].count==1,"defeating a monster on the map counts for quests")
     game.change_map("frostmere","entry")
     t.check(game.state.town=="frostmere" and game.respawn_map_id=="frostmere","the save remembers the last town")
     game.player.position=Vector2(Quests.givers("frostmere")[0].x,610)

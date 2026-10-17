@@ -226,6 +226,10 @@ func show_advancement(_id: String=""):
         box.add_child(Style.button("Become a %s" % job.name,func():
             if state.advance_job(option):
                 menu.close()
+                var fx=preload("res://visuals/level_up_fx.gd").new()
+                fx.kind="skill_learned"
+                fx.follow=player
+                add_child(fx)
                 hud.show_notice("You are now a %s! Open Skills to spend your new skill point." % job.name,7)))
     box.add_child(Style.button("Not yet",menu.close))
 func _process(delta):

@@ -4,6 +4,7 @@ const Catalog=preload("res://data/catalog.gd")
 const EnemyStats=preload("res://data/enemy_stats.gd")
 const Quests=preload("res://systems/quests.gd")
 const Adventure=preload("res://data/adventure.gd")
+const UiIcons=preload("res://visuals/ui_icon_layout.gd")
 var map_id="town"
 var width=1800.0
 var state
@@ -55,11 +56,10 @@ func setup(s):
         merchant.set_pose("idle",-1,0)
         make_label("Merchant\nShop • Sell • Forge",merchant_position+Vector2(-75,-115),Color("ffe2a8"),17)
         for giver in Quests.givers(map_id):
-            var npc_visual=preload("res://visuals/character_visual.gd").new()
+            var npc_visual=preload("res://world/npc_sprite.gd").new()
+            npc_visual.npc_name=giver.name
             npc_visual.position=Vector2(giver.x,610)
-            npc_visual.modulate=Color(0.85,1.0,0.85)
             add_child(npc_visual)
-            npc_visual.set_pose("idle",1,0)
             quest_givers.append(giver)
             make_label(giver.name+"\nQuests",Vector2(giver.x-75,495),Color("d6f5b0"),17)
     else:
@@ -219,17 +219,12 @@ func collect(drop) -> bool:
     return false
 func _draw():
     for portal in portals: draw_portal(portal.position)
-    var font=ThemeDB.fallback_font
     for giver in quest_givers:
         var mark=Quests.marker(state,map_id,giver.name)
         if mark=="": continue
-        var color=Color("ffd23f") if mark in ["!","?"] else Color("8fb3ff") if mark=="…" else Color("b9b9b9")
-        var text="!" if mark=="!locked" else mark
+        var key={"!":"quest_available","!locked":"quest_locked","?":"quest_ready","…":"quest_progress"}[mark]
         var bob=sin(Time.get_ticks_msec()/260.0)*4
-        var at=Vector2(giver.x,468+bob)
-        draw_circle(at+Vector2(0,-12),17,Color(0.1,0.15,0.2,0.75))
-        draw_string_outline(font,at+Vector2(-20,0),text,HORIZONTAL_ALIGNMENT_CENTER,40,28,5,Color("3a2a05"))
-        draw_string(font,at+Vector2(-20,0),text,HORIZONTAL_ALIGNMENT_CENTER,40,28,color)
+        draw_texture_rect_region(UiIcons.ART,Rect2(giver.x-22,430+bob,44,44),UiIcons.DATA[key])
 func draw_portal(portal_position: Vector2):
     # Portal rune with a pulsing center and arch.
     var portal_color=Color("8fecdf")

@@ -42,21 +42,22 @@ static func random_scroll() -> String:
     return "scroll_%s_%d" % [GEAR_SLOTS.pick_random(),SCROLL_TIERS[tier]]
 
 const PETS={
-    "puppy":{"name":"Brown Pup","price":15000,"body":Color("b07a4a"),"accent":Color("f2dcc0"),"shape":"dog"},
-    "kitten":{"name":"Ginger Kitten","price":15000,"body":Color("f0a04b"),"accent":Color("fff1dc"),"shape":"cat"},
-    "bunny":{"name":"Snow Bunny","price":15000,"body":Color("f4f4fa"),"accent":Color("f5b6c8"),"shape":"bunny"},
-    "penguin":{"name":"Tuxedo Penguin","price":40000,"body":Color("2f3b4c"),"accent":Color("f6f6f6"),"shape":"penguin"},
-    "slime":{"name":"Pet Jellop","price":40000,"body":Color("7fd17a"),"accent":Color("d6ffd0"),"shape":"slime"},
-    "dragon":{"name":"Baby Drake","price":120000,"body":Color("6aa9e8"),"accent":Color("ffd36e"),"shape":"dragon"}}
+    "puppy":{"name":"Brown Pup","price":15000},
+    "kitten":{"name":"Ginger Kitten","price":15000},
+    "bunny":{"name":"Snow Bunny","price":15000},
+    "penguin":{"name":"Tuxedo Penguin","price":40000},
+    "slime":{"name":"Pet Jellop","price":40000},
+    "baby_dragon":{"name":"Baby Drake","price":120000}}
 const PET_LOOT_RADIUS=230.0
 
-const HAIR={"spiky":"Spiky","straight":"Long Straight","ponytail":"Ponytail","bowl":"Bowl Cut","messy":"Messy","braid":"Braid","mohawk":"Mohawk","bun":"Bun"}
+# "classic" keeps the class's original painted head.
+const HAIR={"classic":"Classic","spiky":"Spiky","long":"Long","ponytail":"Ponytail","bowl":"Bowl Cut","messy":"Messy","braid":"Braid","mohawk":"Mohawk","bun":"Bun"}
 const HAIR_COLORS=[Color("6b4428"),Color("1f1b1d"),Color("e8c766"),Color("b8452c"),Color("e9e7ef"),Color("5f8de0"),Color("e07fb5"),Color("62b56a")]
 const HAIR_COLOR_NAMES=["Brown","Black","Blonde","Red","Silver","Blue","Pink","Green"]
 const FACES={"default":"Default","determined":"Determined","sleepy":"Sleepy","angry":"Fierce","smiling":"Smiling","cool":"Cool"}
 const SKINS=[Color("ffe2c8"),Color("f2c49b"),Color("c98f62"),Color("7d5236")]
 const SKIN_NAMES=["Light","Warm","Tan","Deep"]
-static func default_looks() -> Dictionary: return {"hair":"spiky","hair_color":0,"face":"default","skin":0}
+static func default_looks() -> Dictionary: return {"hair":"classic","hair_color":0,"face":"default","skin":0}
 static func valid_looks(looks) -> bool:
     if not looks is Dictionary: return false
     if not HAIR.has(looks.get("hair","")) or not FACES.has(looks.get("face","")): return false
@@ -77,6 +78,9 @@ const ITEM_BY_WORD=[["snail","snail_shell"],["cap","mushroom_cap"],["spore","fai
     ["tick","gear_cog"],["clock","gear_cog"],["timepiece","gear_cog"],["bone","bone_fragment"],["drake","scale"],["wyvern","scale"],["birk","feather"],["centaur","feather"],["ape","feather"],
     ["bruin","cursed_doll"],["inkling","ectoplasm"],["gloomfin","ectoplasm"],["shade","ectoplasm"],["lizard","lizard_tail"],["gator","lizard_tail"],["snapper","crab_claw"],["coral","crab_claw"],
     ["warden","star_fragment"],["monk","star_fragment"],["guardian","star_fragment"],["sentinel","star_fragment"],["moonfang","boar_tusk"]]
+# Painted icon id for a scroll or quest item (ui_icon_layout uses earring / clean_slate).
+static func icon_id(id: String) -> String:
+    return id.replace("scroll_accessory_","scroll_earring_").replace("scroll_clean","scroll_clean_slate")
 static func quest_item_for(monster: String) -> String:
     for pair in ITEM_BY_WORD:
         if monster.contains(pair[0]): return pair[1]

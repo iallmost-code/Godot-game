@@ -81,7 +81,7 @@ Hunting maps have upper ledges. Stand at the foot of a rope or ladder and hold *
 
 ## Quests
 
-Every town has a quest giver with a three-step chain: a hunt, a collection quest and a tougher hunt on the upper ledges. A yellow **!** over an NPC means a new quest, a grey one means you are not high enough yet, **…** means it is in progress and **?** means you can hand it in. Stand next to the NPC and press **Up** to talk. Collection quests make the right monster drop quest items while the quest is active. Rewards are XP, coins, potions, upgrade scrolls and a helm. **Quests (Q)** lists what you are doing and what is available. Quest text can be replaced by writing `data/quests.json` (format in `systems/quests.gd`).
+Every town has a quest giver with a chain of four written quests (128 in all): hunts and collection quests along that town's route. A yellow **!** over an NPC means a new quest, a grey one means you are not high enough yet, **…** means it is in progress and **?** means you can hand it in. Stand next to the NPC and press **Up** to talk. Collection quests make the right monster drop quest items while the quest is active. Rewards are XP, coins, potions, upgrade scrolls and a helm. **Quests (Q)** lists what you are doing and what is available. Quest text can be replaced by writing `data/quests.json` (format in `systems/quests.gd`).
 
 ## Gear, shops and the Forge
 
@@ -108,7 +108,7 @@ Scrolls never destroy gear. Scrolls and the Forge stack.
 
 ### Pets and looks
 
-Merchants also sell pets (**Pets** tab): Brown Pup, Ginger Kitten, Snow Bunny, Tuxedo Penguin, Pet Jellop and Baby Drake. Your pet follows you between maps and fetches coins, potions, gear, scrolls and quest items that drop nearby. Switch pets in **Characters**. That panel also sets hair, hair colour, face and skin tone. These choices are saved, but they only show in game once their art is added.
+Merchants also sell pets (**Pets** tab): Brown Pup, Ginger Kitten, Snow Bunny, Tuxedo Penguin, Pet Jellop and Baby Drake. Your pet follows you between maps and fetches coins, potions, gear, scrolls and quest items that drop nearby. Switch pets in **Characters**. That panel also sets hair (8 styles), hair colour, face and skin tone, with a live preview. **Classic** keeps your class's original painted head.
 
 Your save remembers the last town you visited and starts you there.
 
@@ -125,7 +125,7 @@ Progress and controls save in this browser's local project data. **Menu → Save
 - **Combat effects:** `art/combat_atlas.png` / `visuals/attack_art.gd` contain slash, thrust, wave, impact and elemental art. Projectiles have fading trails; spell and melee effects wait for their combat windup.
 - **Skills:** every skill is one entry in `data/catalog.gd`; display names are in `RENAMES` and `FAMILY_NAMES`. Icons come from `art/skill_icons.png` / `visuals/skill_icon_layout.gd`.
 - **Ropes and ledges:** `add_tiers()` in `data/maps.gd` adds ledges, climbs (`[x, top, bottom, "rope"|"ladder"]`) and ledge monsters to every hunting map. Painted rope and ladder pieces are used when `art/climb_atlas.png` and `visuals/climb_layout.gd` exist.
-- **Scrolls, pets, looks and quest items:** `data/adventure.gd`. Quests: `systems/quests.gd`.
+- **Scrolls, pets, looks and quest items:** `data/adventure.gd`. Quests: `systems/quests.gd` reads `data/quests.json` (128 written quests). Art: `visuals/looks_layout.gd` + `custom_body_layout.gd` (hair-free bodies with skin masks), `pet_layout.gd`, `npc_layout.gd`, `ui_icon_layout.gd`, `levelup_layout.gd` and the `CLIMB` frames in `body_layout.gd`.
 
 ## Development checks
 

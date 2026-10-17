@@ -10,7 +10,7 @@ Current project source: [`side_scroller/`](side_scroller/). Full controls, class
 - **242 skills** with original names: attacks, buffs, passives, summons, heals, teleports, combo orbs, elemental brands and Shadow Twin.
 - **An 87-map world:** 32 safe towns with regional hunting routes, ten deeper hunting grounds that run to level 200, and **12 boss lairs** reached from their towns. See [`side_scroller/WORLD_GUIDE.md`](side_scroller/WORLD_GUIDE.md).
 - **49 new monsters** placed by theme (snails and mushrooms early, toys in Tickletop, fish and crabs in Tideglass, drakes in Wyrmrest...) and **12 bosses** with telegraphed attack patterns.
-- **Ropes, ladders and tall hunting maps**, **96 town quests**, upgrade **scrolls**, **pets** that fetch loot, a **minimap**, painted **skill icons** and a level-up light pillar.
+- **Ropes, ladders and tall hunting maps**, **128 town quests**, upgrade **scrolls**, **pets** that fetch loot, hair/face/skin **looks**, a **minimap**, painted **skill icons** and a level-up light pillar.
 - Town Merchants with potions, gear, pets, selling, dismantling and the Forge.
 - Seven skill hotkeys (Z X C V A D F), rebindable controls, four save slots and JSON backups. Saves from the earlier two-class version migrate with a full skill-point refund.
 

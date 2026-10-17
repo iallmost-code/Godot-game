@@ -15,6 +15,8 @@ const GIVERS={"town":"Old Tobin","firstlight":"Fisher Bess","gullhaven":"Deckhan
     "jadehaven":"Picker Mei-Lin","lotusquay":"Ferryman Osei"}
 static var _all: Dictionary={}
 static var _givers: Dictionary={}
+# Tests can force the built-in chains even when quests.json exists.
+static var force_builtin=false
 static func all() -> Dictionary:
     if _all.is_empty(): build()
     return _all
@@ -22,7 +24,7 @@ static func reset_cache():
     _all={}
     _givers={}
 static func build():
-    var loaded=load_json()
+    var loaded=load_json() if not force_builtin else {"quests":[],"npc_x":{},"npc_town":{}}
     var list: Array=loaded.quests if not loaded.quests.is_empty() else builtin()
     for q in list: _all[q.id]=q
     for q in list:
@@ -30,10 +32,26 @@ static func build():
     for q in list:
         add_giver(q.town,q.npc,loaded.npc_x)
         if q.type=="deliver" and loaded.npc_town.has(q.target): add_giver(loaded.npc_town[q.target],q.target,loaded.npc_x)
-    # Givers without a position stand clear of the instructor, merchant and gates.
+    # Givers stand clear of the instructor, the merchant, the gates and each other.
     for town in _givers:
+        var taken=[]
         for i in _givers[town].size():
-            if _givers[town][i].x<=0: _givers[town][i].x=(300.0 if town=="town" else 420.0) if i==0 else 870.0+260*i
+            var giver=_givers[town][i]
+            if giver.x<=0 or blocked(town,giver.x,taken):
+                for x in [300.0 if town=="town" else 420.0,1130.0,1390.0,1650.0,1910.0,2170.0,2430.0,2690.0]:
+                    if not blocked(town,x,taken):
+                        giver.x=x
+                        break
+            taken.append(giver.x)
+static func blocked(town: String,x: float,taken: Array) -> bool:
+    var data=Maps.definition(town)
+    if x<60 or x>data.width-60: return true
+    if absf(x-(500.0 if town=="town" else 600.0))<170 or absf(x-800.0)<150: return true
+    for portal in data.portals:
+        if absf(portal.position.x-x)<150: return true
+    for other in taken:
+        if absf(other-x)<150: return true
+    return false
 static func add_giver(town: String,name: String,positions: Dictionary):
     if not _givers.has(town): _givers[town]=[]
     if not has_giver(town,name): _givers[town].append({"name":name,"x":float(positions.get(name,0.0))})

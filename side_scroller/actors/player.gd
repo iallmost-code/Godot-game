@@ -121,7 +121,9 @@ func _physics_process(delta):
     if climbing:
         if state!=null:
             visual.appearance=appearance_for(state)
+            visual.looks=state.looks
             visual.set_equipment(state.equipment.weapon)
+        visual.climb_kind=climb[3]
         climb_step(delta,can_move)
         if climbing:
             visual.set_pose("climb",facing,Time.get_ticks_msec()/1000.0)
@@ -194,6 +196,7 @@ func _physics_process(delta):
     var visual_facing=combat.attack_facing if combat!=null and combat.active!="" else facing
     if state!=null:
         visual.appearance=appearance_for(state)
+        visual.looks=state.looks
         visual.set_equipment(state.equipment.weapon)
     if pose=="run": walk_phase+=absf(velocity.x)*delta/150.0
     else: walk_phase=0.0

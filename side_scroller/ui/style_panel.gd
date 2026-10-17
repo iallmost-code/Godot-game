@@ -42,8 +42,19 @@ func refresh():
             swatch.custom_minimum_size=Vector2(28,28)
             swatch.color=(Adventure.HAIR_COLORS if key=="hair_color" else Adventure.SKINS)[state.looks[key]]
             line.add_child(swatch)
-    if not preload("res://visuals/character_visual.gd").looks_ready():
-        add_child(Style.label("Your choices are saved now. Hair, faces and skin tones show in game once their art is added.",13,Color("617180")))
+    add_child(Style.label("Classic keeps your class's original painted head. Any other hair style uses the face and skin tone you pick.",13,Color("617180")))
+    var stage=Control.new()
+    stage.custom_minimum_size=Vector2(320,190)
+    add_child(stage)
+    for i in 2:
+        var preview=preload("res://visuals/character_visual.gd").new()
+        preview.appearance=preload("res://actors/player.gd").appearance_for(state)
+        preview.looks=state.looks
+        preview.position=Vector2(90+i*150,175)
+        preview.scale=Vector2(2,2)
+        stage.add_child(preview)
+        preview.set_equipment(state.equipment.weapon)
+        preview.set_pose("idle",1 if i==0 else -1,0)
     add_child(Style.section("PETS",true))
     if state.pets.is_empty():
         add_child(Style.label("No pets yet. Town Merchants sell them in the Pets tab. A pet follows you and picks up loot.",14))
