@@ -10,6 +10,7 @@ var effects
 var camera
 var map
 var map_id=""
+var respawn_map_id="town"
 var hud
 var menu
 var advancement_dialog
@@ -38,8 +39,8 @@ func _ready():
     combat.effect_requested.connect(effects.show_effect)
     combat.loot_requested.connect(func(pos,reward): if map!=null: map.spawn_loot(pos,reward))
     combat.door_requested.connect(func():
-        change_map("town","entry")
-        hud.show_notice("The Wayshrine carries you back to Willowbridge.",5))
+        change_map(respawn_map_id,"entry")
+        hud.show_notice("The Wayshrine carries you back to %s." % Maps.definition(respawn_map_id).name,5))
     camera=Camera2D.new()
     camera.zoom=Vector2(1.15,1.15)
     camera.position_smoothing_enabled=false
@@ -73,7 +74,6 @@ func _ready():
     state.changed.connect(func(): call_deferred("persist"))
     menu.binding_changed.connect(persist)
     menu.character_requested.connect(switch_character)
-    menu.travel_requested.connect(func(target): change_map(target,"entry"))
     menu.save_requested.connect(func():
         if save_store.save(state,bindings): hud.show_notice("Character saved."))
     menu.export_requested.connect(func(): save_store.export_backup(state,bindings))
@@ -102,6 +102,7 @@ func change_map(id: String,spawn: String) -> bool:
         map.queue_free()
     map=next
     map_id=id
+    if definition.safe: respawn_map_id=id
     menu.world_map_id=id
     combat.cancel()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
@@ -116,8 +117,7 @@ func change_map(id: String,spawn: String) -> bool:
     hud.player=player
     if id=="forest": hud.show_notice("Briar Hollow lies beyond the far-right portal. Recommended level 15+.",7)
     elif id=="briar": hud.show_notice("Briar Hollow: stronger monsters, better loot. Rootwarden waits at the far end.",7)
-    elif definition.has("boss"): hud.show_notice("%s awaits. Watch its warnings!" % preload("res://data/enemy_stats.gd").profile(definition.boss).name,6)
-    elif definition.has("level_range"): hud.show_notice("%s  •  Recommended %s" % [definition.title.split("  /")[0].capitalize(),definition.level_range],6)
+    elif id!="town": hud.show_notice(definition.name+" - "+("Safe town. Health recovers here. Open M for routes." if definition.safe else definition.get("notice","Explore this hunting area.")),6)
     camera.position=Vector2(clampf(player.position.x,557,map.width-557),450)
     return true
 func return_to_town():
@@ -126,7 +126,7 @@ func return_to_town():
     combat.combo_orbs=0
     state.clear_buffs()
     state.restore()
-    change_map("town","entry")
+    change_map(respawn_map_id,"entry")
     hud.show_notice("Back on your feet. All collected loot and progress are kept.",7)
 func switch_character(slot: String) -> bool:
     if not save_store.slot_paths.has(slot) or slot==save_store.active_slot: return false
@@ -152,6 +152,7 @@ func switch_character(slot: String) -> bool:
     combat.combo_orbs=0
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
+    respawn_map_id="town"
     menu.close()
     change_map("town","entry")
     var first=preload("res://data/catalog.gd").first_job(slot)
@@ -173,6 +174,7 @@ func show_advancement(_id: String=""):
     if state.level<required:
         hud.show_notice("Elowen: Return at level %d for your next advancement." % required,6)
         return
+    pending_job=options[0]
     menu.open_panel("stats")
     var box=VBoxContainer.new()
     Style.clear(menu.content)
@@ -191,7 +193,7 @@ func show_advancement(_id: String=""):
     box.add_child(Style.button("Not yet",menu.close))
 func _process(delta):
     state.potion_cooldown=maxf(0,state.potion_cooldown-delta)
-    state.regenerate(delta,map_id=="town")
+    state.regenerate(delta,Maps.definition(map_id).get("safe",false))
     if player.position.y>950: return_to_town()
     if map!=null:
         player.position.x=clampf(player.position.x,20,map.width-20)

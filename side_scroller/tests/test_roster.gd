@@ -8,9 +8,9 @@ func run(t):
     t.root.add_child(game)
     game.player.set_physics_process(true)
     var ids=[]
-    for r in Maps.regions():
-        ids.append(r[0])
-        for boss in r[7]: ids.append(Maps.boss_arena_id(boss))
+    for f in Maps.fields(): ids.append(f[0])
+    for boss in Maps.LAIRS: ids.append(Maps.boss_arena_id(boss))
+    t.check(Maps.LAIRS.size()==12,"twelve bosses have lairs off regional towns")
     var broken=[]
     var levels=[]
     for id in ids:

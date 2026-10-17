@@ -29,18 +29,19 @@ func setup(s):
     for platform in data.platforms:
         build_platform(Vector2(platform[0],platform[1]+8),Vector2(platform[2],16),true)
     for portal in portals:
-        make_label(portal.label,portal.position+Vector2(-85,-130),Color("edf5cc"),17)
-    if map_id=="town":
+        make_label(portal.label,portal.position+Vector2(-85,-160),Color("edf5cc"),15)
+    if data.safe:
         var npc=preload("res://visuals/character_visual.gd").new()
+        instructor_position=Vector2(500 if map_id=="town" else 600,610)
         npc.position=instructor_position
         npc.modulate=Color(0.92,0.96,1.0)
         add_child(npc)
         npc.set_pose("idle",1,0)
-        make_label("Captain Elowen\nJob advancement",instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
+        make_label(data.npc.name+("\nJob advancement" if data.npc.path!="" else "\nUp to talk"),instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
     else:
-        make_label(data.get("sign",""),Vector2(380,300),Color("e7d2ed"),16)
+        make_label(data.get("notice","Explore the trails and return to town to recover."),Vector2(380,300),Color("e7d2ed"),16)
         for entry in data.enemies:
-            var record={"position":Vector2(entry[0],entry[1]),"id":entry[2],"node":null,"timer":0.0}
+            var record={"position":Vector2(entry[0],entry[1]),"id":entry[2],"node":null,"timer":0.0,"level":entry[3] if entry.size()>3 else 0}
             spawns.append(record)
             spawn_enemy(record)
     var artwork=preload("res://visuals/world_art.gd").new()
@@ -77,37 +78,49 @@ func spawn_enemy(record):
     enemy.definition_id=record.id
     enemy.position=record.position
     enemy.player=player
+    enemy.level=record.level
+    enemy.area_tint=preload("res://visuals/world_theme.gd").enemy_tint(Maps.definition(map_id).biome)
     add_child(enemy)
     record.node=enemy
     if EnemyStats.is_boss(record.id):
         boss=enemy
         boss_spawned.emit(enemy)
     enemy.defeated.connect(func(pos,id): on_defeated(pos,id,record))
-func reward_for(id: String) -> Dictionary:
+func monster_level(id: String,record) -> int:
+    if record is Dictionary and record.get("level",0)>0: return record.level
+    return EnemyStats.profile(id).level
+func reward_for(id: String,lv: int) -> Dictionary:
     var profile=EnemyStats.profile(id)
-    var lv=profile.level
-    var loot=Maps.definition(map_id).get("loot","forest")
-    var reward={"coins":randi_range(7,14) if loot=="briar" else randi_range(2,7) if loot=="forest" else randi_range(2+lv/2,6+lv)}
+    var data=Maps.definition(map_id)
+    var loot=data.get("loot_zone","forest")
+    var advanced=data.get("level",1)>=15
+    var reward={"coins":randi_range(2+int(lv/2.0),6+lv) if lv>=25 else randi_range(7,14) if advanced else randi_range(2,7)}
     var weapon_type=state.preferred_weapon()
     var roll=randf()
     if id=="rootwarden":
         reward={"coins":75,"potions":3,"item":"warden_"+weapon_type}
         reward_notice.emit("Rootwarden defeated! Collect your guaranteed weapon and potions.")
     elif EnemyStats.is_boss(id):
-        reward={"coins":30*lv,"potions":5,"item":("%s_%s" % [weapon_type,loot]) if Catalog.items().has("%s_%s" % [weapon_type,loot]) else "warden_"+weapon_type}
+        var prize="%s_%s" % [weapon_type,loot] if loot.begins_with("lv") else "%s_%s" % [loot,weapon_type]
+        reward={"coins":30*lv,"potions":5,"item":prize if Catalog.items().has(prize) else "warden_"+weapon_type}
         reward_notice.emit("%s defeated! Collect its treasure." % profile.name)
     elif roll<0.18: reward.potions=1
-    elif roll<(0.42 if loot=="briar" else 0.3):
-        if loot in ["forest","briar"]: reward.item=loot+"_"+weapon_type if randf()<0.5 else loot+"_armor"
-        else: reward.item=("%s_%s" % [weapon_type,loot]) if randf()<0.5 else "armor_"+loot
+    elif roll<(0.42 if advanced else 0.3):
+        if loot.begins_with("lv"): reward.item=("%s_%s" % [weapon_type,loot]) if randf()<0.5 else "armor_"+loot
+        else: reward.item=loot+"_"+weapon_type if randf()<0.5 else loot+"_armor"
     return reward
-func grant_xp(id: String,node):
+func grant_xp(id: String,node,lv: int=0):
+    var profile=EnemyStats.profile(id)
+    if lv<=0: lv=profile.level
+    var base=profile.xp
+    if lv!=profile.level: base=int(profile.xp*float(lv)/profile.level) if profile.get("sprite",false) else int(profile.xp*float(EnemyStats.xp_for(lv))/EnemyStats.xp_for(profile.level))
     var multiplier=(1.0+state.bonus("xp_pct"))*(node.xp_multiplier() if is_instance_valid(node) and node.has_method("xp_multiplier") else 1.0)
-    state.add_xp(int(EnemyStats.profile(id).xp*multiplier))
+    state.add_xp(maxi(1,int(base*multiplier)))
 func on_defeated(pos: Vector2,id: String,record: Dictionary):
     record.timer=45.0 if id=="rootwarden" else 90.0 if EnemyStats.is_boss(id) else 9.0 if map_id=="briar" else 7.0
-    grant_xp(id,record.node)
-    spawn_loot(pos,reward_for(id))
+    var lv=monster_level(id,record)
+    grant_xp(id,record.node,lv)
+    spawn_loot(pos,reward_for(id,lv))
 func spawn_loot(pos: Vector2,reward: Dictionary):
     var loot=preload("res://world/loot_pickup.gd").new()
     loot.setup(reward)
@@ -127,8 +140,12 @@ func interact():
         if player.global_position.distance_to(portal.position)<90:
             portal_requested.emit(portal.target,portal.spawn)
             return
-    if map_id=="town" and absf(player.position.x-instructor_position.x)<100:
-        advancement_requested.emit(state.next_job())
+    var data=Maps.definition(map_id)
+    if data.safe and absf(player.position.x-instructor_position.x)<100:
+        var instructor=data.npc
+        if instructor.path=="all" or instructor.path==state.archetype:
+            advancement_requested.emit(state.next_job())
+        else: reward_notice.emit(instructor.name+": "+instructor.greeting)
     else: reward_notice.emit("Move near a glowing portal or the town instructor, then press Up.")
 func _process(delta):
     for record in spawns:

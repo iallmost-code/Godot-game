@@ -19,7 +19,6 @@ signal export_requested
 signal import_requested
 signal character_requested(slot: String)
 signal binding_changed
-signal travel_requested(map_id: String)
 func setup(s,b):
     state=s
     bindings=b
@@ -99,9 +98,7 @@ func open_panel(id: String):
         content.add_child(current_panel)
         if id=="inventory": current_panel.bind(state)
         else: current_panel.bind(state,bindings)
-        if id=="map":
-            current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
-            current_panel.travel_requested.connect(func(target): close(); travel_requested.emit(target))
+        if id=="map": current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
         if id=="controls": current_panel.binding_changed.connect(func(): binding_changed.emit())
     elif id=="characters":
         content.add_child(Style.label("YOUR CHARACTERS",24,Color("f4d48a")))

@@ -106,7 +106,9 @@ static func profile(id: String) -> Dictionary:
             "base_attack":8+int(b[1]/6.0),"hp":hp_for(b[1])*b[6]*2,"xp":xp_for(b[1])*30,"patterns":b[7],"minion":b[8]}
     return {"name":"Monster","level":1,"base_attack":4,"hp":40,"xp":20,"behavior":"walker","body":"slime","color":Color("8fd6b6"),"accent":Color.WHITE,"size":1.0}
 static func damage(id: String,level: int,multiplier=1.0) -> int:
-    var base=profile(id).base_attack
+    var p=profile(id)
+    # Roster monsters placed at another level use that level's base attack.
+    var base=p.base_attack if LEGACY.has(id) or level==p.level else (8+int(level/6.0) if BOSSES.has(id) else 4+int(level/8.0))
     var l=clampi(level,1,200)
     return maxi(1,int((base+2*(l-1)+0.006*l*l)*multiplier))
 static func is_boss(id: String) -> bool: return BOSSES.has(id) or id=="rootwarden"

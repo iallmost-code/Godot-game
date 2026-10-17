@@ -43,23 +43,29 @@ Each advancement grants 1 skill point and a job weapon; every level after that g
 
 There are 242 skills: attacks (melee, projectiles, area blasts, spells that fall from the sky, chain lightning, charges), buffs, passives, summons (Light Drake, Silverwing, Firebird, Dread Eye, Scarecrow decoys…), heals, Blink, Wayshrine (return to town), Shadow Twin, Momentum combo orbs and elemental Brands. Open **Skills (K)** to spend points (+1 or +5), read each skill's numbers and assign attacks and buffs to any hotkey. Later jobs show a preview of each path you could pick.
 
-## Hunting grounds and bosses
+## World, hunting grounds and bosses
 
-From Willowbridge, open **Map (M)** and use **Travel** to fly to any hunting ground. Each ground has a portal back to town and portals to its boss lairs.
+The world has 32 safe towns, each with a regional hunting route, plus ten deeper hunting grounds and twelve boss lairs; see [WORLD_GUIDE.md](WORLD_GUIDE.md) for every town and route. Travel on foot: stand at a named portal and press **Up**. **Map (M)** shows every region, its areas and the walking route from where you are. Towns heal you and become your respawn point.
 
-| Region | Levels | Monsters | Bosses |
-| --- | --- | --- | --- |
-| Whisperwood / Briar Hollow | 3-25 | Mossling, Lantern Bloom, Thornling, Briar Lantern | Rootwarden |
-| Dewdrop Meadow | 1-12 | Pebble/Azure/Ember Snail, Puffspore, Stumpkin, Jellop, Tangerine Cap, Bristle Hog | Grand Shellmaw |
-| Mossvale Thicket | 12-25 | Gloom Stump, Inkling, Mossy Cap, Hatchet Stump, Horned Cap, Tusker Boar | Elder Stumpus, Gelatinous Monarch |
-| Rotfen Marsh | 25-45 | Rotcap, Wisp/Shade Wraith, Cinder Boar, Swamp Gator, Canopy Ape, Rubble Golem | Mother Cap, Blight Mother Cap |
-| Emberpeak Canyon | 45-70 | Azure/Crimson/Frost Drake, Dune Lizard, Obsidian Golem | Lesser Hellwing |
-| Frostspire Peaks | 60-85 | Frost Cub, Rime Wolf, Snowhorn, Moonfang Lycan | — |
-| Clockwork Spire | 80-110 | Tick Sentinel, Stitched/Dread Bruin, Grim Clockwork, Phantom Timepiece | Chronovore |
-| Bonepit Mine | 100-125 | Bonewalker, Bone Archer, Bone Captain, Magma Golem | Crimson Hellwing, Molten Colossus |
-| Tidegrave Depths | 110-135 | Reef Snapper, Gloomfin, Tide Inkling, Coral Golem | Abyssal Leviathan |
-| Skyreach Plateau | 125-160 | Storm/Cinder Centaur, Twinhead Birk, Bone/Skyscale Wyvern | Thornscale Wyrm |
-| Timeless Sanctum | 155-200 | Memory Warden, Oblivion Monk, Chrono Guardian, Gloam Sentinel | Gloam Idol |
+Job instructors: **Captain Elowen** (Willowbridge) advances every class. **Warden Bram** (Ironridge) advances Warriors, **Arcanist Ilyra** (Starbough) advances Mages, **Mara Vex** (Shadecross) advances Thieves and **Ranger Vale** (Thornscar Lodge) advances Archers.
+
+Regional routes use themed monsters at the route's level. The deeper grounds and boss lairs are gates in these towns:
+
+| Gate in town | Deeper hunting ground (levels) | Boss lair (level) |
+| --- | --- | --- |
+| Farmeadow | Dewdrop Meadow (1-12) | — |
+| Sunpetal Cove | — | Grand Shellmaw (20) |
+| Starbough | Mossvale Thicket (12-25) | — |
+| Ironridge | Emberpeak Canyon (45-70) | Elder Stumpus (35) |
+| Shadecross | — | Gelatinous Monarch (40) |
+| Moonpetal Shrine | — | Mother Cap (60) |
+| Hollowroot | Rotfen Marsh (25-45) | Blight Mother Cap (65), Lesser Hellwing (80) |
+| Thornscar Lodge | — | Crimson Hellwing (115) |
+| Frostmere | Frostspire Peaks (60-85), Bonepit Mine (100-125) | Molten Colossus (140) |
+| Tickletop | Clockwork Spire (80-110) | Chronovore (125) |
+| Tideglass | Tidegrave Depths (110-135) | Abyssal Leviathan (130) |
+| Wyrmrest | Skyreach Plateau (125-160) | Thornscale Wyrm (170) |
+| Hourglass Sanctum | Timeless Sanctum (155-200) | Gloam Idol (190) |
 
 Monsters walk, hop, charge, cast, fly or tank. Bosses cycle through telegraphed patterns: **SLAM** and **LOW SWEEP** (jump over them), volleys, rain from above (move out of the red circles), summoned minions and charges. At half health they enrage and attack faster. Bosses resist stuns and freezes but not poison, armor breaks or weakening. Bosses always drop a weapon for your class; regular monsters drop coins, potions and level-banded gear.
 

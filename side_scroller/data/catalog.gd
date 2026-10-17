@@ -133,6 +133,12 @@ static func items() -> Dictionary:
         for type in nouns:
             add.call("%s_lv%d" % [type,band[0]],"%s %s" % [band[1],nouns[type]],type,band[2])
         i["armor_lv%d" % band[0]]={"name":band[1]+" Mail","slot":"armor","attack":0,"defense":band[3],"icon":"◆"}
+    # Regional world drops (Wayfarer 35+, Aethersteel 60+).
+    for type in nouns:
+        add.call("expedition_"+type,"Wayfarer "+nouns[type],type,70)
+        add.call("relic_"+type,"Aethersteel "+nouns[type],type,110)
+    i.expedition_armor={"name":"Wayfarer Coat","slot":"armor","attack":0,"defense":20,"icon":"◆"}
+    i.relic_armor={"name":"Aetherweave Coat","slot":"armor","attack":0,"defense":32,"icon":"◆"}
     i.starter_armor={"name":"Trail Vest","slot":"armor","attack":0,"defense":2,"icon":"◆"}
     i.forest_armor={"name":"Mossguard Coat","slot":"armor","attack":0,"defense":5,"icon":"◆"}
     i.briar_armor={"name":"Briarweave Coat","slot":"armor","attack":0,"defense":9,"icon":"◆"}

@@ -4,6 +4,7 @@ const MobArt=preload("res://visuals/mob_art.gd")
 const STATUS_TINTS={"poison":Color("9be36b"),"freeze":Color("8fd6ff"),"stun":Color("f6ef7a"),"slow":Color("a0b8ff"),"seal":Color("c9a4ff"),"doom":Color("9a9a9a"),"weaken":Color("ff9a9a"),"armor_break":Color("ffb35c"),"web":Color("6a5a8a"),"blind":Color("3a3a4a"),"taunt":Color("ff6b6b")}
 const ELEMENT_COLORS={"fire":Color("ff8a4c"),"ice":Color("8fd6ff"),"lightning":Color("f6ef7a"),"poison":Color("9be36b"),"arcane":Color("c9a4ff"),"fruit":Color("f2c94c"),"bone":Color("e8e0c8")}
 var level=0
+var area_tint=Color.WHITE
 var hp=40
 var max_hp=40
 var is_heavy=false
@@ -35,6 +36,11 @@ func _ready():
     behavior=profile.get("behavior","walker")
     hp=profile.hp
     max_hp=profile.hp
+    # Regional maps can place a monster at a different level than its default.
+    if level!=profile.level:
+        if profile.get("sprite",false): max_hp=maxi(12,max_hp+12*(level-profile.level))
+        else: max_hp=int(profile.hp*float(EnemyStats.hp_for(level))/EnemyStats.hp_for(profile.level))
+        hp=max_hp
     if behavior=="tank": is_heavy=true
     add_to_group("enemies")
     collision_layer=4
@@ -65,6 +71,7 @@ func build_sprite():
     sprite.material=mat
     if definition_id=="thornling": sprite.modulate=Color("ecb8cd")
     elif definition_id=="briar_lantern": sprite.modulate=Color("b7e6f0")
+    sprite.modulate*=area_tint
     add_child(sprite)
 # ---------------- Status effects ----------------
 func has_status(id: String) -> bool: return statuses.get(id,0.0)>0
@@ -239,7 +246,7 @@ func update_sprite():
     sprite.position=Vector2(-(region.size.x-local.x) if sprite.flip_h else -local.x,-local.y)*sprite.scale.x
     sprite.position.y+=sin(Time.get_ticks_msec()/220.0)*1.4
     sprite.material.set_shader_parameter("flash",1.0 if hurt_flash>0 else 0.0)
-    sprite.modulate=Color("bfe9ff") if has_status("freeze") else Color("ecb8cd") if definition_id=="thornling" else Color("b7e6f0") if definition_id=="briar_lantern" else Color.WHITE
+    sprite.modulate=(Color("bfe9ff") if has_status("freeze") else Color("ecb8cd") if definition_id=="thornling" else Color("b7e6f0") if definition_id=="briar_lantern" else Color.WHITE)*area_tint
 func art_height() -> float:
     return 60.0*profile.get("size",1.0)+(26 if behavior=="flyer" else 0)
 func _draw():

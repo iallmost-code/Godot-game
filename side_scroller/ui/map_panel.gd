@@ -3,59 +3,84 @@ const Style=preload("res://ui/style.gd")
 const Maps=preload("res://data/maps.gd")
 var map_id="town"
 var player_position=Vector2.ZERO
-func bind(s,_bindings=null):
-    state=s
+var selected_region="town"
+var selected_area="town"
+func bind(_state,_bindings=null):
     refresh()
 func set_context(id: String,pos: Vector2):
     map_id=id
     player_position=pos
+    selected_region=Maps.definition(id).region
+    selected_area=id
     refresh()
-signal travel_requested(map_id: String)
-var state
+func inspect_region(id: String):
+    selected_region=id
+    selected_area=id
+    refresh()
 func refresh():
     Style.clear(self)
-    add_child(Style.section("WINDSWEPT ISLAND  /  WORLD MAP"))
-    var in_town=map_id=="town"
-    add_child(Style.label("Travel: Elowen's airship carries you to any hunting ground from Willowbridge." if in_town else "Return to Willowbridge to travel by airship. Portals lead between areas and to boss lairs.",14,Color("2f5f74")))
-    var grid=GridContainer.new()
-    grid.columns=4
-    grid.add_theme_constant_override("h_separation",8)
-    grid.add_theme_constant_override("v_separation",6)
-    add_child(grid)
-    var areas=[["town","Willowbridge","Safe town • Job instructor",""],["forest","Whisperwood","Lv 3-8 • starter field",""],["briar","Briar Hollow","Lv 15-25 • Rootwarden",""]]
-    for r in Maps.regions():
-        var bosses=[]
-        for boss in r[7]: bosses.append(preload("res://data/enemy_stats.gd").profile(boss).name)
-        areas.append([r[0],r[1].capitalize(),r[2]+(" • "+", ".join(bosses) if not bosses.is_empty() else ""),""])
-    for area in areas:
-        var here=area[0]==map_id or map_id.begins_with("arena_") and Maps.definition(map_id).get("portals",[{}])[0].get("target","")==area[0]
-        var card=PanelContainer.new()
-        card.custom_minimum_size=Vector2(206,84)
-        card.add_theme_stylebox_override("panel",Style.box(Color("e5f2c5") if here else Color("e3edf4"),Color("8daf45") if here else Color("a0b7c6"),4,8))
-        var layout=VBoxContainer.new()
-        card.add_child(layout)
-        layout.add_child(Style.label(area[1],16))
-        var info=Style.label(area[2],11)
-        info.autowrap_mode=TextServer.AUTOWRAP_WORD
-        info.custom_minimum_size.x=190
-        layout.add_child(info)
-        if here: layout.add_child(Style.label("YOU ARE HERE",11))
-        elif in_town and area[0]!="town":
-            var id=area[0]
-            var go=Style.button("Travel",func(): travel_requested.emit(id))
-            go.custom_minimum_size.y=22
-            layout.add_child(go)
-        grid.add_child(card)
-    add_child(Style.section(Maps.definition(map_id).title+"  /  AREA MAP",true))
+    add_child(Style.section("WINDSWEPT WORLD ATLAS  /  %d regions - %d playable maps" % [Maps.regions().size(),Maps.all_ids().size()]))
+    var columns=HBoxContainer.new()
+    columns.add_theme_constant_override("separation",10)
+    add_child(columns)
+    var scroll=ScrollContainer.new()
+    scroll.custom_minimum_size=Vector2(220,340)
+    scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+    columns.add_child(scroll)
+    var regions=VBoxContainer.new()
+    scroll.add_child(regions)
+    var active_index=0
+    var index=0
+    for region in Maps.regions():
+        var id=region.id
+        var button=Style.button(region.name,func(): inspect_region(id))
+        button.custom_minimum_size=Vector2(198,30)
+        button.tooltip_text="Inspect this region. Travel through world portals to visit."
+        if id==selected_region:
+            button.modulate=Color("bbdc96")
+            active_index=index
+        regions.add_child(button)
+        index+=1
+    scroll.set_deferred("scroll_vertical",maxi(0,active_index*35-100))
+    var info=VBoxContainer.new()
+    info.custom_minimum_size.x=610
+    columns.add_child(info)
+    var region=Maps.definition(selected_region)
+    var area=Maps.definition(selected_area)
+    info.add_child(Style.section(region.name.to_upper()+"  /  "+region.biome.capitalize()))
+    var areas=HFlowContainer.new()
+    info.add_child(areas)
+    for id in Maps.all_ids():
+        var definition=Maps.definition(id)
+        if definition.region!=selected_region: continue
+        var button=Style.button(definition.name,func(): selected_area=id; refresh())
+        if id==selected_area: button.modulate=Color("bbdc96")
+        areas.add_child(button)
+    info.add_child(Style.label("Safe town - health recovery and respawn checkpoint" if area.safe else ("Boss lair - Lv %d boss" % area.level if area.has("boss") else "Level %d+ hunting - scaled enemies and equipment drops" % area.level),14))
+    var routes=[]
+    for portal in area.portals:
+        routes.append(Maps.definition(portal.target).name)
+    var steps=[]
+    for id in Maps.route_between(map_id,selected_area): steps.append(Maps.definition(id).name)
+    var route_text=Style.label("Portals: "+", ".join(routes)+"\nRoute from here: "+" > ".join(steps),13)
+    route_text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+    route_text.custom_minimum_size.x=580
+    info.add_child(route_text)
     var chart=Chart.new()
-    chart.map_id=map_id
+    chart.map_id=selected_area
     chart.player_position=player_position
-    chart.custom_minimum_size=Vector2(820,210)
-    add_child(chart)
-    add_child(Style.label("Yellow dot: you   •   Blue diamonds: portals   •   Red crown: boss",14))
+    chart.show_player=selected_area==map_id
+    chart.custom_minimum_size=Vector2(600,195)
+    info.add_child(chart)
+    info.add_child(Style.section("YOU ARE IN: "+Maps.definition(map_id).name,true))
+    var local=Style.button("Show my current area",func(): set_context(map_id,player_position))
+    info.add_child(local)
+    add_child(Style.label("Yellow: you   Blue: portals   Red crown: boss. Inspecting a region does not teleport you.
+Travel by standing at the named portal and pressing your Interact key. Towns are safe checkpoints.",13))
 class Chart extends Control:
     var map_id="town"
     var player_position=Vector2.ZERO
+    var show_player=true
     func _draw():
         var definition=Maps.definition(map_id)
         var w=size.x-50
@@ -71,8 +96,9 @@ class Chart extends Control:
             var p=Vector2(25+portal.position.x*factor,ground-10)
             draw_colored_polygon(PackedVector2Array([p+Vector2(0,-9),p+Vector2(7,0),p+Vector2(0,9),p+Vector2(-7,0)]),Color("3d9ccd"))
         var pos=Vector2(25+player_position.x*factor,ground-(610-player_position.y)*0.34-13)
-        draw_circle(pos,7,Color("bb8627"))
-        draw_circle(pos,4,Color("fff16c"))
+        if show_player:
+            draw_circle(pos,7,Color("bb8627"))
+            draw_circle(pos,4,Color("fff16c"))
         for entry in definition.enemies:
             if not preload("res://data/enemy_stats.gd").is_boss(entry[2]): continue
             var boss=Vector2(25+entry[0]*factor,ground-10)
