@@ -70,7 +70,7 @@ func bind(s,c,b=null):
     var left=VBoxContainer.new()
     left.custom_minimum_size.x=360
     row.add_child(left)
-    status=Style.label("",15,Color("f4d48a"))
+    status=Style.label("",13,Color("f4d48a"))
     status.clip_text=true
     status.custom_minimum_size.x=360
     left.add_child(status)
@@ -144,7 +144,7 @@ func refresh():
         var shortcut=OS.get_keycode_string(bindings.current()["menu_"+id]) if bindings!=null else ""
         menu_buttons[id].text=id.capitalize()+" ["+shortcut+"]"
     var stats=state.derived_stats()
-    status.text="LV %d  %s  •  HP %d/%d  MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
+    status.text="LV %d %s • HP %d/%d • MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
     var parts=[]
     for id in state.buffs:
         parts.append("%s %ds" % [state.skill_name(id),ceili(state.buffs[id].time)])
