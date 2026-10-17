@@ -38,11 +38,12 @@ func run(t):
     t.check(not boss.receive_hit(100000,Vector2.ZERO,453) and game.state.to_record()==rewarded,"boss cannot grant duplicate XP or loot from overlapping hits")
     t.check(game.map.pickups.size()==1 and game.map.pickups[0].reward.item=="warden_sword","boss drops a guaranteed class weapon")
     game.map.pickups[0].try_collect(game.state)
-    t.check(game.state.inventory.has("warden_sword"),"boss weapon can be collected")
+    t.check(game.state.has_item("warden_sword"),"boss weapon can be collected")
     await t.process_frame
     game.map._process(45.1)
     t.check(is_instance_valid(game.map.boss) and game.map.boss!=boss,"miniboss respawns after its longer timer")
     t.check(game.hud.boss_target==game.map.boss,"health bar follows the respawned miniboss")
+    while game.state.level<10: game.state.add_xp(game.state.xp_required(game.state.level))
     game.state.advance_job("warrior")
     game.state.equip("warden_sword")
     while game.state.level<30: game.state.add_xp(game.state.xp_required(game.state.level))

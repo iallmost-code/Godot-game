@@ -14,6 +14,7 @@ var notice
 var notice_time=0.0
 var map_label
 var potion_button
+var mana_button
 var boss_target
 var player
 var boss_panel
@@ -83,16 +84,29 @@ func bind(s,c,b=null):
     ability_row.add_theme_constant_override("separation",4)
     for slot in ["attack"]+Catalog.SLOTS:
         var button=Style.button("",func(): show_notice("Use the displayed key to attack. Aim by facing your target."))
-        button.custom_minimum_size=Vector2(88,72)
+        button.custom_minimum_size=Vector2(83,72)
         button.add_theme_font_size_override("font_size",12)
         button.clip_text=true
         ability_row.add_child(button)
         skills.append({"slot":slot,"button":button})
     var right=VBoxContainer.new()
     row.add_child(right)
-    potion_button=Style.button("Potion",func():
-        show_notice("Health restored." if state.use_potion() else "Potion unavailable: full HP, cooldown, or none left."))
-    right.add_child(potion_button)
+    var potions=HBoxContainer.new()
+    potions.add_theme_constant_override("separation",3)
+    right.add_child(potions)
+    potion_button=Style.button("HP",func():
+        show_notice("Health restored." if state.use_potion("hp") else "HP potion unavailable: full HP, cooldown, or none left."))
+    potions.add_child(potion_button)
+    for button in [potion_button]:
+        button.custom_minimum_size=Vector2(70,30)
+        button.add_theme_font_size_override("font_size",12)
+        button.clip_text=true
+    mana_button=Style.button("MP",func():
+        show_notice("Mana restored." if state.use_potion("mp") else "MP potion unavailable: full MP, cooldown, or none left."))
+    potions.add_child(mana_button)
+    mana_button.custom_minimum_size=Vector2(70,30)
+    mana_button.add_theme_font_size_override("font_size",12)
+    mana_button.clip_text=true
     right.add_child(Style.button("Menu / Save",func(): menu_requested.emit("save")))
     buff_label=Style.label("",14,Color("e8f4ff"))
     buff_label.add_theme_color_override("font_outline_color",Color("254451"))
@@ -161,7 +175,13 @@ func refresh():
     xp_bar.max_value=state.xp_required(state.level)
     xp_bar.value=state.xp
     xp_bar.tooltip_text="XP %d / %d  •  %d attribute points available" % [state.xp,state.xp_required(state.level),state.ap]
-    potion_button.text="Potion ×%d%s" % [state.potions," (%.1fs)" % state.potion_cooldown if state.potion_cooldown>0 else ""]
+    var hp_key=OS.get_keycode_string(bindings.current().get("potion_hp",KEY_1)) if bindings!=null else "1"
+    var mp_key=OS.get_keycode_string(bindings.current().get("potion_mp",KEY_2)) if bindings!=null else "2"
+    potion_button.text="%s HP %d" % [hp_key,state.count_potions("hp")]
+    potion_button.tooltip_text="HP potion [%s]: uses the smallest potion that fills your missing health." % hp_key
+    potion_button.modulate=Color("819a9c") if state.potion_cooldown>0 else Color.WHITE
+    mana_button.text="%s MP %d" % [mp_key,state.count_potions("mp")]
+    mana_button.tooltip_text="MP potion [%s]" % mp_key
     for entry in skills:
         var slot=entry.slot
         var id=state.basic_skill() if slot=="attack" else state.slots[slot]

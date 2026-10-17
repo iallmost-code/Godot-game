@@ -17,6 +17,8 @@ signal portal_requested(map_id: String,spawn_id: String)
 signal advancement_requested(job_id: String)
 signal reward_notice(message: String)
 signal boss_spawned(enemy: Node2D)
+signal shop_requested
+var merchant_position=Vector2(800,610)
 func setup(s):
     state=s
     var data=Maps.definition(map_id)
@@ -38,6 +40,12 @@ func setup(s):
         add_child(npc)
         npc.set_pose("idle",1,0)
         make_label(data.npc.name+("\nJob advancement" if data.npc.path!="" else "\nUp to talk"),instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
+        var merchant=preload("res://visuals/character_visual.gd").new()
+        merchant.position=merchant_position
+        merchant.modulate=Color(1.0,0.9,0.75)
+        add_child(merchant)
+        merchant.set_pose("idle",-1,0)
+        make_label("Merchant\nShop • Sell • Forge",merchant_position+Vector2(-75,-115),Color("ffe2a8"),17)
     else:
         make_label(data.get("notice","Explore the trails and return to town to recover."),Vector2(380,300),Color("e7d2ed"),16)
         for entry in data.enemies:
@@ -104,10 +112,18 @@ func reward_for(id: String,lv: int) -> Dictionary:
         var prize="%s_%s" % [weapon_type,loot] if loot.begins_with("lv") else "%s_%s" % [loot,weapon_type]
         reward={"coins":30*lv,"potions":5,"item":prize if Catalog.items().has(prize) else "warden_"+weapon_type}
         reward_notice.emit("%s defeated! Collect its treasure." % profile.name)
-    elif roll<0.18: reward.potions=1
+    elif roll<0.18:
+        # Potions match the monster's level; about a third are mana.
+        if randf()<0.33: reward.consumable="mp_1" if lv<40 else "mp_2" if lv<100 else "mp_3"
+        else: reward.consumable="hp_1" if lv<20 else "hp_2" if lv<50 else "hp_3" if lv<100 else "hp_4"
     elif roll<(0.42 if advanced else 0.3):
-        if loot.begins_with("lv"): reward.item=("%s_%s" % [weapon_type,loot]) if randf()<0.5 else "armor_"+loot
-        else: reward.item=loot+"_"+weapon_type if randf()<0.5 else loot+"_armor"
+        var band=loot if loot.begins_with("lv") else Maps.band_for(maxi(lv,data.get("level",1)))
+        var pick=randf()
+        if pick<0.4: reward.item=("%s_%s" % [weapon_type,loot]) if loot.begins_with("lv") else loot+"_"+weapon_type
+        elif pick<0.6: reward.item=("armor_"+loot) if loot.begins_with("lv") else loot+"_armor"
+        else: reward.item="%s_%s" % [["hat","gloves","shoes","cape","earring"].pick_random(),band]
+    elif roll<0.48: reward.shards=1+int(lv/25.0)
+    if EnemyStats.is_boss(id): reward.shards=5+int(lv/10.0)
     return reward
 func grant_xp(id: String,node,lv: int=0):
     var profile=EnemyStats.profile(id)
@@ -141,6 +157,9 @@ func interact():
             portal_requested.emit(portal.target,portal.spawn)
             return
     var data=Maps.definition(map_id)
+    if data.safe and absf(player.position.x-merchant_position.x)<80:
+        shop_requested.emit()
+        return
     if data.safe and absf(player.position.x-instructor_position.x)<100:
         var instructor=data.npc
         if instructor.path=="all" or instructor.path==state.archetype:
@@ -155,8 +174,11 @@ func _process(delta):
     for drop in pickups.duplicate():
         if not is_instance_valid(drop): pickups.erase(drop)
         elif player!=null and player.position.distance_to(drop.position)<35:
-            var text="Equipment found! Open Inventory to equip." if drop.reward.has("item") else "Potion found." if drop.reward.has("potions") else "+%d coins" % drop.reward.coins
+            var text="%s found! Open Inventory to equip." % Catalog.items()[drop.reward.item].name if drop.reward.has("item") else "%s found." % Catalog.consumables()[drop.reward.consumable].name if drop.reward.has("consumable") else "Potion found." if drop.reward.has("potions") else "+%d Shards" % drop.reward.shards if drop.reward.has("shards") else "+%d coins" % drop.reward.coins
             if drop.try_collect(state): reward_notice.emit(text)
+            elif drop.reward.has("item") and not drop.get_meta("full_warned",false):
+                drop.set_meta("full_warned",true)
+                reward_notice.emit("Inventory full. Sell or dismantle gear to make room.")
     queue_redraw()
 func _draw():
     for portal in portals: draw_portal(portal.position)

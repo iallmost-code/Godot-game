@@ -65,7 +65,7 @@ func setup(s,b):
     title_row.add_child(close_button)
     var tabs=HBoxContainer.new()
     layout.add_child(tabs)
-    for id in ["stats","skills","inventory","map","controls","characters","save"]:
+    for id in ["stats","skills","inventory","shop","map","controls","characters","save"]:
         var tab=Style.button(id.capitalize(),func(): open_panel(id))
         tabs.add_child(tab)
         tabs_by_id[id]=tab
@@ -81,7 +81,7 @@ func setup(s,b):
 func open_panel(id: String):
     if current_panel!=null and selected=="controls": current_panel.capture_action=""
     selected=id
-    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","map":"WORLD MAP","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
+    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
     for tab_id in tabs_by_id:
         var action="menu_"+tab_id
         var key_name=" ["+OS.get_keycode_string(bindings.current()[action])+"]" if bindings.current().has(action) else ""
@@ -92,13 +92,14 @@ func open_panel(id: String):
     get_tree().paused=true
     Style.clear(content)
     current_panel=null
-    var scripts={"stats":"stats_panel","skills":"skills_panel","inventory":"inventory_panel","controls":"controls_panel","map":"map_panel"}
+    var scripts={"stats":"stats_panel","skills":"skills_panel","inventory":"inventory_panel","shop":"shop_panel","controls":"controls_panel","map":"map_panel"}
     if scripts.has(id):
         current_panel=load("res://ui/"+scripts[id]+".gd").new()
         content.add_child(current_panel)
         if id=="inventory": current_panel.bind(state)
         else: current_panel.bind(state,bindings)
         if id=="map": current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
+        if id in ["inventory","shop"]: current_panel.set_context(world_map_id)
         if id=="controls": current_panel.binding_changed.connect(func(): binding_changed.emit())
     elif id=="characters":
         content.add_child(Style.label("YOUR CHARACTERS",24,Color("f4d48a")))

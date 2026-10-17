@@ -17,6 +17,7 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Jump; press again in air for a boosted double jump | Shift |
 | Basic attack (sword/spear/dagger/staff swing, star or arrow; hold to repeat) | Space |
 | Skill hotkeys | Z, X, C, V, A, D, F |
+| HP / MP potion | 1 / 2 |
 | Inventory / Map / Skills / Stats | I / M / K / S |
 | Menu / close window | Escape or top-right buttons |
 
@@ -72,6 +73,19 @@ Monsters walk, hop, charge, cast, fly or tank. Bosses cycle through telegraphed 
 Status effects shown as coloured dots over monsters: stun, freeze, poison (never kills), slow, silence, wither (harmless), weaken, armor break, snare, blind and mock (more damage and experience). You can dodge (**MISS**), block (**BLOCK**) and revive with Rebirth (**REBIRTH**).
 
 Death returns you to town at full health with all progress kept.
+
+## Gear, shops and the Forge
+
+You wear seven pieces: **weapon, hat, armor, gloves, shoes, cape and earring**. Each piece has a level requirement and its own stats (attack, defense, HP, MP or all stats). Monsters drop gear for every slot, potions matched to their level and Shards. Your bag holds 128 items, and duplicate copies are kept.
+
+Every town has a **Merchant** beside its instructor. Stand next to the Merchant and press **Up**, or open the **Shop** tab while you are in a town:
+
+- **Buy Potions:** Red/Orange/White Tonic and Golden Elixir (HP), Blue Tonic, Mana Draught and Mana Elixir (MP), and Phoenix Elixir (full HP and MP). Stronger potions are sold in higher-level towns. Use them with **1** (HP) and **2** (MP); each button picks the smallest potion that fills the gap.
+- **Buy Gear:** weapons for your job's weapon type plus armor pieces for the town's level.
+- **Sell / Dismantle:** sell unworn gear for coins, or break it into **Shards**. "Sell all worse gear" and "Dismantle all worse gear" clear out everything weaker than what you wear, plus other classes' weapons.
+- **Forge:** spend Shards and coins to enhance gear from +1 to +10. Weapons gain attack; armor pieces gain defense and HP. The chance drops from 100% at +1 to 35% at +10. A failure keeps the item's level and only uses the materials.
+
+Dismantling works anywhere from the Inventory; selling needs a Merchant.
 
 ## Saves
 

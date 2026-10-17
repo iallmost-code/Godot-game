@@ -12,7 +12,7 @@ func run_all():
     var selection = ""
     var args = OS.get_cmdline_user_args()
     if args.size() >= 2 and args[0] == "--suite": selection = args[1]
-    for name in ["visual_polish", "world_expansion", "enemy_damage", "menu_shortcuts", "briar", "bulk_stats", "partner", "classes", "stars", "animation", "lunge", "progression", "movement", "combat", "equipment", "ui", "world", "save", "skills", "roster"]:
+    for name in ["shop", "visual_polish", "world_expansion", "enemy_damage", "menu_shortcuts", "briar", "bulk_stats", "partner", "classes", "stars", "animation", "lunge", "progression", "movement", "combat", "equipment", "ui", "world", "save", "skills", "roster"]:
         if selection != "" and selection != name: continue
         var path = "res://tests/test_" + name + ".gd"
         if not FileAccess.file_exists(path): continue

@@ -1,5 +1,5 @@
 extends RefCounted
-const DEFAULTS = {"move_left":KEY_LEFT,"move_right":KEY_RIGHT,"interact":KEY_UP,"jump":KEY_SHIFT,"attack":KEY_SPACE,"skill_z":KEY_Z,"skill_x":KEY_X,"skill_c":KEY_C,"skill_v":KEY_V,"skill_a":KEY_A,"skill_d":KEY_D,"skill_f":KEY_F,"menu":KEY_ESCAPE,"menu_inventory":KEY_I,"menu_map":KEY_M,"menu_skills":KEY_K,"menu_stats":KEY_S}
+const DEFAULTS = {"move_left":KEY_LEFT,"move_right":KEY_RIGHT,"interact":KEY_UP,"jump":KEY_SHIFT,"attack":KEY_SPACE,"skill_z":KEY_Z,"skill_x":KEY_X,"skill_c":KEY_C,"skill_v":KEY_V,"skill_a":KEY_A,"skill_d":KEY_D,"skill_f":KEY_F,"potion_hp":KEY_1,"potion_mp":KEY_2,"menu":KEY_ESCAPE,"menu_inventory":KEY_I,"menu_map":KEY_M,"menu_skills":KEY_K,"menu_stats":KEY_S}
 var bindings = DEFAULTS.duplicate()
 func defaults() -> Dictionary: return DEFAULTS.duplicate()
 func current() -> Dictionary: return bindings.duplicate()

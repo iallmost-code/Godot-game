@@ -38,7 +38,9 @@ func run(t):
     t.check(game.state.hp==hp-maxi(1,mob.attack_damage()-game.state.derived_stats().defense),"melee attack uses level-scaled damage after armor")
     game.player.hurt_timer=0
     game.state.restore()
-    game.state.inventory.append("briar_armor")
+    while game.state.level<12: game.state.add_xp(game.state.xp_required(game.state.level))
+    game.state.restore()
+    game.state.add_item("briar_armor")
     game.state.equip("briar_armor")
     hp=game.state.hp
     game.player.receive_damage(30,Vector2.ZERO)

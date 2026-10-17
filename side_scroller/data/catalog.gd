@@ -142,8 +142,67 @@ static func items() -> Dictionary:
     i.starter_armor={"name":"Trail Vest","slot":"armor","attack":0,"defense":2,"icon":"◆"}
     i.forest_armor={"name":"Mossguard Coat","slot":"armor","attack":0,"defense":5,"icon":"◆"}
     i.briar_armor={"name":"Briarweave Coat","slot":"armor","attack":0,"defense":9,"icon":"◆"}
+    # Hats, gloves, shoes, capes and earrings for every level band (any class).
+    for band in BANDS:
+        var lv=band[0]
+        var d=band[3]
+        var prefix=band[1]
+        i["hat_lv%d" % lv]={"name":prefix+" Helm","slot":"hat","attack":0,"defense":maxi(1,int(d*0.6)),"stats":{"hp":lv*3}}
+        i["gloves_lv%d" % lv]={"name":prefix+" Gloves","slot":"gloves","attack":1+int(lv/15.0),"defense":maxi(1,int(d*0.3))}
+        i["shoes_lv%d" % lv]={"name":prefix+" Boots","slot":"shoes","attack":0,"defense":maxi(1,int(d*0.4)),"stats":{"hp":lv*2}}
+        i["cape_lv%d" % lv]={"name":prefix+" Cape","slot":"cape","attack":0,"defense":maxi(1,int(d*0.4)),"stats":{"mp":lv*2}}
+        i["earring_lv%d" % lv]={"name":prefix+" Earring","slot":"accessory","attack":0,"defense":0,"stats":{"ALL":1+int(lv/20.0)}}
+    # Level requirement and base value for every item.
+    var job_levels={}
+    for id in jobs():
+        if jobs()[id].has("reward"): job_levels[jobs()[id].reward]=jobs()[id].level
+    for id in i:
+        var item=i[id]
+        var req=1
+        if job_levels.has(id): req=job_levels[id]
+        elif id.begins_with("forest_"): req=5
+        elif id.begins_with("briar_"): req=12
+        elif id.begins_with("warden_"): req=10
+        elif id.begins_with("expedition_"): req=35
+        elif id.begins_with("relic_"): req=60
+        elif id.contains("_lv"):
+            var band=int(id.get_slice("_lv",1))
+            req=1 if band<=10 else band-5
+        item.req=req
+        if not item.has("stats"): item.stats={}
+        var stat_total=0
+        for key in item.stats: stat_total+=item.stats[key]*(1 if key in ["hp","mp"] else 25)
+        item.value=int(15+req*6+item.attack*4+item.defense*6+stat_total*0.4)
     _items=i
     return i
+
+const GEAR_SLOTS=["weapon","hat","armor","gloves","shoes","cape","accessory"]
+const MAX_PLUS=10
+# Forge success chance for going from +n to +n+1.
+const FORGE_CHANCE=[1.0,0.95,0.9,0.8,0.7,0.6,0.5,0.45,0.4,0.35]
+static func consumables() -> Dictionary:
+    return {
+        "hp_1":{"name":"Red Tonic","kind":"hp","amount":40,"price":20,"town":1},
+        "hp_2":{"name":"Orange Tonic","kind":"hp","amount":150,"price":65,"town":1},
+        "hp_3":{"name":"White Tonic","kind":"hp","amount":400,"price":180,"town":20},
+        "hp_4":{"name":"Golden Elixir","kind":"hp","pct":0.5,"price":900,"town":45},
+        "mp_1":{"name":"Blue Tonic","kind":"mp","amount":80,"price":40,"town":1},
+        "mp_2":{"name":"Mana Draught","kind":"mp","amount":300,"price":160,"town":20},
+        "mp_3":{"name":"Mana Elixir","kind":"mp","pct":0.5,"price":800,"town":45},
+        "full":{"name":"Phoenix Elixir","kind":"full","pct":1.0,"price":3000,"town":60}}
+static func shop_gear(town_level: int,weapon_type: String) -> Array:
+    var result=[]
+    for band in BANDS:
+        var lv=band[0]
+        if lv>town_level+10 or lv<town_level-20: continue
+        result.append("%s_lv%d" % [weapon_type,lv])
+        result.append("armor_lv%d" % lv)
+        for slot in ["hat","gloves","shoes","cape","earring"]: result.append("%s_lv%d" % [slot,lv])
+    if result.is_empty():
+        result.append("%s_lv10" % weapon_type)
+        for slot in ["hat","gloves","shoes","cape","earring"]: result.append("%s_lv10" % slot)
+        result.append("armor_lv10")
+    return result
 
 static func skill(id: String) -> Dictionary: return skills().get(id,{})
 

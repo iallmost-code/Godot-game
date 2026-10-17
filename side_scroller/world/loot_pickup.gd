@@ -21,6 +21,13 @@ func _draw():
     if reward.has("item"):
         draw_colored_polygon(PackedVector2Array([Vector2(0,-25+bob),Vector2(9,-12+bob),Vector2(0,bob),Vector2(-9,-12+bob)]),Color("89e7da"))
         draw_line(Vector2(0,-22+bob),Vector2(0,-3+bob),Color.WHITE,2)
+    elif reward.has("consumable"):
+        var mana=reward.consumable.begins_with("mp")
+        draw_rect(Rect2(-7,-17+bob,14,16),Color("7fb3ef") if mana else Color("ef8b9a"))
+        draw_rect(Rect2(-4,-21+bob,8,5),Color("fae4ba"))
+    elif reward.has("shards"):
+        draw_colored_polygon(PackedVector2Array([Vector2(0,-24+bob),Vector2(7,-12+bob),Vector2(0,-1+bob),Vector2(-7,-12+bob)]),Color("b48ef2"))
+        draw_line(Vector2(-3,-16+bob),Vector2(2,-10+bob),Color.WHITE,2)
     elif reward.get("potions",0)>0:
         draw_rect(Rect2(-7,-17+bob,14,16),Color("ef8b9a"))
         draw_rect(Rect2(-4,-21+bob,8,5),Color("fae4ba"))

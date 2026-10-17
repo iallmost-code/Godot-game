@@ -97,6 +97,7 @@ func change_map(id: String,spawn: String) -> bool:
     next.setup(state)
     next.portal_requested.connect(change_map)
     next.advancement_requested.connect(show_advancement)
+    next.shop_requested.connect(func(): menu.open_panel("shop"))
     next.reward_notice.connect(hud.show_notice)
     next.boss_spawned.connect(func(enemy): hud.boss_target=enemy)
     if map!=null:
@@ -195,6 +196,7 @@ func show_advancement(_id: String=""):
     box.add_child(Style.button("Not yet",menu.close))
 func _process(delta):
     state.potion_cooldown=maxf(0,state.potion_cooldown-delta)
+    state.mana_potion_cooldown=maxf(0,state.mana_potion_cooldown-delta)
     state.regenerate(delta,Maps.definition(map_id).get("safe",false))
     if player.position.y>950: return_to_town()
     if map!=null:

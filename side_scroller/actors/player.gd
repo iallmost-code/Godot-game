@@ -103,6 +103,8 @@ func _physics_process(delta):
     if finishing_lunge: velocity.x=0
     if movement_enabled:
         if Input.is_action_just_pressed("interact") and stun_time<=0: interact_requested.emit()
+        if state!=null and InputMap.has_action("potion_hp") and Input.is_action_just_pressed("potion_hp"): state.use_potion("hp")
+        if state!=null and InputMap.has_action("potion_mp") and Input.is_action_just_pressed("potion_mp"): state.use_potion("mp")
         if combat != null:
             if Input.is_action_pressed("attack"): combat.begin_attack(state.basic_skill())
             for slot in state.slots:
