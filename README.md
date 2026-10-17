@@ -10,9 +10,11 @@ Current project source: [`side_scroller/`](side_scroller/). Full controls, class
 - **242 skills** with original names: attacks, buffs, passives, summons, heals, teleports, combo orbs, elemental brands and Shadow Twin.
 - **An 87-map world:** 32 safe towns with regional hunting routes, ten deeper hunting grounds that run to level 200, and **12 boss lairs** reached from their towns. See [`side_scroller/WORLD_GUIDE.md`](side_scroller/WORLD_GUIDE.md).
 - **49 new monsters** placed by theme (snails and mushrooms early, toys in Tickletop, fish and crabs in Tideglass, drakes in Wyrmrest...) and **12 bosses** with telegraphed attack patterns.
+- **Ropes, ladders and tall hunting maps**, **96 town quests**, upgrade **scrolls**, **pets** that fetch loot, a **minimap**, painted **skill icons** and a level-up light pillar.
+- Town Merchants with potions, gear, pets, selling, dismantling and the Forge.
 - Seven skill hotkeys (Z X C V A D F), rebindable controls, four save slots and JSON backups. Saves from the earlier two-class version migrate with a full skill-point refund.
 
-Default controls: **arrows** move, **Up** interacts, **Shift** jumps/double jumps, **Space** attacks, **Z X C V A D F** use skills, **I/M/K/S** open Inventory/Map/Skills/Stats.
+Default controls: **arrows** move, **Up** interacts and climbs, **Down** climbs down, **Shift** jumps/double jumps, **Space** attacks, **Z X C V A D F** use skills, **1/2** drink HP/MP potions, **I/M/K/S/Q** open Inventory/Map/Skills/Stats/Quests.
 
 Full town names and travel guide: [World guide](side_scroller/WORLD_GUIDE.md). This is the first playable world pass; Pirate content is excluded. The current visual pass adds four dedicated character sheets, separate equipped weapons, attack poses, projectile trails, elemental effects and painted common monsters.
 

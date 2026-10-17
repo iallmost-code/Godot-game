@@ -65,7 +65,7 @@ func setup(s,b):
     title_row.add_child(close_button)
     var tabs=HBoxContainer.new()
     layout.add_child(tabs)
-    for id in ["stats","skills","inventory","shop","map","controls","characters","save"]:
+    for id in ["stats","skills","inventory","quests","shop","map","controls","characters","save"]:
         var tab=Style.button(id.capitalize(),func(): open_panel(id))
         tabs.add_child(tab)
         tabs_by_id[id]=tab
@@ -81,7 +81,7 @@ func setup(s,b):
 func open_panel(id: String):
     if current_panel!=null and selected=="controls": current_panel.capture_action=""
     selected=id
-    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
+    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","quests":"QUEST LOG","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
     for tab_id in tabs_by_id:
         var action="menu_"+tab_id
         var key_name=" ["+OS.get_keycode_string(bindings.current()[action])+"]" if bindings.current().has(action) else ""
@@ -92,7 +92,7 @@ func open_panel(id: String):
     get_tree().paused=true
     Style.clear(content)
     current_panel=null
-    var scripts={"stats":"stats_panel","skills":"skills_panel","inventory":"inventory_panel","shop":"shop_panel","controls":"controls_panel","map":"map_panel"}
+    var scripts={"stats":"stats_panel","skills":"skills_panel","inventory":"inventory_panel","shop":"shop_panel","controls":"controls_panel","map":"map_panel","quests":"quest_panel"}
     if scripts.has(id):
         current_panel=load("res://ui/"+scripts[id]+".gd").new()
         content.add_child(current_panel)
@@ -114,6 +114,9 @@ func open_panel(id: String):
             button.disabled=active
             content.add_child(button)
             content.add_child(Style.label(blurbs[slot],14,Color("bfaee5")))
+        var style_panel=load("res://ui/style_panel.gd").new()
+        content.add_child(style_panel)
+        style_panel.bind(state)
     else:
         content.add_child(Style.label("SAVE & BACKUP",24,Color("f4d48a")))
         content.add_child(Style.label("Your character saves locally after progress changes.\nBrowser site data belongs to this browser and can be erased.\nExport a JSON backup before clearing site data or changing devices.
@@ -143,7 +146,7 @@ func _unhandled_input(event):
         else: open_panel("stats")
         get_viewport().set_input_as_handled()
         return
-    for id in ["inventory","map","skills","stats"]:
+    for id in ["inventory","map","skills","stats","quests"]:
         if event.is_action_pressed("menu_"+id):
             if opened and selected==id: close()
             else: open_panel(id)

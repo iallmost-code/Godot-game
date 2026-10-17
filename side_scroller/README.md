@@ -13,12 +13,13 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Action | Key |
 | --- | --- |
 | Move | Left / Right arrows |
-| Interact with portal or instructor | Up arrow |
+| Interact with portal or NPC; climb a rope or ladder | Up arrow |
+| Climb down a rope or ladder | Down arrow |
 | Jump; press again in air for a boosted double jump | Shift |
 | Basic attack (sword/spear/dagger/staff swing, star or arrow; hold to repeat) | Space |
 | Skill hotkeys | Z, X, C, V, A, D, F |
 | HP / MP potion | 1 / 2 |
-| Inventory / Map / Skills / Stats | I / M / K / S |
+| Inventory / Map / Skills / Stats / Quests | I / M / K / S / Q |
 | Menu / close window | Escape or top-right buttons |
 
 Rebind every key in **Menu → Controls**. Open menus pause the game.
@@ -74,6 +75,14 @@ Status effects shown as coloured dots over monsters: stun, freeze, poison (never
 
 Death returns you to town at full health with all progress kept.
 
+### Ropes, ladders and the minimap
+
+Hunting maps have upper ledges. Stand at the foot of a rope or ladder and hold **Up** to climb, or stand at the top and hold **Down** to climb down. Hold **Up** while jumping into a rope to grab it, and press **Shift** with **Left** or **Right** to jump off. Getting hit knocks you off. Monsters on ledges stay on their ledge. The camera follows you up. The minimap in the top-left corner shows ledges, ropes, portals, NPCs (yellow: quest givers), the boss and you.
+
+## Quests
+
+Every town has a quest giver with a three-step chain: a hunt, a collection quest and a tougher hunt on the upper ledges. A yellow **!** over an NPC means a new quest, a grey one means you are not high enough yet, **…** means it is in progress and **?** means you can hand it in. Stand next to the NPC and press **Up** to talk. Collection quests make the right monster drop quest items while the quest is active. Rewards are XP, coins, potions, upgrade scrolls and a helm. **Quests (Q)** lists what you are doing and what is available. Quest text can be replaced by writing `data/quests.json` (format in `systems/quests.gd`).
+
 ## Gear, shops and the Forge
 
 You wear seven pieces: **weapon, hat, armor, gloves, shoes, cape and earring**. Each piece has a level requirement and its own stats (attack, defense, HP, MP or all stats). Monsters drop gear for every slot, potions matched to their level and Shards. Your bag holds 128 items, and duplicate copies are kept.
@@ -87,6 +96,22 @@ Every town has a **Merchant** beside its instructor. Stand next to the Merchant 
 
 Dismantling works anywhere from the Inventory; selling needs a Merchant.
 
+### Scrolls
+
+Monsters sometimes drop upgrade scrolls; bosses drop two and quests give them too. Each piece of gear has upgrade slots (7 for weapons, helms and armor; 5 for gloves, boots, cloaks and earrings). Select an item in the Inventory and use a scroll on it:
+
+- **100% / 60% / 10%** scrolls for each gear slot: the lower the chance, the bigger the gain (weapon scrolls give +1 / +3 / +5 ATK). Pass or fail, the scroll uses one slot.
+- **Chaos Scroll 60%:** every stat on the item shifts by -5 to +5.
+- **Clean Slate Scroll 10%:** restores a slot lost to a failed scroll.
+
+Scrolls never destroy gear. Scrolls and the Forge stack.
+
+### Pets and looks
+
+Merchants also sell pets (**Pets** tab): Brown Pup, Ginger Kitten, Snow Bunny, Tuxedo Penguin, Pet Jellop and Baby Drake. Your pet follows you between maps and fetches coins, potions, gear, scrolls and quest items that drop nearby. Switch pets in **Characters**. That panel also sets hair, hair colour, face and skin tone. These choices are saved, but they only show in game once their art is added.
+
+Your save remembers the last town you visited and starts you there.
+
 ## Saves
 
 Progress and controls save in this browser's local project data. **Menu → Save** offers explicit saves and JSON backup export/import into the matching class slot. Saves from the earlier two-class version load automatically: jobs above the new thresholds step back (for example a level-65 Hermit becomes a Stalker until level 70), retired skills are removed, and **every skill point is refunded** once.
@@ -98,7 +123,9 @@ Progress and controls save in this browser's local project data. **Menu → Save
 - **Monster art:** sixteen common body families use the painted `art/monster_atlas.png`, with regions in `visuals/monster_layout.gd` and palette/idle motion in `visuals/mob_art.gd`. Bosses and special variants retain their individual vector features; Mossling, Lantern Bloom and Rootwarden retain their existing sprite art.
 - **Player art:** four dedicated unarmed body sheets (`art/*_body.png`), frame/foot/hand anchors in `visuals/body_layout.gd`, and separate equipment in `art/weapons_atlas.png` / `visuals/weapon_layout.gd`. All seven weapon types have normal and upgraded art shared with inventory icons. Attacks follow the real combat clock through windup, strike, follow-through and recovery.
 - **Combat effects:** `art/combat_atlas.png` / `visuals/attack_art.gd` contain slash, thrust, wave, impact and elemental art. Projectiles have fading trails; spell and melee effects wait for their combat windup.
-- **Skills:** every skill is one entry in `data/catalog.gd`; display names are in `RENAMES` and `FAMILY_NAMES`.
+- **Skills:** every skill is one entry in `data/catalog.gd`; display names are in `RENAMES` and `FAMILY_NAMES`. Icons come from `art/skill_icons.png` / `visuals/skill_icon_layout.gd`.
+- **Ropes and ledges:** `add_tiers()` in `data/maps.gd` adds ledges, climbs (`[x, top, bottom, "rope"|"ladder"]`) and ledge monsters to every hunting map. Painted rope and ladder pieces are used when `art/climb_atlas.png` and `visuals/climb_layout.gd` exist.
+- **Scrolls, pets, looks and quest items:** `data/adventure.gd`. Quests: `systems/quests.gd`.
 
 ## Development checks
 

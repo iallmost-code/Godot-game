@@ -25,6 +25,16 @@ func _draw():
         var mana=reward.consumable.begins_with("mp")
         draw_rect(Rect2(-7,-17+bob,14,16),Color("7fb3ef") if mana else Color("ef8b9a"))
         draw_rect(Rect2(-4,-21+bob,8,5),Color("fae4ba"))
+    elif reward.has("scroll"):
+        draw_rect(Rect2(-9,-22+bob,18,20),Color("f3e2b3"))
+        draw_rect(Rect2(-11,-24+bob,22,4),Color("c9a86a"))
+        draw_rect(Rect2(-11,-4+bob,22,4),Color("c9a86a"))
+        var seal=preload("res://ui/scroll_icon.gd").seal_color(reward.scroll)
+        draw_circle(Vector2(0,-12+bob),4,seal)
+    elif reward.has("quest_item"):
+        draw_circle(Vector2(0,-12+bob),9,Color("f6c35a"))
+        draw_circle(Vector2(0,-12+bob),9,Color("8a5a12"),false,2)
+        draw_string(ThemeDB.fallback_font,Vector2(-6,-6+bob),"?",HORIZONTAL_ALIGNMENT_CENTER,12,14,Color("5a3a08"))
     elif reward.has("shards"):
         draw_colored_polygon(PackedVector2Array([Vector2(0,-24+bob),Vector2(7,-12+bob),Vector2(0,-1+bob),Vector2(-7,-12+bob)]),Color("b48ef2"))
         draw_line(Vector2(-3,-16+bob),Vector2(2,-10+bob),Color.WHITE,2)

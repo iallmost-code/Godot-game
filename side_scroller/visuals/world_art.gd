@@ -35,9 +35,10 @@ func _ready():
         var index=int(palette.background)
         backdrop_size=Vector2(BACKGROUNDS.get_width()/2.0,BACKGROUNDS.get_height()/2.0)
         sky_sprite.region_rect=Rect2(Vector2((index%2)*backdrop_size.x,int(index/2.0)*backdrop_size.y),backdrop_size)
-    sky_sprite.scale=Vector2((width+600)/backdrop_size.x,760.0/backdrop_size.y)
+    var sky_top=minf(-100.0,data.get("top",137.0)-160.0)
+    sky_sprite.scale=Vector2((width+600)/backdrop_size.x,(860.0-sky_top-100.0)/backdrop_size.y)
     sky_sprite.modulate=palette.sky
-    sky_sprite.position=Vector2(-300,-100)
+    sky_sprite.position=Vector2(-300,sky_top)
     sky_sprite.z_index=-20
     add_child(sky_sprite)
 func _process(_delta):
@@ -85,6 +86,55 @@ func _draw():
     for platform in Maps.definition(map_id).platforms:
         terrain_strip(platform[0]-platform[2]/2.0,platform[1],platform[2],67 if data.safe else 77)
     terrain_strip(0,610,width,150)
+    for c in data.get("climbs",[]): draw_climb(c)
+# Painted rope/ladder pieces when the climb atlas exists, otherwise drawn ones.
+static var climb_art=null
+static func climb_atlas() -> Dictionary:
+    if climb_art==null:
+        climb_art={}
+        if ResourceLoader.exists("res://art/climb_atlas.png") and ResourceLoader.exists("res://visuals/climb_layout.gd"):
+            var script=load("res://visuals/climb_layout.gd")
+            for value in script.get_script_constant_map().values():
+                if value is Dictionary and not value.is_empty():
+                    climb_art={"texture":load("res://art/climb_atlas.png"),"regions":value}
+                    break
+    return climb_art
+func draw_climb(c: Array):
+    var x: float=c[0]
+    var top: float=c[1]-14
+    var bottom: float=c[2]
+    var kind: String=c[3]
+    var art=climb_atlas()
+    if not art.is_empty():
+        var pieces=art.regions.get(biome,art.regions.values()[0])
+        var mid: Rect2=pieces.get(kind+"_mid",Rect2())
+        if mid.size.x>0:
+            var w=16.0 if kind=="rope" else 32.0
+            var y=top
+            while y<bottom:
+                var piece=minf(64.0,bottom-y)
+                draw_texture_rect_region(art.texture,Rect2(x-w/2,y,w,piece),Rect2(mid.position,Vector2(mid.size.x,mid.size.y*piece/64.0)))
+                y+=64.0
+            var cap: Rect2=pieces.get(kind+"_top",Rect2())
+            if cap.size.x>0: draw_texture_rect_region(art.texture,Rect2(x-w/2,top-cap.size.y*w/cap.size.x,w,cap.size.y*w/cap.size.x),cap)
+            return
+    if kind=="rope":
+        draw_line(Vector2(x,top),Vector2(x,bottom-4),Color("6d4a26"),7)
+        draw_line(Vector2(x-1,top),Vector2(x-1,bottom-4),Color("b98a4d"),3)
+        var y=top+10.0
+        while y<bottom-8:
+            draw_line(Vector2(x-3,y),Vector2(x+3,y+6),Color("5a3c1e"),2)
+            y+=14.0
+        draw_circle(Vector2(x,top),6,Color("5a3c1e"))
+    else:
+        for side in [-13,13]:
+            draw_line(Vector2(x+side,top),Vector2(x+side,bottom),Color("5b3d22"),6)
+            draw_line(Vector2(x+side-1,top),Vector2(x+side-1,bottom),Color("a77a45"),2)
+        var y=top+12.0
+        while y<bottom-4:
+            draw_line(Vector2(x-13,y),Vector2(x+13,y),Color("7b5530"),5)
+            draw_line(Vector2(x-13,y-1),Vector2(x+13,y-1),Color("c49660"),1)
+            y+=22.0
 
 func building(x: float,size=Vector2(360,320)):
     var region=Scenery.BUILDINGS[palette.building]

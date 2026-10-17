@@ -16,7 +16,16 @@ static func stats_line(state,inst: Dictionary) -> String:
         var label="All stats" if key=="ALL" else key.to_upper()
         parts.append("+%d %s" % [item.stats[key],label])
     if item.slot!="weapon" and inst.plus>0: parts.append("+%d HP (forge)" % (inst.plus*(5+int(item.req/4.0))))
+    var bonus=inst.get("bonus",{})
+    for key in bonus:
+        if key in ["attack","defense"] or bonus[key]==0: continue
+        parts.append("%+d %s (scroll)" % [bonus[key],"All stats" if key=="ALL" else key.to_upper()])
     return "  •  ".join(parts)
+static func upgrades(state,inst: Dictionary) -> String:
+    var text="%d upgrade slots left" % state.upgrade_slots(inst)
+    if inst.get("scrolled",0)>0: text+="  •  %d scrolls passed" % inst.scrolled
+    if inst.get("failed",0)>0: text+="  •  %d failed" % inst.failed
+    return text
 static func requirement(state,inst: Dictionary) -> String:
     var item=Catalog.items()[inst.id]
     var problem=state.equip_problem(inst.id)

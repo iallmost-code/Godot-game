@@ -70,6 +70,7 @@ func set_pose(mode: String,direction: int,time: float):
     var frame=8
     if mode=="run": frame=posmod(int(walk_phase*8),8)
     elif mode=="jump": frame=9
+    elif mode=="climb": frame=9 if int(walk_phase)%2==0 else 13
     elif mode=="hurt": frame=13
     elif mode=="attack": frame=attack_frame(elapsed)
     current_frame=frame
@@ -110,3 +111,5 @@ func _draw():
     draw_set_transform(Vector2(0,1),0,Vector2(19,4))
     draw_circle(Vector2.ZERO,1,Color(0.05,0.10,0.12,0.20))
     draw_set_transform(Vector2.ZERO)
+# Hair, face and skin overlays need the looks art; until it is added, looks are saved but not drawn.
+static func looks_ready() -> bool: return false

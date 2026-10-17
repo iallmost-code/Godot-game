@@ -56,7 +56,7 @@ func run(t):
     data.character.skill_ranks={}
     data.character.sp={"0":9,"1":91,"2":31,"3":0,"4":0}
     data.character.sp_earned={"0":9,"1":91,"2":31,"3":0,"4":0}
-    data.bindings.attack=KEY_Q
+    data.bindings.attack=KEY_G
     var prior=copy.to_record()
     t.check(not store.import_json(JSON.stringify(data),copy,b),"cross-tier earned SP cannot double-count level rewards")
     t.check(copy.to_record()==prior and b.current().attack==KEY_SPACE,"rejected SP import preserves character and live key bindings")

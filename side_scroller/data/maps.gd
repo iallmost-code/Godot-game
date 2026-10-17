@@ -100,7 +100,45 @@ static func build_world() -> Dictionary:
         world[parent].spawns["route_"+id]=Vector2(x+100,590)
         add_portal(world,parent,x,trail,"entry",row[1]+"\n"+row[4]+" (Lv %d+)" % int(row[3]))
     add_extensions(world)
+    for id in world: add_tiers(world[id])
     return world
+# Upper tiers: long ledges above each hunting map reached by ropes and ladders.
+# climbs: [x, top y, bottom y, "rope" or "ladder"]; top: highest point the camera shows.
+const TIER_A=230
+const TIER_B=-20
+static func add_tiers(map: Dictionary):
+    map.climbs=[]
+    map.top=137
+    if map.safe or map.has("boss"): return
+    var ground=[]
+    var high=[]
+    for entry in map.get("enemies",[]):
+        if entry[2]=="rootwarden": continue
+        if entry[1]>=600: ground.append(entry)
+        else: high.append(entry)
+    if ground.is_empty(): return
+    map.platforms=map.platforms.duplicate(true)
+    map.enemies=map.enemies.duplicate(true)
+    var index=0
+    var c=700
+    while c<map.width-520:
+        var kind="rope" if index%2==0 else "ladder"
+        map.platforms.append([c,TIER_A,440])
+        map.climbs.append([c-160,TIER_A,610,kind])
+        map.platforms.append([c+180,TIER_B,360])
+        map.climbs.append([c+110,TIER_B,TIER_A,"ladder" if kind=="rope" else "rope"])
+        var upper=(high if not high.is_empty() else ground)[index%(high.size() if not high.is_empty() else ground.size())]
+        var lower=ground[(index*2+1)%ground.size()]
+        var a=[c-90,TIER_A,upper[2]]
+        var b=[c+180,TIER_B,lower[2]]
+        if upper.size()>3: a.append(mini(200,upper[3]+1))
+        if lower.size()>3: b.append(mini(200,lower[3]+3))
+        map.enemies.append(a)
+        map.enemies.append([c+120,TIER_A,upper[2]]+([a[3]] if a.size()>3 else []))
+        map.enemies.append(b)
+        index+=1
+        c+=1000
+    if index>0: map.top=TIER_B-260
 
 # Themed monsters for each regional hunting route: [ground x4, platform x2].
 const ROUTE_MONSTERS={

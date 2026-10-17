@@ -49,7 +49,7 @@ func run(t):
     for i in range(4):
         repeated.change_map("forest","entry")
         await t.process_frame
-        t.check(t.get_nodes_in_group("enemies").size()==9,"forest transition keeps one set of enemies")
+        t.check(t.get_nodes_in_group("enemies").size()==preload("res://data/maps.gd").definition("forest").enemies.size(),"forest transition keeps one set of enemies")
         repeated.change_map("town","entry")
         await t.process_frame
         t.check(t.get_nodes_in_group("enemies").is_empty(),"return to town clears forest enemies")

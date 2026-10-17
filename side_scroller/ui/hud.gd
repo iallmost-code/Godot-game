@@ -21,6 +21,7 @@ var boss_panel
 var boss_label
 var boss_bar
 var buff_label
+var minimap
 signal menu_requested(panel_id: String)
 func bind(s,c,b=null):
     state=s
@@ -42,11 +43,14 @@ func bind(s,c,b=null):
     map_label.add_theme_constant_override("outline_size",2)
     map_label.position=Vector2(27,54)
     root_control.add_child(map_label)
+    minimap=preload("res://ui/minimap.gd").new()
+    minimap.position=Vector2(25,76)
+    root_control.add_child(minimap)
     var top=HBoxContainer.new()
     top.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-    top.position=Vector2(-500,22)
+    top.position=Vector2(-600,22)
     root_control.add_child(top)
-    for id in ["stats","skills","inventory","map"]:
+    for id in ["stats","skills","inventory","quests","map"]:
         var menu_button=Style.button(id.capitalize(),func(): menu_requested.emit(id))
         top.add_child(menu_button)
         menu_buttons[id]=menu_button
@@ -88,7 +92,14 @@ func bind(s,c,b=null):
         button.add_theme_font_size_override("font_size",12)
         button.clip_text=true
         ability_row.add_child(button)
-        skills.append({"slot":slot,"button":button})
+        var icon=preload("res://ui/skill_icon.gd").new()
+        icon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        icon.offset_left=3
+        icon.offset_right=-3
+        icon.offset_top=3
+        icon.offset_bottom=-2
+        button.add_child(icon)
+        skills.append({"slot":slot,"button":button,"icon":icon,"peak":0.0})
     var right=VBoxContainer.new()
     row.add_child(right)
     var potions=HBoxContainer.new()
@@ -188,6 +199,8 @@ func refresh():
         var action="attack" if slot=="attack" else "skill_"+slot
         var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else slot.to_upper()
         var cooldown=combat.cooldowns.get(id,0)
-        entry.button.text=key+"\n"+(state.skill_name(id) if id!="" else "—")+("\n%.1fs" % cooldown if cooldown>0 else "\n%d MP" % combat.mana_cost(id) if id!="" and combat.mana_cost(id)>0 else "")
-        entry.button.tooltip_text=(state.skill_name(id)+"\n"+Catalog.skill(id).get("description","")) if id!="" else "Empty slot. Assign skills in the Skills window."
-        entry.button.modulate=Color("819a9c") if id=="" or cooldown>0 else Color.WHITE
+        entry.peak=maxf(entry.peak,cooldown) if cooldown>0 else 0.0
+        entry.icon.set_state(id,key,cooldown,entry.peak,state.skill_name(id) if id!="" else "—")
+        var cost=combat.mana_cost(id) if id!="" else 0
+        entry.button.tooltip_text=(state.skill_name(id)+("  •  %d MP" % cost if cost>0 else "")+"\n"+Catalog.skill(id).get("description","")) if id!="" else "Empty slot. Assign skills in the Skills window."
+        entry.button.modulate=Color("b8c4c6") if id=="" else Color.WHITE

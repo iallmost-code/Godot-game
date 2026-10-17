@@ -2,6 +2,8 @@ extends Node2D
 const Maps=preload("res://data/maps.gd")
 const Catalog=preload("res://data/catalog.gd")
 const EnemyStats=preload("res://data/enemy_stats.gd")
+const Quests=preload("res://systems/quests.gd")
+const Adventure=preload("res://data/adventure.gd")
 var map_id="town"
 var width=1800.0
 var state
@@ -18,6 +20,10 @@ signal advancement_requested(job_id: String)
 signal reward_notice(message: String)
 signal boss_spawned(enemy: Node2D)
 signal shop_requested
+signal quest_requested(npc: String)
+var climbs: Array=[]
+var top=137.0
+var quest_givers: Array=[]
 var merchant_position=Vector2(800,610)
 func setup(s):
     state=s
@@ -25,6 +31,8 @@ func setup(s):
     width=data.width
     portals=data.portals
     portal_position=portals[0].position
+    climbs=data.get("climbs",[])
+    top=data.get("top",137.0)
     build_platform(Vector2(width/2,645),Vector2(width,70),false)
     build_platform(Vector2(-20,300),Vector2(40,900),false)
     build_platform(Vector2(width+20,300),Vector2(40,900),false)
@@ -46,6 +54,14 @@ func setup(s):
         add_child(merchant)
         merchant.set_pose("idle",-1,0)
         make_label("Merchant\nShop • Sell • Forge",merchant_position+Vector2(-75,-115),Color("ffe2a8"),17)
+        for giver in Quests.givers(map_id):
+            var npc_visual=preload("res://visuals/character_visual.gd").new()
+            npc_visual.position=Vector2(giver.x,610)
+            npc_visual.modulate=Color(0.85,1.0,0.85)
+            add_child(npc_visual)
+            npc_visual.set_pose("idle",1,0)
+            quest_givers.append(giver)
+            make_label(giver.name+"\nQuests",Vector2(giver.x-75,495),Color("d6f5b0"),17)
     else:
         make_label(data.get("notice","Explore the trails and return to town to recover."),Vector2(380,300),Color("e7d2ed"),16)
         for entry in data.enemies:
@@ -90,6 +106,10 @@ func spawn_enemy(record):
     enemy.area_tint=preload("res://visuals/world_theme.gd").enemy_tint(Maps.definition(map_id).biome)
     add_child(enemy)
     record.node=enemy
+    if record.position.y<600:
+        for platform in Maps.definition(map_id).platforms:
+            if absf(platform[1]-record.position.y)<4 and absf(platform[0]-record.position.x)<=platform[2]/2.0:
+                enemy.set_meta("span",Vector2(platform[0]-platform[2]/2.0+18,platform[0]+platform[2]/2.0-18))
     if EnemyStats.is_boss(record.id):
         boss=enemy
         boss_spawned.emit(enemy)
@@ -123,6 +143,7 @@ func reward_for(id: String,lv: int) -> Dictionary:
         elif pick<0.6: reward.item=("armor_"+loot) if loot.begins_with("lv") else loot+"_armor"
         else: reward.item="%s_%s" % [["hat","gloves","shoes","cape","earring"].pick_random(),band]
     elif roll<0.48: reward.shards=1+int(lv/25.0)
+    elif roll<0.505: reward={"scroll":Adventure.random_scroll()}
     if EnemyStats.is_boss(id): reward.shards=5+int(lv/10.0)
     return reward
 func grant_xp(id: String,node,lv: int=0):
@@ -137,6 +158,11 @@ func on_defeated(pos: Vector2,id: String,record: Dictionary):
     var lv=monster_level(id,record)
     grant_xp(id,record.node,lv)
     spawn_loot(pos,reward_for(id,lv))
+    for note in Quests.on_kill(state,id): reward_notice.emit(note)
+    var wanted=Quests.wanted_drop(state,id)
+    if wanted!="" and randf()<0.6: spawn_loot(pos+Vector2(randf_range(-30,30),0),{"quest_item":wanted})
+    if EnemyStats.is_boss(id):
+        for i in 2: spawn_loot(pos+Vector2(40+i*30,0),{"scroll":Adventure.random_scroll()})
 func spawn_loot(pos: Vector2,reward: Dictionary):
     var loot=preload("res://world/loot_pickup.gd").new()
     loot.setup(reward)
@@ -157,6 +183,10 @@ func interact():
             portal_requested.emit(portal.target,portal.spawn)
             return
     var data=Maps.definition(map_id)
+    for giver in quest_givers:
+        if absf(player.position.x-giver.x)<70 and player.position.y>560:
+            quest_requested.emit(giver.name)
+            return
     if data.safe and absf(player.position.x-merchant_position.x)<80:
         shop_requested.emit()
         return
@@ -173,15 +203,33 @@ func _process(delta):
             if record.timer<=0: spawn_enemy(record)
     for drop in pickups.duplicate():
         if not is_instance_valid(drop): pickups.erase(drop)
-        elif player!=null and player.position.distance_to(drop.position)<35:
-            var text="%s found! Open Inventory to equip." % Catalog.items()[drop.reward.item].name if drop.reward.has("item") else "%s found." % Catalog.consumables()[drop.reward.consumable].name if drop.reward.has("consumable") else "Potion found." if drop.reward.has("potions") else "+%d Shards" % drop.reward.shards if drop.reward.has("shards") else "+%d coins" % drop.reward.coins
-            if drop.try_collect(state): reward_notice.emit(text)
-            elif drop.reward.has("item") and not drop.get_meta("full_warned",false):
-                drop.set_meta("full_warned",true)
-                reward_notice.emit("Inventory full. Sell or dismantle gear to make room.")
+        elif player!=null and player.position.distance_to(drop.position)<35: collect(drop)
     queue_redraw()
+func collect(drop) -> bool:
+    if not is_instance_valid(drop): return false
+    var r=drop.reward
+    var text="%s found! Open Inventory to equip." % Catalog.items()[r.item].name if r.has("item") else "%s found." % Catalog.consumables()[r.consumable].name if r.has("consumable") else "Potion found." if r.has("potions") else "+%d Shards" % r.shards if r.has("shards") else "%s found!" % Adventure.scrolls()[r.scroll].name if r.has("scroll") else "%s (%d)" % [Adventure.QUEST_ITEMS[r.quest_item],int(state.quest_items.get(r.quest_item,0))+1] if r.has("quest_item") else "+%d coins" % r.get("coins",0)
+    if drop.try_collect(state):
+        reward_notice.emit(text)
+        pickups.erase(drop)
+        return true
+    if r.has("item") and not drop.get_meta("full_warned",false):
+        drop.set_meta("full_warned",true)
+        reward_notice.emit("Inventory full. Sell or dismantle gear to make room.")
+    return false
 func _draw():
     for portal in portals: draw_portal(portal.position)
+    var font=ThemeDB.fallback_font
+    for giver in quest_givers:
+        var mark=Quests.marker(state,map_id,giver.name)
+        if mark=="": continue
+        var color=Color("ffd23f") if mark in ["!","?"] else Color("8fb3ff") if mark=="…" else Color("b9b9b9")
+        var text="!" if mark=="!locked" else mark
+        var bob=sin(Time.get_ticks_msec()/260.0)*4
+        var at=Vector2(giver.x,468+bob)
+        draw_circle(at+Vector2(0,-12),17,Color(0.1,0.15,0.2,0.75))
+        draw_string_outline(font,at+Vector2(-20,0),text,HORIZONTAL_ALIGNMENT_CENTER,40,28,5,Color("3a2a05"))
+        draw_string(font,at+Vector2(-20,0),text,HORIZONTAL_ALIGNMENT_CENTER,40,28,color)
 func draw_portal(portal_position: Vector2):
     # Portal rune with a pulsing center and arch.
     var portal_color=Color("8fecdf")

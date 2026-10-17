@@ -1,5 +1,6 @@
 extends RefCounted
 const Catalog = preload("res://data/catalog.gd")
+const Adventure = preload("res://data/adventure.gd")
 const VERSION=3
 const INVENTORY_LIMIT=128
 const POOLS=["0","1","2","3","4"]
@@ -35,6 +36,16 @@ var consumables = {"hp_1":5}
 var potions: int:
     get: return int(consumables.get("hp_1",0))
     set(value): consumables["hp_1"]=value
+# Last safe town visited; loading a save starts here.
+var town = "town"
+# Quest progress {id: {"status": "active"/"done", "count": n}} and quest drops {item: n}.
+var quests = {}
+var quest_items = {}
+# Upgrade scrolls {scroll id: n}.
+var scrolls = {}
+var looks = Adventure.default_looks()
+var pets: Array = []
+var pet = ""
 var potion_cooldown = 0.0
 var mana_potion_cooldown = 0.0
 # Runtime only: active buffs {id: {"time": seconds, "rank": n}}.
@@ -174,6 +185,12 @@ func gear_totals() -> Dictionary:
                 for stat in ["STR","DEX","INT","LUK"]: total[stat]+=item.stats.ALL
             else: total[key]+=item.stats[key]
         if item.slot!="weapon": total.hp+=inst.plus*(5+int(item.req/4.0))
+        var bonus=inst.get("bonus",{})
+        for key in bonus:
+            if key=="ALL":
+                for stat in ["STR","DEX","INT","LUK"]: total[stat]+=bonus.ALL
+            elif key in ["hp","mp","STR","DEX","INT","LUK"]: total[key]+=bonus[key]
+    for key in ["hp","mp"]: total[key]=maxi(0,total[key])
     return total
 func effective_attributes() -> Dictionary:
     var factor=1.0+bonus("stat_pct")
@@ -276,12 +293,12 @@ func add_item_uid(id: String,plus: int=0) -> int:
 func add_item(id: String) -> bool: return add_item_uid(id)!=0
 func item_attack(inst: Dictionary) -> int:
     var item=Catalog.items()[inst.id]
-    if item.attack<=0: return 0
-    return item.attack+inst.plus*maxi(1,int(round(item.attack*0.06)))
+    var base=0 if item.attack<=0 else item.attack+inst.plus*maxi(1,int(round(item.attack*0.06)))
+    return maxi(0,base+int(inst.get("bonus",{}).get("attack",0)))
 func item_defense(inst: Dictionary) -> int:
     var item=Catalog.items()[inst.id]
-    if item.defense<=0 and item.slot=="weapon": return 0
-    return item.defense+inst.plus*maxi(1,int(round(item.defense*0.1)))
+    var base=0 if item.defense<=0 and item.slot=="weapon" else item.defense+inst.plus*maxi(1,int(round(item.defense*0.1)))
+    return maxi(0,base+int(inst.get("bonus",{}).get("defense",0)))
 # Why an item cannot be worn, or "" when it can.
 func equip_problem(id: String) -> String:
     var item=Catalog.items().get(id,{})
@@ -388,7 +405,11 @@ func collect_reward(reward: Dictionary) -> bool:
     if reward.has("consumable") and not Catalog.consumables().has(reward.consumable): return false
     for key in ["coins","potions","shards"]:
         if int(reward.get(key,0)) < 0: return false
+    if reward.has("scroll") and not Adventure.scrolls().has(reward.scroll): return false
+    if reward.has("quest_item") and not Adventure.QUEST_ITEMS.has(reward.quest_item): return false
     if reward.has("item"): add_item_uid(reward.item)
+    if reward.has("scroll"): scrolls[reward.scroll]=mini(9999,int(scrolls.get(reward.scroll,0))+1)
+    if reward.has("quest_item"): quest_items[reward.quest_item]=mini(9999,int(quest_items.get(reward.quest_item,0))+1)
     coins = mini(1000000, coins+int(reward.get("coins",0)))
     potions = mini(9999, potions+int(reward.get("potions",0)))
     shards = mini(1000000, shards+int(reward.get("shards",0)))
@@ -473,7 +494,8 @@ func clear_buffs():
     buffs.clear()
     changed.emit()
 func to_record() -> Dictionary:
-    return {"version":VERSION,"level":level,"xp":xp,"job":job,"archetype":archetype,"attributes":attributes.duplicate(),"ap":ap,"sp":sp.duplicate(),"sp_earned":sp_earned.duplicate(),"skill_ranks":skill_ranks.duplicate(),"slots":slots.duplicate(),"inventory":inventory.duplicate(true),"equipped":equipped.duplicate(),"next_uid":next_uid,"coins":coins,"shards":shards,"consumables":consumables.duplicate()}
+    return {"version":VERSION,"level":level,"xp":xp,"job":job,"archetype":archetype,"attributes":attributes.duplicate(),"ap":ap,"sp":sp.duplicate(),"sp_earned":sp_earned.duplicate(),"skill_ranks":skill_ranks.duplicate(),"slots":slots.duplicate(),"inventory":inventory.duplicate(true),"equipped":equipped.duplicate(),"next_uid":next_uid,"coins":coins,"shards":shards,"consumables":consumables.duplicate(),
+        "town":town,"quests":quests.duplicate(true),"quest_items":quest_items.duplicate(),"scrolls":scrolls.duplicate(),"looks":looks.duplicate(),"pets":pets.duplicate(),"pet":pet}
 func whole(value,minimum: int,maximum: int) -> bool:
     return (value is int or value is float) and is_finite(float(value)) and value==int(value) and value>=minimum and value<=maximum
 # Largest SP a pool could have earned at this level and job.
@@ -643,7 +665,9 @@ func load_record(record: Dictionary) -> bool:
         if not entry is Dictionary or not entry.get("id",null) is String or not Catalog.items().has(entry.id): return false
         if not whole(entry.get("uid",-1),1,1000000000) or not whole(entry.get("plus",-1),0,Catalog.MAX_PLUS) or uids.has(int(entry.uid)): return false
         uids.append(int(entry.uid))
-        trial.inventory.append({"uid":int(entry.uid),"id":entry.id,"plus":int(entry.plus)})
+        var inst={"uid":int(entry.uid),"id":entry.id,"plus":int(entry.plus)}
+        if not trial.read_upgrades(entry,inst): return false
+        trial.inventory.append(inst)
     if not whole(record.get("next_uid",-1),1,1000000001) or (not uids.is_empty() and int(record.next_uid)<=uids.max()): return false
     trial.next_uid=int(record.next_uid)
     if not record.get("equipped",null) is Dictionary: return false
@@ -664,11 +688,144 @@ func load_record(record: Dictionary) -> bool:
     for id in record.get("consumables",{}):
         if not Catalog.consumables().has(id) or not whole(record.consumables[id],0,9999): return false
         trial.consumables[id]=int(record.consumables[id])
-    for key in ["level","xp","job","archetype","attributes","ap","sp","sp_earned","skill_ranks","slots","inventory","equipped","equipment","next_uid","coins","shards","consumables"]:
+    if not trial.read_extras(record): return false
+    for key in ["level","xp","job","archetype","attributes","ap","sp","sp_earned","skill_ranks","slots","inventory","equipped","equipment","next_uid","coins","shards","consumables","town","quests","quest_items","scrolls","looks","pets","pet"]:
         set(key,trial.get(key))
     buffs.clear()
     migration_note="Your character was updated to the full job tree. All skill points were refunded; open Skills to spend them." if migrated else ""
     hp=derived_stats().max_hp
     mp=derived_stats().max_mp
+    changed.emit()
+    return true
+
+# Optional fields added after version 3; missing ones keep their defaults.
+func read_extras(record: Dictionary) -> bool:
+    var Maps=load("res://data/maps.gd")
+    var saved_town=record.get("town","town")
+    if not saved_town is String or not Maps.definition(saved_town).get("safe",false): saved_town="town"
+    town=saved_town
+    var Quests=load("res://systems/quests.gd")
+    quests={}
+    var quest_record=record.get("quests",{})
+    if not quest_record is Dictionary: return false
+    for id in quest_record:
+        var entry=quest_record[id]
+        if not Quests.all().has(id): continue
+        if not entry is Dictionary or not entry.get("status","") in ["active","done"] or not whole(entry.get("count",0),0,100000): return false
+        quests[id]={"status":entry.status,"count":int(entry.get("count",0))}
+    quest_items={}
+    if not record.get("quest_items",{}) is Dictionary or not record.get("scrolls",{}) is Dictionary: return false
+    for id in record.get("quest_items",{}):
+        if not Adventure.QUEST_ITEMS.has(id) or not whole(record.quest_items[id],0,9999): return false
+        quest_items[id]=int(record.quest_items[id])
+    scrolls={}
+    for id in record.get("scrolls",{}):
+        if not Adventure.scrolls().has(id) or not whole(record.scrolls[id],0,9999): return false
+        scrolls[id]=int(record.scrolls[id])
+    var saved_looks=record.get("looks",Adventure.default_looks())
+    if not Adventure.valid_looks(saved_looks): return false
+    looks={"hair":saved_looks.hair,"hair_color":int(saved_looks.hair_color),"face":saved_looks.face,"skin":int(saved_looks.skin)}
+    var owned=record.get("pets",[])
+    if not owned is Array: return false
+    pets=[]
+    for id in owned:
+        if not id is String or not Adventure.PETS.has(id) or pets.has(id): return false
+        pets.append(id)
+    var active=record.get("pet","")
+    if not active is String or active!="" and not pets.has(active): return false
+    pet=active
+    return true
+func read_upgrades(entry: Dictionary,inst: Dictionary) -> bool:
+    var slot=Catalog.items()[inst.id].slot
+    var limit=Adventure.UPGRADE_SLOTS.get(slot,5)
+    for key in ["slots","failed","scrolled"]:
+        if entry.has(key):
+            if not whole(entry[key],0,limit): return false
+            inst[key]=int(entry[key])
+    if entry.has("bonus"):
+        if not entry.bonus is Dictionary: return false
+        inst.bonus={}
+        for key in entry.bonus:
+            if not key in ["attack","defense","hp","mp","STR","DEX","INT","LUK","ALL"] or not whole(entry.bonus[key],-200,500): return false
+            inst.bonus[key]=int(entry.bonus[key])
+    # Every scroll moves one slot to "scrolled" or "failed"; Clean Slate moves one back.
+    if inst.has("slots") or inst.has("failed") or inst.has("scrolled"):
+        return int(inst.get("slots",limit))+int(inst.get("failed",0))+int(inst.get("scrolled",0))==limit
+    return true
+func remember_town(id: String):
+    if town!=id:
+        town=id
+        changed.emit()
+
+# --- Upgrade scrolls ---
+func upgrade_slots(inst: Dictionary) -> int:
+    if inst.has("slots"): return int(inst.slots)
+    return Adventure.UPGRADE_SLOTS.get(Catalog.items()[inst.id].slot,5)
+func add_scroll(id: String,count: int=1) -> bool:
+    if not Adventure.scrolls().has(id): return false
+    scrolls[id]=mini(9999,int(scrolls.get(id,0))+count)
+    changed.emit()
+    return true
+# Why a scroll cannot be used on an item, or "" when it can.
+func scroll_problem(uid: int,id: String) -> String:
+    var inst=instance(uid)
+    var info=Adventure.scrolls().get(id,{})
+    if inst.is_empty() or info.is_empty(): return "Pick an item and a scroll."
+    if int(scrolls.get(id,0))<=0: return "You have no %s." % info.name
+    if info.slot!="" and info.slot!=Catalog.items()[inst.id].slot: return "This scroll is for %s." % Adventure.SLOT_WORDS[info.slot].to_lower()+(" gear" if info.slot!="weapon" else "s")
+    if id=="scroll_clean":
+        if int(inst.get("failed",0))<=0: return "No failed upgrade slots to restore."
+    elif upgrade_slots(inst)<=0: return "No upgrade slots left."
+    return ""
+# Returns "success", "fail" or the problem text. roll<0 rolls randomly.
+func apply_scroll(uid: int,id: String,roll: float=-1.0) -> String:
+    var problem=scroll_problem(uid,id)
+    if problem!="": return problem
+    var inst=instance(uid)
+    var info=Adventure.scrolls()[id]
+    scrolls[id]-=1
+    if scrolls[id]<=0: scrolls.erase(id)
+    var hit=(randf() if roll<0 else roll)<info.chance
+    if id=="scroll_clean":
+        if hit:
+            inst.failed=int(inst.get("failed",0))-1
+            inst.slots=upgrade_slots(inst)+1
+    else:
+        inst.slots=upgrade_slots(inst)-1
+        if hit:
+            inst.scrolled=int(inst.get("scrolled",0))+1
+            var bonus=inst.get("bonus",{})
+            if id=="scroll_chaos":
+                var item=Catalog.items()[inst.id]
+                var keys=bonus.keys()
+                for key in ["attack","defense"]:
+                    if item[key]>0 and not keys.has(key): keys.append(key)
+                for key in item.stats:
+                    if not keys.has(key): keys.append(key)
+                for key in keys: bonus[key]=int(bonus.get(key,0))+randi_range(-5,5)
+            else:
+                for key in info.gains: bonus[key]=int(bonus.get(key,0))+info.gains[key]
+            inst.bonus=bonus
+        else: inst.failed=int(inst.get("failed",0))+1
+    hp=minf(hp,derived_stats().max_hp)
+    changed.emit()
+    return "success" if hit else "fail"
+
+# --- Pets and looks ---
+func buy_pet(id: String) -> bool:
+    if not Adventure.PETS.has(id) or pets.has(id) or coins<Adventure.PETS[id].price: return false
+    coins-=Adventure.PETS[id].price
+    pets.append(id)
+    pet=id
+    changed.emit()
+    return true
+func set_pet(id: String) -> bool:
+    if id!="" and not pets.has(id): return false
+    pet=id
+    changed.emit()
+    return true
+func set_looks(next: Dictionary) -> bool:
+    if not Adventure.valid_looks(next): return false
+    looks=next.duplicate()
     changed.emit()
     return true

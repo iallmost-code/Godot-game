@@ -36,8 +36,9 @@ func run(t):
     boss.receive_hit(100000,Vector2.ZERO,452)
     var rewarded=game.state.to_record()
     t.check(not boss.receive_hit(100000,Vector2.ZERO,453) and game.state.to_record()==rewarded,"boss cannot grant duplicate XP or loot from overlapping hits")
-    t.check(game.map.pickups.size()==1 and game.map.pickups[0].reward.item=="warden_sword","boss drops a guaranteed class weapon")
-    game.map.pickups[0].try_collect(game.state)
+    var weapons=game.map.pickups.filter(func(drop): return drop.reward.has("item"))
+    t.check(weapons.size()==1 and weapons[0].reward.item=="warden_sword","boss drops a guaranteed class weapon")
+    weapons[0].try_collect(game.state)
     t.check(game.state.has_item("warden_sword"),"boss weapon can be collected")
     await t.process_frame
     game.map._process(45.1)

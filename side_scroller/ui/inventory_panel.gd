@@ -3,6 +3,7 @@ const Catalog=preload("res://data/catalog.gd")
 const Maps=preload("res://data/maps.gd")
 const Style=preload("res://ui/style.gd")
 const ItemText=preload("res://ui/item_text.gd")
+const Adventure=preload("res://data/adventure.gd")
 var state
 var selected_uid=0
 var map_id="town"
@@ -45,6 +46,16 @@ func bulk(kind: String):
             count+=1
     note=("%s %d items for %d %s." % ["Sold" if kind=="sell" else "Dismantled",count,total,"coins" if kind=="sell" else "Shards"]) if count>0 else "Nothing weaker than your worn gear."
     selected_uid=state.equipped.get("weapon",0)
+    refresh()
+func use_scroll(id: String):
+    var inst=state.instance(selected_uid)
+    if inst.is_empty(): return
+    var before=ItemText.stats_line(state,inst)
+    var result=state.apply_scroll(selected_uid,id)
+    match result:
+        "success": note="The scroll shone brightly! %s  →  %s" % [before,ItemText.stats_line(state,state.instance(selected_uid))]
+        "fail": note="The scroll failed. An upgrade slot was used up." if id!="scroll_clean" else "The Clean Slate fizzled."
+        _: note=result
     refresh()
 func icon_for(id: String) -> Control:
     var icon=preload("res://ui/item_icon.gd").new()
@@ -106,7 +117,22 @@ func refresh():
     if not inst.is_empty():
         add_child(Style.label(ItemText.title(inst)+"   •   "+ItemText.stats_line(state,inst),16))
         add_child(Style.label(ItemText.requirement(state,inst)+"   •   "+ItemText.compare(state,inst),13))
-        add_child(Style.label("Sells for %d coins  •  Dismantles into %d Shards" % [state.sell_value(inst),state.shard_yield(inst)],13))
+        add_child(Style.label("%s  •  Sells for %d coins  •  Dismantles into %d Shards" % [ItemText.upgrades(state,inst),state.sell_value(inst),state.shard_yield(inst)],13))
+        var usable=HBoxContainer.new()
+        for id in Adventure.scrolls():
+            if int(state.scrolls.get(id,0))<=0: continue
+            var info=Adventure.scrolls()[id]
+            if info.slot!="" and info.slot!=Catalog.items()[inst.id].slot: continue
+            var scroll_id=id
+            var button=Style.button("%s (%d)" % [info.name,state.scrolls[id]],func(): use_scroll(scroll_id))
+            var problem=state.scroll_problem(selected_uid,id)
+            button.disabled=problem!=""
+            button.tooltip_text=info.text if problem=="" else problem
+            button.add_theme_font_size_override("font_size",13)
+            usable.add_child(button)
+        if usable.get_child_count()>0:
+            add_child(Style.label("Use a scroll on this item:",13,Color("7e6539")))
+            add_child(usable)
         var row=HBoxContainer.new()
         add_child(row)
         var worn_now=state.is_equipped(inst.uid)
@@ -128,4 +154,19 @@ func refresh():
         var bulk_dismantle=Style.button("Dismantle worse gear (%d)" % worse,func(): bulk("dismantle"))
         bulk_dismantle.disabled=worse==0
         row.add_child(bulk_dismantle)
+    if not state.scrolls.is_empty():
+        add_child(Style.section("SCROLLS",true))
+        var scroll_row=HFlowContainer.new()
+        add_child(scroll_row)
+        for id in state.scrolls:
+            var cell=HBoxContainer.new()
+            var art=preload("res://ui/scroll_icon.gd").new()
+            art.scroll_id=id
+            art.custom_minimum_size=Vector2(26,26)
+            cell.add_child(art)
+            var text=Style.label("%s ×%d" % [Adventure.scrolls()[id].name,state.scrolls[id]],13)
+            text.tooltip_text=Adventure.scrolls()[id].text
+            text.mouse_filter=Control.MOUSE_FILTER_PASS
+            cell.add_child(text)
+            scroll_row.add_child(cell)
     add_child(Style.label(note if note!="" else "Click an item, then Equip. Sell at a town Merchant; dismantle anywhere for Shards used by the Forge.",13,Color("25758a")))

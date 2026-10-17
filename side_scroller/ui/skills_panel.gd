@@ -76,6 +76,11 @@ func refresh():
         var rank=state.skill_ranks.get(id,0)
         var line=HBoxContainer.new()
         row.add_child(line)
+        var icon=preload("res://ui/skill_icon.gd").new()
+        icon.custom_minimum_size=Vector2(40,40)
+        icon.set_state(id)
+        if rank==0: icon.modulate=Color(1,1,1,0.45)
+        line.add_child(icon)
         var text=Style.label("%s   %d/%d%s" % [skill.name,rank,skill.max,"" if skill.active else "  (passive)"],16)
         text.custom_minimum_size.x=270
         line.add_child(text)

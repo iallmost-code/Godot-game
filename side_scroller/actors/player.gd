@@ -16,6 +16,11 @@ var lunge_speed=400.0
 var stun_time=0.0
 var status_immunity=0.0
 var state
+# Ropes and ladders of the current map: [x, top y, bottom y, kind].
+var climbs: Array=[]
+var climbing=false
+var climb: Array=[]
+const CLIMB_SPEED=150.0
 var visual: Node2D
 var combat
 signal interact_requested
@@ -35,6 +40,7 @@ func _ready():
     visual = preload("res://visuals/character_visual.gd").new()
     add_child(visual)
 func reset_at(pos: Vector2):
+    stop_climbing()
     position = pos
     velocity = Vector2.ZERO
     jumps_used = 0
@@ -58,7 +64,51 @@ func teleport(offset: float):
     velocity.x=0
 func request_jump():
     jump_buffer = 0.12
-func apply_knockback(impulse: Vector2): velocity += impulse
+func apply_knockback(impulse: Vector2):
+    stop_climbing()
+    velocity += impulse
+# The rope or ladder the player can grab moving up (dir -1) or down (dir 1).
+func climb_at(dir: int) -> Array:
+    for c in climbs:
+        if absf(position.x-c[0])>16: continue
+        if dir<0 and position.y>c[1]+4 and position.y<=c[2]+4: return c
+        if dir>0 and position.y>=c[1]-4 and position.y<c[2]-4: return c
+    return []
+func start_climbing(c: Array):
+    climbing=true
+    climb=c
+    position.x=c[0]
+    velocity=Vector2.ZERO
+    lunge_time=0
+    boost_timer=0
+    collision_mask=0
+func stop_climbing():
+    if not climbing: return
+    climbing=false
+    climb=[]
+    collision_mask=1
+    jumps_used=1
+func climb_step(delta: float,can_move: bool):
+    var dir=0.0
+    if can_move: dir=(1.0 if Input.is_action_pressed("move_down") else 0.0)-(1.0 if Input.is_action_pressed("interact") else 0.0)
+    position.y+=dir*CLIMB_SPEED*delta
+    position.x=climb[0]
+    if position.y<=climb[1]:
+        position.y=climb[1]-1
+        stop_climbing()
+        jumps_used=0
+        return
+    if position.y>=climb[2]:
+        position.y=climb[2]-1
+        stop_climbing()
+        jumps_used=0
+        return
+    if can_move and Input.is_action_just_pressed("jump"):
+        var side=Input.get_axis("move_left","move_right")
+        if side!=0:
+            stop_climbing()
+            facing=int(sign(side))
+            velocity=Vector2(side*230,-300)
 func _physics_process(delta):
     hurt_timer = maxf(0, hurt_timer-delta)
     attack_timer = maxf(0, attack_timer-delta)
@@ -68,6 +118,25 @@ func _physics_process(delta):
     var stats=state.derived_stats() if state!=null else {"speed":0.0,"jump":0.0}
     var flash_jump=state.bonus("flash_jump") if state!=null else 0.0
     var can_move=movement_enabled and stun_time<=0
+    if climbing:
+        if state!=null:
+            visual.appearance=appearance_for(state)
+            visual.set_equipment(state.equipment.weapon)
+        climb_step(delta,can_move)
+        if climbing:
+            visual.set_pose("climb",facing,Time.get_ticks_msec()/1000.0)
+            visual.walk_phase=position.y/40.0
+            return
+    elif can_move and InputMap.has_action("move_down") and Input.is_action_pressed("move_down") and is_on_floor():
+        var below=climb_at(1)
+        if not below.is_empty():
+            start_climbing(below)
+            return
+    elif can_move and Input.is_action_pressed("interact") and (Input.is_action_just_pressed("interact") or not is_on_floor()):
+        var above=climb_at(-1)
+        if not above.is_empty() and not near_portal():
+            start_climbing(above)
+            return
     var direction = Input.get_axis("move_left", "move_right") if can_move else 0.0
     if direction != 0: facing = int(sign(direction))
     if is_on_floor():
@@ -130,6 +199,12 @@ func _physics_process(delta):
     else: walk_phase=0.0
     visual.walk_phase=walk_phase
     visual.set_pose(pose, visual_facing, Time.get_ticks_msec()/1000.0)
+func near_portal() -> bool:
+    var map=get_parent().get("map") if get_parent()!=null else null
+    if map==null: return false
+    for portal in map.portals:
+        if global_position.distance_to(portal.position)<90: return true
+    return false
 static func appearance_for(character) -> String:
     match character.archetype:
         "thief": return "thief"

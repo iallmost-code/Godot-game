@@ -18,6 +18,8 @@ var pending_job=""
 var save_store
 var mana_tick=0.0
 var startup_warning=""
+var dialog
+var pet_node
 func _ready():
     state=preload("res://systems/character_state.gd").new()
     bindings=preload("res://systems/input_bindings.gd").new()
@@ -59,8 +61,15 @@ func _ready():
     player.interact_requested.connect(func(): if map!=null: map.interact())
     player.died.connect(return_to_town,CONNECT_DEFERRED)
     state.leveled.connect(func(lv):
-        hud.show_notice("LEVEL %d! +5 attribute points. Open Stats to spend them." % lv,6)
-        effects.show_level_up(player.position))
+        hud.show_notice("LEVEL %d! +5 attribute points%s." % [lv," and 3 skill points" if state.tier()>0 else ""],6)
+        var fx=preload("res://visuals/level_up_fx.gd").new()
+        fx.follow=player
+        fx.position=player.global_position
+        add_child(fx))
+    dialog=preload("res://ui/dialog_box.gd").new()
+    add_child(dialog)
+    dialog.setup(state)
+    dialog.reward_received.connect(func(text): hud.show_notice(text,7))
     save_store=preload("res://systems/save_store.gd").new()
     save_store.process_mode=Node.PROCESS_MODE_ALWAYS
     add_child(save_store)
@@ -80,7 +89,8 @@ func _ready():
         if save_store.save(state,bindings): hud.show_notice("Character saved."))
     menu.export_requested.connect(func(): save_store.export_backup(state,bindings))
     menu.import_requested.connect(func(): save_store.import_backup(state,bindings))
-    change_map("town","entry")
+    respawn_map_id=state.town
+    change_map(state.town,"entry")
     if startup_warning=="": hud.show_notice("Welcome! Arrows move • Shift jumps twice • Space attacks • Up interacts",10)
     else: hud.show_notice(startup_warning,10)
     if test_mode:
@@ -98,6 +108,7 @@ func change_map(id: String,spawn: String) -> bool:
     next.portal_requested.connect(change_map)
     next.advancement_requested.connect(show_advancement)
     next.shop_requested.connect(func(): menu.open_panel("shop"))
+    next.quest_requested.connect(func(npc): dialog.talk(map_id,npc))
     next.reward_notice.connect(hud.show_notice)
     next.boss_spawned.connect(func(enemy): hud.boss_target=enemy)
     if map!=null:
@@ -105,7 +116,13 @@ func change_map(id: String,spawn: String) -> bool:
         map.queue_free()
     map=next
     map_id=id
-    if definition.safe: respawn_map_id=id
+    if definition.safe:
+        respawn_map_id=id
+        state.remember_town(id)
+    player.climbs=map.climbs
+    hud.minimap.map=map
+    hud.minimap.player=player
+    refresh_pet()
     menu.world_map_id=id
     combat.cancel()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
@@ -121,8 +138,25 @@ func change_map(id: String,spawn: String) -> bool:
     if id=="forest": hud.show_notice("Briar Hollow lies beyond the far-right portal. Recommended level 15+.",7)
     elif id=="briar": hud.show_notice("Briar Hollow: stronger monsters, better loot. Rootwarden waits at the far end.",7)
     elif id!="town": hud.show_notice(definition.name+" - "+("Safe town. Health recovers here. Open M for routes." if definition.safe else definition.get("notice","Explore this hunting area.")),6)
-    camera.position=Vector2(clampf(player.position.x,557,map.width-557),450)
+    camera.position=Vector2(clampf(player.position.x,557,map.width-557),camera_y())
     return true
+func camera_y() -> float:
+    if map==null: return 450.0
+    return clampf(player.position.y-110,map.top+313,450)
+func refresh_pet():
+    if pet_node!=null and is_instance_valid(pet_node) and (state.pet=="" or pet_node.pet_id!=state.pet):
+        pet_node.queue_free()
+        pet_node=null
+    if state.pet=="" or map==null: return
+    if pet_node==null:
+        pet_node=preload("res://world/pet.gd").new()
+        pet_node.z_index=4
+        add_child(pet_node)
+        pet_node.position=player.position+Vector2(-50,0)
+    pet_node.pet_id=state.pet
+    pet_node.player=player
+    pet_node.map=map
+    if pet_node.position.distance_to(player.position)>300: pet_node.position=player.position+Vector2(-50,0)
 func return_to_town():
     combat.clear_partner()
     combat.clear_summons()
@@ -155,9 +189,9 @@ func switch_character(slot: String) -> bool:
     combat.combo_orbs=0
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
-    respawn_map_id="town"
+    respawn_map_id=state.town
     menu.close()
-    change_map("town","entry")
+    change_map(state.town,"entry")
     var first=preload("res://data/catalog.gd").first_job(slot)
     hud.show_notice(state.migration_note if state.migration_note!="" else "%s loaded. At level %d, stand beside Elowen and press Up to advance." % [state.archetype_name(slot),preload("res://data/catalog.gd").jobs()[first].level],8)
     return true
@@ -201,7 +235,8 @@ func _process(delta):
     if player.position.y>950: return_to_town()
     if map!=null:
         player.position.x=clampf(player.position.x,20,map.width-20)
-        camera.position=Vector2(lerpf(camera.position.x,clampf(player.position.x,557,map.width-557),minf(1,delta*6)),450)
+        camera.position=Vector2(lerpf(camera.position.x,clampf(player.position.x,557,map.width-557),minf(1,delta*6)),lerpf(camera.position.y,camera_y(),minf(1,delta*5)))
+        if state.pet!=(pet_node.pet_id if pet_node!=null and is_instance_valid(pet_node) else ""): refresh_pet()
 
 func persist():
     if not test_mode and save_store!=null: save_store.save(state,bindings)

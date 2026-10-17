@@ -45,8 +45,10 @@ func run(t):
     t.check(t.get_nodes_in_group("boss_minions").size()>=2,"Gelatinous Monarch summons Jellops")
     boss.receive_hit(boss.hp,Vector2.ZERO,123456)
     await t.process_frame
-    var loot=game.map.pickups.back()
-    t.check(loot.reward.has("item") and loot.try_collect(game.state),"bosses drop a weapon for your class")
+    var loot=null
+    for drop in game.map.pickups:
+        if drop.reward.has("item"): loot=drop
+    t.check(loot!=null and loot.try_collect(game.state),"bosses drop a weapon for your class")
     var copy=load("res://systems/character_state.gd").new()
     t.check(copy.load_record(game.state.to_record()),"boss loot survives save validation")
     game.change_map("town","entry")

@@ -164,6 +164,10 @@ func walk(delta):
             else: velocity.x=move_toward(velocity.x,desired,180*delta)
     else: velocity.x=move_toward(velocity.x,0,200*delta)
     move_and_slide()
+    # Ledge monsters stay on their ledge.
+    if has_meta("span"):
+        var span: Vector2=get_meta("span")
+        position.x=clampf(position.x,span.x,span.y)
 func fly(delta):
     if player==null or not is_instance_valid(player):
         velocity=Vector2.ZERO

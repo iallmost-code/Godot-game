@@ -27,9 +27,9 @@ func run(t):
     t.root.push_input(event)
     t.check(b.current().attack==KEY_SPACE,"captured duplicate key rejected")
     controls.start_capture("attack")
-    event.physical_keycode=KEY_Q
+    event.physical_keycode=KEY_G
     t.root.push_input(event)
-    t.check(b.current().attack==KEY_Q,"captured key rebinds attack")
+    t.check(b.current().attack==KEY_G,"captured key rebinds attack")
     controls.start_capture("jump")
     event.physical_keycode=KEY_ESCAPE
     t.root.push_input(event)
@@ -101,7 +101,7 @@ func run(t):
         button.pressed.emit()
         await t.process_frame
         t.check(assign_game.state.slots.c=="power_strike" and assign_game.state.slots.z=="","paused-menu button callback moves a learned skill")
-        t.check(assign_game.hud.skills[3].button.text.contains("Heavy Blow"),"hotbar updates after a menu assignment")
+        t.check(assign_game.hud.skills[3].icon.footer.contains("Heavy Blow"),"hotbar updates after a menu assignment")
     assign_game.menu.close()
     assign_game.queue_free()
     await t.process_frame

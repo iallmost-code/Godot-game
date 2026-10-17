@@ -4,6 +4,7 @@ const Catalog=preload("res://data/catalog.gd")
 const Maps=preload("res://data/maps.gd")
 const Style=preload("res://ui/style.gd")
 const ItemText=preload("res://ui/item_text.gd")
+const Adventure=preload("res://data/adventure.gd")
 var state
 var map_id="town"
 var tab="potions"
@@ -73,7 +74,7 @@ func refresh():
     add_child(Style.section("MERCHANT  /  %s  •  Coins %d  •  Shards %d" % [town().name.to_upper(),state.coins,state.shards]))
     var tabs=HBoxContainer.new()
     add_child(tabs)
-    for entry in [["potions","Buy Potions"],["gear","Buy Gear"],["sell","Sell / Dismantle"],["forge","Forge"]]:
+    for entry in [["potions","Buy Potions"],["gear","Buy Gear"],["sell","Sell / Dismantle"],["forge","Forge"],["pets","Pets"]]:
         var id=entry[0]
         var button=Style.button(entry[1],func(): open_tab(id))
         button.modulate=Color("b7d88a") if id==tab else Color.WHITE
@@ -116,6 +117,25 @@ func refresh():
                 line.add_child(Style.button("Sell %d" % state.sell_value(inst),func(): sell(uid,false)))
                 line.add_child(Style.button("Dismantle %d" % state.shard_yield(inst),func(): sell(uid,true)))
             if not any: add_child(Style.label("Only your worn gear is in your bag.",14))
+        "pets":
+            add_child(Style.label("A pet follows you and fetches loot dropped nearby. Switch pets under Characters.",13))
+            for id in Adventure.PETS:
+                var info=Adventure.PETS[id]
+                var owned=state.pets.has(id)
+                var line=row(self,"%s  —  %d coins" % [info.name,info.price],"Owned" + ("  •  following you" if state.pet==id else "") if owned else "Fetches coins, potions, gear, scrolls and quest items")
+                var pet_id=id
+                if owned:
+                    var follow=Style.button("Follow me" if state.pet!=id else "Following",func():
+                        state.set_pet(pet_id)
+                        refresh())
+                    follow.disabled=state.pet==id
+                    line.add_child(follow)
+                else:
+                    var buy=Style.button("Adopt",func():
+                        note=("%s adopted! It is following you now." % info.name) if state.buy_pet(pet_id) else "Not enough coins."
+                        refresh())
+                    buy.disabled=state.coins<info.price
+                    line.add_child(buy)
         "forge":
             add_child(Style.label("Enhance gear up to +%d with Shards and coins. A failed attempt keeps the item's level and only uses the materials." % Catalog.MAX_PLUS,13))
             var ordered=[]
