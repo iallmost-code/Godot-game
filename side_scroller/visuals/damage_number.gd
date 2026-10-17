@@ -1,7 +1,7 @@
 extends Node2D
 const FONT=preload("res://fonts/damage-bold.ttf")
 const GRADIENT=preload("res://visuals/damage_gradient.gdshader")
-func setup(text: String,critical: bool,celebration=false):
+func setup(text: String,critical: bool,celebration=false,incoming=false):
     var font_size=40 if critical else 34
     if celebration: font_size=30
     var width=FONT.get_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x
@@ -25,6 +25,10 @@ func setup(text: String,critical: bool,celebration=false):
                 gradient.set_shader_parameter("top_color",Color("860626"))
                 gradient.set_shader_parameter("mid_color",Color("d70b39"))
                 gradient.set_shader_parameter("bottom_color",Color("f84770"))
+            if incoming:
+                gradient.set_shader_parameter("top_color",Color("50318c"))
+                gradient.set_shader_parameter("mid_color",Color("9166df"))
+                gradient.set_shader_parameter("bottom_color",Color("e4c6ff"))
             if celebration:
                 gradient.set_shader_parameter("top_color",Color("ffb626"))
                 gradient.set_shader_parameter("mid_color",Color("fff082"))

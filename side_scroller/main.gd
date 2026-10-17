@@ -33,6 +33,7 @@ func _ready():
     add_child(effects)
     combat.attack_started.connect(func(id,origin,direction,reach): effects.show_attack(id,origin,direction,reach))
     combat.impact.connect(effects.show_damage)
+    player.damaged.connect(func(amount): effects.show_player_damage(player.global_position+Vector2(0,-75),amount))
     camera=Camera2D.new()
     camera.zoom=Vector2(1.15,1.15)
     camera.position_smoothing_enabled=false

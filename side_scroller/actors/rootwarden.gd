@@ -7,6 +7,7 @@ var recovery=1.2
 var slam_flash=0.0
 var attack_index=0
 func _ready():
+    definition_id="rootwarden"
     super._ready()
     is_heavy=true
     hp=2600
@@ -33,12 +34,12 @@ func resolve_attack():
         slam_flash=0.35
         var offset=player.global_position-global_position
         if absf(offset.x)<170 and offset.y>=-30 and absf(offset.y)<60:
-            player.receive_damage(28,Vector2(facing*190,-130))
+            player.receive_damage(attack_damage(1.4),Vector2(facing*190,-130))
     else:
         for angle in [-0.22,0.0,0.22]:
             var seed=preload("res://world/projectile.gd").new()
             seed.target=player
-            seed.damage=12
+            seed.damage=attack_damage(0.75)
             seed.speed=220
             get_parent().add_child(seed)
             seed.global_position=global_position+Vector2(0,-65)
@@ -73,6 +74,7 @@ func _physics_process(delta):
         else:
             velocity.x=sign(spawn_position.x-position.x)*28 if absf(position.x-spawn_position.x)>10 else 0.0
     move_and_slide()
+    try_contact_damage()
     update_art()
     queue_redraw()
 func update_art():

@@ -8,7 +8,7 @@ Current project source: [`side_scroller/`](side_scroller/). Full controls and pr
 
 Default controls: **arrows** move, **Up** interacts, **Shift** jumps/double jumps, **Space** attacks, **Z/X/C** cast assigned skills. **I** opens Inventory, **M** Map, **K** Skills and **S** Stats; press again to close. Rebind all keys in Controls.
 
-Menus now use silver frames, blue headers, green stat rows, a draggable title bar and an equipment grid. Damage numbers stack with orange/yellow normal hits and deep-red crits.
+Menus now use silver frames, blue headers, green stat rows, a draggable title bar and an equipment grid. Damage numbers stack with orange/yellow normal hits, deep-red crits and purple incoming HP loss. Enemies have visible levels and level-scaled contact, melee and projectile damage, reduced by armor.
 
 Includes Willowbridge town, Whisperwood forest, Briar Hollow with tougher enemies and the Rootwarden miniboss, original chibi characters and classic cartoon scenery, damage numbers, double jump, XP, loot, equipment, +1/+5/All stat allocation with a confirmable draft, skill ranks, separate Warrior/Thief character slots, sword starters, a short Driving Thrust lunge, eight-frame walking cycles, Warrior or Thief advancement at 10 and Warrior's Spearman advancement at 30, configurable controls, and local saves/JSON backups. Thief advancements now reach Night Lord at 100, with increasing basic stars and third-job Shadow Partner. Warrior third/fourth jobs and Hyper remain future content. Level cap is 100.
 

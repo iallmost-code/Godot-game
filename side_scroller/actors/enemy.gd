@@ -1,4 +1,6 @@
 extends CharacterBody2D
+const EnemyStats=preload("res://data/enemy_stats.gd")
+var level=0
 var hp=40
 var max_hp=40
 var is_heavy=false
@@ -14,6 +16,7 @@ var player
 var sprite: Sprite2D
 signal defeated(position: Vector2, definition_id: String)
 func _ready():
+    level=EnemyStats.profile(definition_id).level if level<=0 else clampi(level,1,100)
     add_to_group("enemies")
     collision_layer=4
     collision_mask=1
@@ -69,9 +72,9 @@ func _physics_process(delta):
                     projectile.global_position=global_position+Vector2(0,-25)
                     projectile.direction=(player.global_position+Vector2(0,-25)-projectile.global_position).normalized()
                     projectile.target=player
-                    if definition_id=="briar_lantern": projectile.damage=11
+                    projectile.damage=attack_damage()
                 elif absf(distance.x)<65:
-                    player.receive_damage(12 if definition_id=="thornling" else 6,Vector2(facing*110,-70))
+                    player.receive_damage(attack_damage(),Vector2(facing*110,-70))
         elif engage and attack_timer<=0 and (absf(distance.x)<52 or definition_id in ["lantern","briar_lantern"]):
             telegraph=0.7
             attack_timer=2.3
@@ -81,6 +84,7 @@ func _physics_process(delta):
             velocity.x=move_toward(velocity.x,desired,180*delta)
     else: velocity.x=move_toward(velocity.x,0,200*delta)
     move_and_slide()
+    try_contact_damage()
     if sprite!=null:
         var lantern=definition_id in ["lantern","briar_lantern"]
         var region=Rect2(806,208,610,735) if lantern else Rect2(91,280,626,626)
@@ -92,6 +96,13 @@ func _physics_process(delta):
         sprite.position.y+=sin(Time.get_ticks_msec()/220.0)*1.4
         sprite.material.set_shader_parameter("flash",1.0 if hurt_flash>0 else 0.0)
     queue_redraw()
+func attack_damage(multiplier=1.0) -> int:
+    return EnemyStats.damage(definition_id,level,multiplier)
+func try_contact_damage():
+    if dead or not is_instance_valid(player): return
+    var offset=player.global_position-global_position
+    if absf(offset.x)<(54 if is_heavy else 30) and absf(offset.y)<(55 if is_heavy else 42):
+        player.receive_damage(attack_damage(0.6),Vector2((1 if offset.x>=0 else -1)*110,-70))
 func receive_hit(damage: int,push: Vector2,source: int) -> bool:
     if dead or source==last_source: return false
     last_source=source
@@ -105,13 +116,19 @@ func receive_hit(damage: int,push: Vector2,source: int) -> bool:
     queue_redraw()
     return true
 func _draw():
+    if not is_heavy:
+        var caption="Lv %d  %s" % [level,EnemyStats.profile(definition_id).name]
+        var font=ThemeDB.fallback_font
+        var start=Vector2(-font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x/2,-96)
+        draw_string_outline(font,start,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,12,3,Color("243449"))
+        draw_string(font,start,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("fff6cf"))
     if hp<max_hp:
         draw_style_box(health_style(Color("243449")),Rect2(-25,-74,50,5))
         draw_rect(Rect2(-25,-74,50*float(hp)/max_hp,5),Color("ff827b"))
     if telegraph>0:
-        draw_circle(Vector2(0,-83),10,Color("f7ba63"))
-        draw_line(Vector2(0,-89),Vector2(0,-83),Color("47354e"),3)
-        draw_circle(Vector2(0,-79),1.5,Color("47354e"))
+        draw_circle(Vector2(0,-125),10,Color("f7ba63"))
+        draw_line(Vector2(0,-131),Vector2(0,-125),Color("47354e"),3)
+        draw_circle(Vector2(0,-121),1.5,Color("47354e"))
 func health_style(color):
     var style=StyleBoxFlat.new()
     style.bg_color=color

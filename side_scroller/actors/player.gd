@@ -15,6 +15,7 @@ var state
 var visual: Node2D
 var combat
 signal interact_requested
+signal damaged(amount: int)
 signal died
 func _ready():
     collision_layer = 2
@@ -104,12 +105,14 @@ func _physics_process(delta):
     visual.walk_phase=walk_phase
     visual.set_pose(pose, visual_facing, Time.get_ticks_msec()/1000.0)
 func receive_damage(amount: int, impulse: Vector2) -> bool:
-    if state == null or hurt_timer > 0 or state.hp <= 0: return false
+    if state == null or hurt_timer > 0 or state.hp <= 0 or amount<=0: return false
+    var previous_hp=state.hp
     state.hp = maxf(0, state.hp-maxi(1,amount-int(state.derived_stats().defense)))
     lunge_time=0
     hurt_timer = 0.8
     damage_recoil=0.16
     apply_knockback(impulse)
     state.changed.emit()
+    damaged.emit(ceili(previous_hp-state.hp))
     if state.hp <= 0: died.emit()
     return true

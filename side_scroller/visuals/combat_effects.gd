@@ -8,7 +8,7 @@ func clear_numbers():
     for number in numbers:
         if is_instance_valid(number.get("visual")): number.visual.queue_free()
     numbers.clear()
-func add_number(pos: Vector2,text: String,critical: bool,celebration=false):
+func add_number(pos: Vector2,text: String,critical: bool,celebration=false,incoming=false):
     if numbers.size()>=60:
         var oldest=numbers.pop_front()
         oldest.visual.queue_free()
@@ -19,13 +19,15 @@ func add_number(pos: Vector2,text: String,critical: bool,celebration=false):
             number.position.y-=42
             number.visual.position=number.position+Vector2(0,-number.age*46)
     var visual=preload("res://visuals/damage_number.gd").new()
-    visual.setup(text,critical,celebration)
+    visual.setup(text,critical,celebration,incoming)
     var stacked=pos
     visual.position=stacked
     add_child(visual)
     numbers.append({"position":stacked,"origin":pos,"critical":critical,"age":0.0,"visual":visual})
 func show_damage(pos: Vector2,amount: int,critical: bool):
     add_number(pos,str(amount),critical)
+func show_player_damage(pos: Vector2,amount: int):
+    add_number(pos,"-"+str(amount),false,false,true)
 func show_level_up(pos: Vector2):
     add_number(pos+Vector2(0,-70),"LEVEL UP!",true,true)
 func show_attack(id: String,origin: Vector2,facing: int,reach=-1.0):

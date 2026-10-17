@@ -125,7 +125,7 @@ func refresh():
         var nearby=is_instance_valid(boss_target) and boss_target.hp>0 and player!=null and absf(player.global_position.x-boss_target.global_position.x)<650
         boss_panel.visible=nearby
         if nearby:
-            boss_label.text="Rootwarden  •  %d / %d" % [boss_target.hp,boss_target.max_hp]
+            boss_label.text="Lv %d Rootwarden  •  %d / %d" % [boss_target.level,boss_target.hp,boss_target.max_hp]
             boss_bar.max_value=boss_target.max_hp
             boss_bar.value=boss_target.hp
     for id in menu_buttons:
