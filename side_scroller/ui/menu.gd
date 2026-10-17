@@ -19,6 +19,7 @@ signal export_requested
 signal import_requested
 signal character_requested(slot: String)
 signal binding_changed
+signal travel_requested(map_id: String)
 func setup(s,b):
     state=s
     bindings=b
@@ -98,26 +99,27 @@ func open_panel(id: String):
         content.add_child(current_panel)
         if id=="inventory": current_panel.bind(state)
         else: current_panel.bind(state,bindings)
-        if id=="map": current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
+        if id=="map":
+            current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
+            current_panel.travel_requested.connect(func(target): close(); travel_requested.emit(target))
         if id=="controls": current_panel.binding_changed.connect(func(): binding_changed.emit())
     elif id=="characters":
         content.add_child(Style.label("YOUR CHARACTERS",24,Color("f4d48a")))
-        content.add_child(Style.label("Two independent save slots. Switching saves your current character.
-A new character starts at level 1; first job advancement is at level 10.
-Stand beside Captain Elowen in town and press Up to advance.",17))
-        for slot in ["warrior","thief"]:
+        content.add_child(Style.label("Four independent save slots, one per class. Switching saves your current character.\nStand beside Captain Elowen in town and press Up to advance your job.",16))
+        var blurbs={"warrior":"Warrior — Squire at 10 → Duelist / Shieldbearer / Lancer at 30 → 70 → 120.",
+            "magician":"Mage — Initiate at 8 → Ember Adept / Frost Adept / Acolyte at 30 → 70 → 120.",
+            "bowman":"Archer — Scout at 10 → Tracker / Arbalist at 30 → 70 → 120.",
+            "thief":"Thief — Prowler at 10 → Stalker / Brigand at 30 → 70 → 120."}
+        for slot in ["warrior","magician","bowman","thief"]:
             var active=state.archetype==slot
-            var button=Style.button(("Current: " if active else "Play / Continue: ")+slot.capitalize(),func(): character_requested.emit(slot))
+            var button=Style.button(("Current: " if active else "Play / Continue: ")+state.archetype_name(slot),func(): character_requested.emit(slot))
             button.disabled=active
             content.add_child(button)
-        content.add_child(Style.label("Warrior: sword combat, lunge, mob pushes; Spearman at level 30.
-Thief: claw and throwing stars; Shadow Fan at 10; basic stars increase at each job.
-Assassin 30: 2 stars. Hermit 60: 3 stars + Shadow Partner.
-Night Lord 100: 4 stars (8 with Shadow Partner).",17,Color("bfaee5")))
+            content.add_child(Style.label(blurbs[slot],14,Color("bfaee5")))
     else:
         content.add_child(Style.label("SAVE & BACKUP",24,Color("f4d48a")))
         content.add_child(Style.label("Your character saves locally after progress changes.\nBrowser site data belongs to this browser and can be erased.\nExport a JSON backup before clearing site data or changing devices.
-Import a backup into its matching Warrior or Thief character slot.",18))
+Import a backup into its matching class slot.",18))
         content.add_child(Style.button("Save character now",func(): save_requested.emit()))
         content.add_child(Style.button("Download JSON backup",func(): export_requested.emit()))
         content.add_child(Style.button("Import JSON backup",func(): import_requested.emit()))

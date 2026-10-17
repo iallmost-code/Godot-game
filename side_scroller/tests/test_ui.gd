@@ -27,9 +27,9 @@ func run(t):
     t.root.push_input(event)
     t.check(b.current().attack==KEY_SPACE,"captured duplicate key rejected")
     controls.start_capture("attack")
-    event.physical_keycode=KEY_A
+    event.physical_keycode=KEY_Q
     t.root.push_input(event)
-    t.check(b.current().attack==KEY_A,"captured key rebinds attack")
+    t.check(b.current().attack==KEY_Q,"captured key rebinds attack")
     controls.start_capture("jump")
     event.physical_keycode=KEY_ESCAPE
     t.root.push_input(event)
@@ -40,11 +40,16 @@ func run(t):
     await t.process_frame
     while s.level<10: s.add_xp(s.xp_required(s.level))
     s.advance_job("warrior")
-    t.check(s.assign_skill("c","sweep"),"learned skill can move to an empty hotbar slot")
-    t.check(s.slots.c=="sweep" and s.slots.z=="","moving a skill clears its previous slot")
-    t.check(s.assign_skill("x","sweep"),"learned skills can swap occupied slots")
-    t.check(s.slots.x=="sweep" and s.slots.c=="thrust","occupied-slot reassignment preserves both skills")
-    t.check(not s.assign_skill("z","wave"),"unlearned skill assignment rejected")
+    s.add_xp(s.xp_required(s.level))
+    s.rank_up("power_strike")
+    s.rank_up("slash_blast")
+    s.assign_skill("z","power_strike")
+    s.assign_skill("x","slash_blast")
+    t.check(s.assign_skill("c","power_strike"),"learned skill can move to an empty hotbar slot")
+    t.check(s.slots.c=="power_strike" and s.slots.z=="","moving a skill clears its previous slot")
+    t.check(s.assign_skill("x","power_strike"),"learned skills can swap occupied slots")
+    t.check(s.slots.x=="power_strike" and s.slots.c=="slash_blast","occupied-slot reassignment preserves both skills")
+    t.check(not s.assign_skill("z","iron_body"),"unlearned skill assignment rejected")
     var game=load("res://main.tscn").instantiate()
     game.test_mode=true
     t.root.add_child(game)
@@ -86,6 +91,8 @@ func run(t):
     t.root.add_child(assign_game)
     while assign_game.state.level<10: assign_game.state.add_xp(assign_game.state.xp_required(assign_game.state.level))
     assign_game.state.advance_job("warrior")
+    assign_game.state.rank_up("power_strike")
+    assign_game.state.assign_skill("z","power_strike")
     assign_game.menu.open_panel("skills")
     await t.process_frame
     var button=find_button(assign_game.menu.current_panel,"C")
@@ -93,8 +100,8 @@ func run(t):
     if button!=null:
         button.pressed.emit()
         await t.process_frame
-        t.check(assign_game.state.slots.c=="sweep" and assign_game.state.slots.z=="","paused-menu button callback moves a learned skill")
-        t.check(assign_game.hud.skills[3].button.text.contains("Crescent Sweep"),"hotbar updates after a menu assignment")
+        t.check(assign_game.state.slots.c=="power_strike" and assign_game.state.slots.z=="","paused-menu button callback moves a learned skill")
+        t.check(assign_game.hud.skills[3].button.text.contains("Heavy Blow"),"hotbar updates after a menu assignment")
     assign_game.menu.close()
     assign_game.queue_free()
     await t.process_frame

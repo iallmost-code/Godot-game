@@ -58,8 +58,7 @@ func refresh():
     actions.add_child(Style.button("Confirm points",func(): confirm()))
     actions.add_child(Style.button("Cancel draft",cancel))
     left.add_child(Style.label(note if note!="" else "Points apply only after confirmation.",13))
-    left.add_child(Style.label("STR: melee / HP   DEX: secondary damage
-INT: mana   LUK: throwing / critical chance",13))
+    left.add_child(Style.label("Main stat: %s (attack)   Secondary: %s (¼ attack)\nSTR: HP and defense   INT: MP   LUK: critical chance" % [main_stat_name(),state.SECONDARY_STAT[state.archetype]],13))
     var right=VBoxContainer.new()
     right.custom_minimum_size.x=355
     columns.add_child(right)
@@ -68,14 +67,17 @@ INT: mana   LUK: throwing / critical chance",13))
     for key in draft: proposed[key]+=draft[key]
     var hp_gain=2*draft.get("STR",0)
     var mp_gain=2*draft.get("INT",0)
-    var atk_gain=draft.get("LUK" if state.archetype=="thief" else "STR",0)+int(proposed.DEX/4.0)-int(state.attributes.DEX/4.0)
+    var main_stat=state.MAIN_STAT[state.archetype]
+    var secondary=state.SECONDARY_STAT[state.archetype]
+    var atk_gain=draft.get(main_stat,0)+int(proposed[secondary]/4.0)-int(state.attributes[secondary]/4.0)
     var next_attack=stats.attack+atk_gain
     Style.data_row(right,"ATTACK","%d -> %d" % [stats.attack,next_attack])
     Style.data_row(right,"DEFENSE","%d -> %d" % [stats.defense,stats.defense+int(proposed.STR/10.0)-int(state.attributes.STR/10.0)])
     Style.data_row(right,"MAX HP","%d -> %d" % [stats.max_hp,stats.max_hp+hp_gain])
     Style.data_row(right,"MAX MP","%d -> %d" % [stats.max_mp,stats.max_mp+mp_gain])
-    Style.data_row(right,"CRITICAL RATE","%.1f%% -> %.1f%%" % [stats.crit*100,minf(0.25,0.05+0.002*(proposed.LUK-4))*100])
-    Style.data_row(right,"CRIT DAMAGE","150% of a normal hit")
+    Style.data_row(right,"CRITICAL RATE","%.1f%% -> %.1f%%" % [stats.crit*100,minf(0.75,stats.crit+0.002*draft.get("LUK",0))*100])
+    Style.data_row(right,"CRIT DAMAGE","%d%% of a normal hit" % int(100+stats.crit_damage*100))
+    Style.data_row(right,"EVASION","%.0f%%" % (stats.avoid*100))
     right.add_child(Style.section("DAMAGE PREVIEW",true))
     Style.data_row(right,"BASIC HIT",str(next_attack))
     Style.data_row(right,"BASIC CRIT",str(int(next_attack*1.5)))
@@ -83,3 +85,5 @@ INT: mana   LUK: throwing / critical chance",13))
 Ranks add 15% base attack per rank.
 Critical hits multiply the result by 1.5.
 Preview includes pending points.",13))
+
+func main_stat_name() -> String: return state.MAIN_STAT[state.archetype]

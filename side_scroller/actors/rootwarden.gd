@@ -34,25 +34,27 @@ func resolve_attack():
         slam_flash=0.35
         var offset=player.global_position-global_position
         if absf(offset.x)<170 and offset.y>=-30 and absf(offset.y)<60:
-            player.receive_damage(attack_damage(1.4),Vector2(facing*190,-130))
+            if player.receive_damage(attack_damage(1.4),Vector2(facing*190,-130),self): player.apply_stun(0.8)
     else:
         for angle in [-0.22,0.0,0.22]:
             var seed=preload("res://world/projectile.gd").new()
             seed.target=player
             seed.damage=attack_damage(0.75)
+            seed.source=self
             seed.speed=220
             get_parent().add_child(seed)
             seed.global_position=global_position+Vector2(0,-65)
             seed.direction=(player.global_position+Vector2(0,-26)-seed.global_position).normalized().rotated(angle)
 func _physics_process(delta):
     if dead: return
+    tick_statuses(delta)
     hurt_flash=maxf(0,hurt_flash-delta)
     slam_flash=maxf(0,slam_flash-delta)
     if not is_on_floor(): velocity.y+=1100*delta
     var engage=false
     if player!=null and is_instance_valid(player):
         var distance=player.global_position-global_position
-        engage=absf(distance.x)<580 and absf(distance.y)<200 and absf(position.x-spawn_position.x)<420
+        engage=absf(distance.x)<580 and absf(distance.y)<200 and absf(position.x-spawn_position.x)<420 and not player_hidden()
         if absf(distance.x)>4: facing=int(sign(distance.x))
         if phase=="windup":
             windup=maxf(0,windup-delta)

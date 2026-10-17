@@ -4,7 +4,7 @@ func run(t):
     t.check(bindings.apply(bindings.defaults()),"default InputMap actions install")
     t.check(not bindings.rebind("attack",KEY_SHIFT),"duplicate binding rejected")
     t.check(bindings.current().attack == KEY_SPACE,"rejected binding keeps attack")
-    t.check(bindings.rebind("attack",KEY_A),"valid remapping works")
+    t.check(bindings.rebind("attack",KEY_Q),"valid remapping works")
     bindings.apply(bindings.defaults())
     var world = Node2D.new()
     t.root.add_child(world)

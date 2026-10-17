@@ -2,7 +2,7 @@ extends Node
 const Character=preload("res://systems/character_state.gd")
 const Bindings=preload("res://systems/input_bindings.gd")
 var path="user://side_scroller.json"
-var slot_paths={"warrior":"user://side_scroller.json","thief":"user://side_scroller_thief.json"}
+var slot_paths={"warrior":"user://side_scroller.json","thief":"user://side_scroller_thief.json","magician":"user://side_scroller_magician.json","bowman":"user://side_scroller_bowman.json"}
 var selection_path="user://side_scroller_slot.txt"
 var active_slot="warrior"
 func selected_slot() -> String:
@@ -28,13 +28,13 @@ var pending_state
 var pending_bindings
 signal warning(message: String)
 func export_json(state,bindings) -> String:
-    return JSON.stringify({"version":1,"character":state.to_record(),"bindings":bindings.current()},"\t")
+    return JSON.stringify({"version":2,"character":state.to_record(),"bindings":bindings.current()},"\t")
 func import_json(text: String,state,bindings) -> bool:
     if text.length()>1048576: return false
     var parser=JSON.new()
     if parser.parse(text)!=OK: return false
     var data=parser.data
-    if not data is Dictionary or data.get("version",0)!=1 or not data.get("character",null) is Dictionary or not data.get("bindings",null) is Dictionary: return false
+    if not data is Dictionary or not (data.get("version",0)==1 or data.get("version",0)==2) or not data.get("character",null) is Dictionary or not data.get("bindings",null) is Dictionary: return false
     var staged=Character.new()
     if not staged.load_record(data.character) or staged.archetype!=state.archetype: return false
     var validator=Bindings.new()

@@ -1,4 +1,5 @@
 extends RefCounted
+const H=preload("res://tests/helpers.gd")
 func run(t):
     var world=Node2D.new()
     t.root.add_child(world)
@@ -27,21 +28,43 @@ func run(t):
     t.check(mob.hp<500 and t.get_nodes_in_group("player_stars").is_empty(),"ranged star damages and ends on an enemy")
     c.tick(1)
     var hp=mob.hp
-    while s.level<30: s.add_xp(s.xp_required(s.level))
-    s.advance_job("assassin")
-    t.check(c.begin_attack("star"),"second-job basic attack starts")
+    H.learn(s,"lucky_seven")
+    t.check(c.begin_attack("lucky_seven"),"Double Toss starts")
     c.tick(0.2)
-    t.check(t.get_nodes_in_group("player_stars").size()==2,"second-job basic launches two separate stars even with a large frame delta")
+    t.check(t.get_nodes_in_group("player_stars").size()==2,"Double Toss launches two separate stars even with a large frame delta")
     for i in range(22): await t.physics_frame
-    t.check(mob.hp<hp and t.get_nodes_in_group("player_stars").is_empty(),"both second-job basic projectiles resolve")
-    s.job="thief"
+    t.check(mob.hp<hp and t.get_nodes_in_group("player_stars").is_empty(),"both Double Toss projectiles resolve")
+    H.reach(s,30)
+    s.advance_job("assassin")
+    H.reach(s,70)
+    s.advance_job("hermit")
+    H.reach(s,120)
+    s.advance_job("night_lord")
+    H.learn(s,"triple_throw")
+    s.mp=999
     c.tick(2)
-    c.begin_attack("star_fan")
+    c.begin_attack("triple_throw")
+    c.tick(0.3)
+    var volley=t.get_nodes_in_group("player_stars")
+    t.check(volley.size()==3,"Triple Toss launches three stars")
+    for star in volley: star.queue_free()
+    await t.physics_frame
+    # Grand Shuriken pierces a line of monsters.
+    H.learn(s,"avenger")
+    var line=[]
+    for i in range(3): line.append(H.mob(world,Vector2(260+i*40,0),5000))
+    mob.position.x=900
+    await t.physics_frame
+    c.tick(2)
+    c.begin_attack("avenger")
     c.tick(0.12)
-    var fan=t.get_nodes_in_group("player_stars")
-    t.check(fan.size()==3,"Shadow Fan launches three stars")
-    t.check(fan[0].direction.y<0 and fan[2].direction.y>0,"fan spreads above and below the central throw")
-    for star in fan: star.queue_free()
+    for i in range(70): await t.physics_frame
+    var pierced=0
+    for m in line:
+        if m.hp<5000: pierced+=1
+    t.check(pierced==3,"Grand Shuriken pierces every monster in its path")
+    for m in line: m.queue_free()
+    mob.position.x=220
     await t.physics_frame
     var wall=StaticBody2D.new()
     wall.position=Vector2(110,-30)

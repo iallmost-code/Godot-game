@@ -34,6 +34,12 @@ func _ready():
     combat.attack_started.connect(func(id,origin,direction,reach): effects.show_attack(id,origin,direction,reach))
     combat.impact.connect(effects.show_damage)
     player.damaged.connect(func(amount): effects.show_player_damage(player.global_position+Vector2(0,-75),amount))
+    player.evaded.connect(func(text): effects.show_evade(player.global_position+Vector2(0,-75),text))
+    combat.effect_requested.connect(effects.show_effect)
+    combat.loot_requested.connect(func(pos,reward): if map!=null: map.spawn_loot(pos,reward))
+    combat.door_requested.connect(func():
+        change_map("town","entry")
+        hud.show_notice("The Wayshrine carries you back to Willowbridge.",5))
     camera=Camera2D.new()
     camera.zoom=Vector2(1.15,1.15)
     camera.position_smoothing_enabled=false
@@ -63,9 +69,11 @@ func _ready():
         save_store.use_slot(selected)
         state.initialize_class(selected)
         save_store.load_into(state,bindings)
+        if state.migration_note!="": startup_warning=state.migration_note
     state.changed.connect(func(): call_deferred("persist"))
     menu.binding_changed.connect(persist)
     menu.character_requested.connect(switch_character)
+    menu.travel_requested.connect(func(target): change_map(target,"entry"))
     menu.save_requested.connect(func():
         if save_store.save(state,bindings): hud.show_notice("Character saved."))
     menu.export_requested.connect(func(): save_store.export_backup(state,bindings))
@@ -97,7 +105,10 @@ func change_map(id: String,spawn: String) -> bool:
     menu.world_map_id=id
     combat.cancel()
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
+    for summon in get_tree().get_nodes_in_group("summons"):
+        if summon.config.get("decoy",false): summon.queue_free()
     effects.effects.clear()
+    effects.shapes.clear()
     effects.clear_numbers()
     player.reset_at(map.spawn_position(spawn))
     hud.map_label.text=definition.title
@@ -105,10 +116,15 @@ func change_map(id: String,spawn: String) -> bool:
     hud.player=player
     if id=="forest": hud.show_notice("Briar Hollow lies beyond the far-right portal. Recommended level 15+.",7)
     elif id=="briar": hud.show_notice("Briar Hollow: stronger monsters, better loot. Rootwarden waits at the far end.",7)
+    elif definition.has("boss"): hud.show_notice("%s awaits. Watch its warnings!" % preload("res://data/enemy_stats.gd").profile(definition.boss).name,6)
+    elif definition.has("level_range"): hud.show_notice("%s  •  Recommended %s" % [definition.title.split("  /")[0].capitalize(),definition.level_range],6)
     camera.position=Vector2(clampf(player.position.x,557,map.width-557),450)
     return true
 func return_to_town():
     combat.clear_partner()
+    combat.clear_summons()
+    combat.combo_orbs=0
+    state.clear_buffs()
     state.restore()
     change_map("town","entry")
     hud.show_notice("Back on your feet. All collected loot and progress are kept.",7)
@@ -132,36 +148,50 @@ func switch_character(slot: String) -> bool:
     combat.cancel()
     combat.cooldowns.clear()
     combat.clear_partner()
+    combat.clear_summons()
+    combat.combo_orbs=0
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
     menu.close()
     change_map("town","entry")
-    hud.show_notice("%s character loaded. Level 10: stand beside Elowen and press Up to advance." % slot.capitalize(),8)
+    var first=preload("res://data/catalog.gd").first_job(slot)
+    hud.show_notice(state.migration_note if state.migration_note!="" else "%s loaded. At level %d, stand beside Elowen and press Up to advance." % [state.archetype_name(slot),preload("res://data/catalog.gd").jobs()[first].level],8)
     return true
-func show_advancement(id: String):
-    if id=="" or not preload("res://data/catalog.gd").jobs().has(id):
-        hud.show_notice("Elowen: You have reached the last available advancement for this route.",7)
+const JOB_BLURBS={
+    "warrior":"Front-line fighter. Heavy Blow, Cleave and Steel Skin.","magician":"Spellcaster. Arcane Bolt, Spell Talons and Mana Shield.","archer":"Ranged hunter. Power Shot, Twin Shot and Steady Aim.","thief":"Swift and deadly. Double Toss, Twin Fang and Vanish.",
+    "fighter":"Sword master: Bloodlust, Blade Tempo and Follow-Through. Becomes Warlord, then Champion.","page":"Shield knight: Intimidate and Iron Riposte. Becomes Runeknight with elemental brands, then Templar.","spearman":"Spear wielder: Titan's Vigor and Bulwark. Becomes Wyrm Knight, then Dread Knight.",
+    "fp_wizard":"Fire and poison. Flame Dart, Toxic Breath, Blink. Becomes Cinder Magus, then Inferno Archon.","il_wizard":"Ice and lightning. Frost Lance, Thunderclap, Blink. Becomes Storm Magus, then Tempest Archon.","cleric":"Holy healer. Mending Light, Benediction, Sacred Bolt. Becomes Oracle, then Hierarch.",
+    "hunter":"Bow user: Blast Arrow, Spirit Quiver. Becomes Falconer, then Windmaster.","crossbowman":"Crossbow user: Piercing Bolt, Spirit Quiver. Becomes Deadeye, then Sharpshooter.",
+    "assassin":"Claw and stars: Leeching Star, Swiftness, Vital Throw. Becomes Shadeweaver, then Nightblade.","bandit":"Daggers up close: Frenzy Cuts, Pilfer. Becomes Cutthroat, then Duskreaper."}
+func show_advancement(_id: String=""):
+    var Catalog=preload("res://data/catalog.gd")
+    var options=state.next_jobs()
+    if options.is_empty():
+        hud.show_notice("Elowen: You have mastered every advancement on your path.",7)
         return
-    var required=preload("res://data/catalog.gd").jobs()[id].level
-    if state.level<required or id!=state.next_job():
-        hud.show_notice("Elowen: Return at level %d to become a %s." % [required,preload("res://data/catalog.gd").jobs()[id].name],6)
+    var required=Catalog.jobs()[options[0]].level
+    if state.level<required:
+        hud.show_notice("Elowen: Return at level %d for your next advancement." % required,6)
         return
-    pending_job=id
     menu.open_panel("stats")
     var box=VBoxContainer.new()
     Style.clear(menu.content)
     menu.content.add_child(box)
     box.add_child(Style.label("JOB ADVANCEMENT",26,Color("f4d48a")))
-    box.add_child(Style.label("Become a %s?\n\n%s" % [preload("res://data/catalog.gd").jobs()[id].name,"Receive a sword and unlock Crescent Sweep, Driving Thrust and the warrior skill tree." if id=="warrior" else "Receive a claw, Shadow Fan and the thief skill tree." if id=="thief" else "Basic attacks now throw 2 stars." if id=="assassin" else "Basic attacks throw 3 stars. Unlock a 60-second Shadow Partner on C." if id=="hermit" else "Basic attacks throw 4 stars, or 8 with Shadow Partner active." if id=="night_lord" else "Receive a spear and unlock Spear Mastery -> Ground Wave and Battle Vigor."],20))
-    box.add_child(Style.button("Confirm advancement",func():
-        if state.advance_job(pending_job):
-            menu.close()
-            hud.show_notice("You are now a %s! Open Skills to learn and equip abilities." % preload("res://data/catalog.gd").jobs()[state.job].name,7)))
+    box.add_child(Style.label("Choose your path. This choice is permanent." if options.size()>1 else "You are ready for your next advancement.",18))
+    for option in options:
+        var job=Catalog.jobs()[option]
+        var reward=Catalog.items().get(job.get("reward",""),{})
+        box.add_child(Style.label(job.name.to_upper(),21,Color("8ed9d0")))
+        box.add_child(Style.label(JOB_BLURBS.get(option,"Unlocks new %s skills and a %s." % [job.name,reward.get("name","weapon")])+("\nReward: %s (ATK %d)" % [reward.name,reward.attack] if not reward.is_empty() else ""),16))
+        box.add_child(Style.button("Become a %s" % job.name,func():
+            if state.advance_job(option):
+                menu.close()
+                hud.show_notice("You are now a %s! Open Skills to spend your new skill point." % job.name,7)))
     box.add_child(Style.button("Not yet",menu.close))
 func _process(delta):
     state.potion_cooldown=maxf(0,state.potion_cooldown-delta)
-    state.mp=minf(state.derived_stats().max_mp,state.mp+2.5*delta)
-    if map_id=="town": state.hp=minf(state.derived_stats().max_hp,state.hp+12*delta)
+    state.regenerate(delta,map_id=="town")
     if player.position.y>950: return_to_town()
     if map!=null:
         player.position.x=clampf(player.position.x,20,map.width-20)

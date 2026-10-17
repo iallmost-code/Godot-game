@@ -1,4 +1,5 @@
 extends CharacterBody2D
+const Catalog=preload("res://data/catalog.gd")
 var facing = 1
 var movement_enabled = true
 var jumps_used = 0
@@ -11,11 +12,15 @@ var damage_recoil=0.0
 var lunge_time=0.0
 var lunge_direction=1
 var walk_phase=0.0
+var lunge_speed=400.0
+var stun_time=0.0
+var status_immunity=0.0
 var state
 var visual: Node2D
 var combat
 signal interact_requested
 signal damaged(amount: int)
+signal evaded(text: String)
 signal died
 func _ready():
     collision_layer = 2
@@ -39,9 +44,18 @@ func reset_at(pos: Vector2):
     attack_timer = 0
     damage_recoil=0
     lunge_time=0
-func start_lunge(direction: int):
+    stun_time=0
+func start_lunge(direction: int,duration: float=0.16,speed: float=400.0):
     lunge_direction=direction
-    lunge_time=0.16
+    lunge_time=duration
+    lunge_speed=speed
+func apply_stun(duration: float):
+    if status_immunity>0 or state!=null and state.bonus("status_immune")>0: return
+    stun_time=maxf(stun_time,duration)
+func teleport(offset: float):
+    # move_and_collide stops at walls so a blink never passes through them.
+    move_and_collide(Vector2(offset,0))
+    velocity.x=0
 func request_jump():
     jump_buffer = 0.12
 func apply_knockback(impulse: Vector2): velocity += impulse
@@ -49,7 +63,12 @@ func _physics_process(delta):
     hurt_timer = maxf(0, hurt_timer-delta)
     attack_timer = maxf(0, attack_timer-delta)
     damage_recoil=maxf(0,damage_recoil-delta)
-    var direction = Input.get_axis("move_left", "move_right") if movement_enabled else 0.0
+    stun_time=maxf(0,stun_time-delta)
+    status_immunity=maxf(0,status_immunity-delta)
+    var stats=state.derived_stats() if state!=null else {"speed":0.0,"jump":0.0}
+    var flash_jump=state.bonus("flash_jump") if state!=null else 0.0
+    var can_move=movement_enabled and stun_time<=0
+    var direction = Input.get_axis("move_left", "move_right") if can_move else 0.0
     if direction != 0: facing = int(sign(direction))
     if is_on_floor():
         coyote = 0.10
@@ -57,61 +76,105 @@ func _physics_process(delta):
     else:
         coyote = maxf(0, coyote-delta)
         velocity.y += 1100 * delta
-    if movement_enabled and Input.is_action_just_pressed("jump"): request_jump()
+    if can_move and Input.is_action_just_pressed("jump"): request_jump()
     if jump_buffer > 0:
         if is_on_floor() or coyote > 0:
-            velocity.y = -420
+            velocity.y = -420*(1.0+stats.jump)
             jumps_used = 1
             coyote = 0
             jump_buffer = 0
-        elif jumps_used < 2:
-            velocity.y = -360
-            jumps_used = 2
-            boost_timer = 0.22
+        elif jumps_used < 2 or flash_jump>0 and jumps_used<3:
+            velocity.y = -360*(1.0+stats.jump)*(0.75 if jumps_used==2 else 1.0)
+            jumps_used += 1
+            boost_timer = 0.22*maxf(1.0,flash_jump)
             jump_buffer = 0
         else: jump_buffer = maxf(0, jump_buffer-delta)
     var finishing_lunge=lunge_time>0 and lunge_time<=delta
     if lunge_time > 0:
         # Account for the remaining fraction so travel does not vary with frame rate.
-        velocity.x=lunge_direction*400*minf(delta,lunge_time)/delta
+        velocity.x=lunge_direction*lunge_speed*minf(delta,lunge_time)/delta
         lunge_time=maxf(0,lunge_time-delta)
         facing=lunge_direction
     elif boost_timer > 0:
         boost_timer -= delta
-        velocity.x = facing * 320
-    else: velocity.x = move_toward(velocity.x, direction * 220, 1600 * delta)
+        velocity.x = facing * 320*maxf(1.0,flash_jump)
+    else: velocity.x = move_toward(velocity.x, direction * 220*(1.0+stats.speed), 1600 * delta)
     move_and_slide()
     if finishing_lunge: velocity.x=0
     if movement_enabled:
-        if Input.is_action_just_pressed("interact"): interact_requested.emit()
+        if Input.is_action_just_pressed("interact") and stun_time<=0: interact_requested.emit()
         if combat != null:
             if Input.is_action_pressed("attack"): combat.begin_attack(state.basic_skill())
-            for slot in ["z","x","c"]:
-                if Input.is_action_just_pressed("skill_"+slot):
+            for slot in state.slots:
+                if InputMap.has_action("skill_"+slot) and Input.is_action_just_pressed("skill_"+slot):
                     combat.begin_attack(state.slots[slot])
     var pose = "idle"
     if not is_on_floor(): pose = "jump"
     elif absf(velocity.x) > 15: pose = "run"
     if attack_timer > 0: pose = "attack"
-    elif damage_recoil>0: pose="hurt"
+    elif damage_recoil>0 or stun_time>0: pose="hurt"
     if combat!=null and combat.active!="": visual.attack_style=combat.active
-    if hurt_timer > 0 and int(hurt_timer*12)%2 == 0: visual.modulate.a = 0.55
+    if state!=null and state.bonus("invisible")>0: visual.modulate.a = 0.3
+    elif hurt_timer > 0 and int(hurt_timer*12)%2 == 0: visual.modulate.a = 0.55
     else: visual.modulate.a = 1
     var visual_facing=combat.attack_facing if combat!=null and combat.active!="" else facing
     if state!=null:
-        visual.appearance="thief" if state.archetype=="thief" else "spear" if state.equipment.weapon.contains("spear") else "sword"
+        visual.appearance=appearance_for(state)
     if pose=="run": walk_phase+=absf(velocity.x)*delta/150.0
     else: walk_phase=0.0
     visual.walk_phase=walk_phase
     visual.set_pose(pose, visual_facing, Time.get_ticks_msec()/1000.0)
-func receive_damage(amount: int, impulse: Vector2) -> bool:
+static func appearance_for(character) -> String:
+    match character.archetype:
+        "thief": return "thief"
+        "magician": return "mage"
+        "bowman": return "archer"
+    return "spear" if character.weapon_type()=="spear" else "sword"
+# Incoming damage pipeline: hidden/immune -> evade -> block -> reductions -> MP/coin
+# soaks -> reflect -> knock-back resistance -> revive.
+func receive_damage(amount: int, impulse: Vector2, source=null) -> bool:
     if state == null or hurt_timer > 0 or state.hp <= 0 or amount<=0: return false
+    if state.bonus("invisible")>0 or state.bonus("invincible")>0: return false
+    var stats=state.derived_stats()
+    if source!=null and is_instance_valid(source) and source.has_method("has_status") and source.has_status("blind") and randf()<0.4 or randf()<stats.avoid:
+        hurt_timer=0.5
+        evaded.emit("MISS")
+        return false
+    if randf()<state.bonus("block"):
+        hurt_timer=0.5
+        evaded.emit("BLOCK")
+        return false
+    var incoming=float(maxi(1,amount-int(stats.defense)))*(1.0-stats.damage_reduction)
+    var reflect=state.bonus("reflect")
+    if reflect>0 and source!=null and is_instance_valid(source) and source.has_method("receive_hit") and not source.dead:
+        var back=maxi(1,int(amount*reflect*4))
+        if source.receive_hit(back,Vector2.ZERO,randi()):
+            var fx=get_tree().get_first_node_in_group("combat_effects")
+            if fx!=null: fx.show_damage(source.global_position+Vector2(0,-45),back,false)
+        incoming*=1.0-reflect*0.5
+    var guard=state.bonus("magic_guard")
+    if guard>0:
+        var soak=minf(incoming*guard,state.mp)
+        state.mp-=soak
+        incoming-=soak
+    var coin_guard=state.bonus("meso_guard")
+    if coin_guard>0:
+        var soak=incoming*coin_guard
+        var cost=int(ceil(soak*0.5))
+        if state.coins>=cost:
+            state.coins-=cost
+            incoming-=soak
     var previous_hp=state.hp
-    state.hp = maxf(0, state.hp-maxi(1,amount-int(state.derived_stats().defense)))
+    state.hp = maxf(0, state.hp-maxi(1,int(incoming)))
     lunge_time=0
     hurt_timer = 0.8
     damage_recoil=0.16
-    apply_knockback(impulse)
+    if randf()>=state.bonus("knockback_resist"): apply_knockback(impulse)
+    if state.hp<=0 and state.bonus("revive")>0:
+        for id in state.buffs.keys():
+            if Catalog.skill(id).get("stats",{}).has("revive"): state.remove_buff(id)
+        state.hp=state.derived_stats().max_hp*0.5
+        evaded.emit("REBIRTH")
     state.changed.emit()
     damaged.emit(ceili(previous_hp-state.hp))
     if state.hp <= 0: died.emit()

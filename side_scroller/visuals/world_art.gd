@@ -12,7 +12,9 @@ const TILE=Rect2(0,185,2048,459)
 var map_id="town"
 var width=1800.0
 var sky_sprite: Sprite2D
+var theme: Array=[]
 func _ready():
+    theme=Maps.definition(map_id).get("theme",[])
     sky_sprite=Sprite2D.new()
     var backdrop=BRIAR if map_id=="briar" else SKY
     sky_sprite.texture=backdrop
@@ -20,6 +22,7 @@ func _ready():
     sky_sprite.scale=Vector2((width+600)/backdrop.get_width(),760.0/backdrop.get_height())
     sky_sprite.position=Vector2(-300,-100)
     sky_sprite.z_index=-20
+    if not theme.is_empty(): sky_sprite.modulate=Color(theme[0])
     add_child(sky_sprite)
 func _process(_delta):
     var camera=get_viewport().get_camera_2d()
@@ -34,10 +37,18 @@ func terrain_strip(x: float,y: float,length: float,depth: float):
     while offset<length:
         var segment=minf(natural_width,length-offset)
         var source=Rect2(TILE.position,Vector2(TILE.size.x*segment/natural_width,TILE.size.y))
-        draw_texture_rect_region(TERRAIN,Rect2(x+offset,y-12,segment,depth),source,Color("c7bddc") if map_id=="briar" else Color.WHITE)
+        draw_texture_rect_region(TERRAIN,Rect2(x+offset,y-12,segment,depth),source,Color("c7bddc") if map_id=="briar" else Color(theme[1]) if not theme.is_empty() else Color.WHITE)
         offset+=segment
 func _draw():
-    if map_id=="briar":
+    if not theme.is_empty():
+        var leaves=Color(theme[2])
+        for x in range(-120,int(width)+450,420):
+            prop(TREE,Vector2(x,588),Vector2(320,325),Color(leaves,0.7))
+        var step=900 if map_id.begins_with("arena_") else 640
+        for x in range(420,int(width)-200,step): prop(TREE,Vector2(x,610),Vector2(420,430),leaves)
+        for x in range(260,int(width),520): prop(BUSH,Vector2(x,610),Vector2(170,100),leaves.lightened(0.15))
+        prop(SIGN,Vector2(350,610),Vector2(85,89))
+    elif map_id=="briar":
         for x in [560,1720,2440]: prop(TREE,Vector2(x,610),Vector2(270,275),Color("b5a5c8"))
         for x in [420,1220,2070,2600,3250]: prop(BUSH,Vector2(x,610),Vector2(150,90),Color("d7bbd8"))
         prop(SIGN,Vector2(2650,610),Vector2(85,89))

@@ -19,6 +19,7 @@ var player
 var boss_panel
 var boss_label
 var boss_bar
+var buff_label
 signal menu_requested(panel_id: String)
 func bind(s,c,b=null):
     state=s
@@ -77,9 +78,12 @@ func bind(s,c,b=null):
     var ability_row=HBoxContainer.new()
     ability_row.add_theme_constant_override("separation",8)
     row.add_child(ability_row)
-    for slot in ["attack","z","x","c"]:
+    ability_row.add_theme_constant_override("separation",4)
+    for slot in ["attack"]+Catalog.SLOTS:
         var button=Style.button("",func(): show_notice("Use the displayed key to attack. Aim by facing your target."))
-        button.custom_minimum_size=Vector2(143,72)
+        button.custom_minimum_size=Vector2(88,72)
+        button.add_theme_font_size_override("font_size",12)
+        button.clip_text=true
         ability_row.add_child(button)
         skills.append({"slot":slot,"button":button})
     var right=VBoxContainer.new()
@@ -88,6 +92,12 @@ func bind(s,c,b=null):
         show_notice("Health restored." if state.use_potion() else "Potion unavailable: full HP, cooldown, or none left."))
     right.add_child(potion_button)
     right.add_child(Style.button("Menu / Save",func(): menu_requested.emit("save")))
+    buff_label=Style.label("",14,Color("e8f4ff"))
+    buff_label.add_theme_color_override("font_outline_color",Color("254451"))
+    buff_label.add_theme_constant_override("outline_size",3)
+    buff_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+    buff_label.position=Vector2(25,-128)
+    root_control.add_child(buff_label)
     notice=Style.label("",21,Color("fff3ce"))
     notice.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
     notice.position=Vector2(-460,91)
@@ -125,7 +135,7 @@ func refresh():
         var nearby=is_instance_valid(boss_target) and boss_target.hp>0 and player!=null and absf(player.global_position.x-boss_target.global_position.x)<650
         boss_panel.visible=nearby
         if nearby:
-            boss_label.text="Lv %d Rootwarden  •  %d / %d" % [boss_target.level,boss_target.hp,boss_target.max_hp]
+            boss_label.text="Lv %d %s  •  %d / %d" % [boss_target.level,boss_target.profile.get("name","Boss") if boss_target.get("profile")!=null else "Rootwarden",boss_target.hp,boss_target.max_hp]
             boss_bar.max_value=boss_target.max_hp
             boss_bar.value=boss_target.hp
     for id in menu_buttons:
@@ -133,6 +143,15 @@ func refresh():
         menu_buttons[id].text=id.capitalize()+" ["+shortcut+"]"
     var stats=state.derived_stats()
     status.text="LV %d  %s  •  HP %d/%d  MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
+    var parts=[]
+    for id in state.buffs:
+        parts.append("%s %ds" % [state.skill_name(id),ceili(state.buffs[id].time)])
+    if combat.partner_time>0: parts.append("Shadow Twin %ds" % ceili(combat.partner_time))
+    for id in combat.summons:
+        if is_instance_valid(combat.summons[id]): parts.append("%s %ds" % [state.skill_name(id),ceili(combat.summons[id].lifetime)])
+    if state.buff_group("combo")!="": parts.append("Orbs "+"●".repeat(combat.combo_orbs)+"○".repeat(maxi(0,int(maxf(5,state.bonus("combo_max")))-combat.combo_orbs)))
+    if player!=null and player.stun_time>0: parts.push_front("STUNNED")
+    buff_label.text="  •  ".join(parts)
     hp_bar.max_value=stats.max_hp
     hp_bar.value=state.hp
     mp_bar.max_value=stats.max_mp
@@ -147,9 +166,6 @@ func refresh():
         var action="attack" if slot=="attack" else "skill_"+slot
         var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else slot.to_upper()
         var cooldown=combat.cooldowns.get(id,0)
-        entry.button.text=key+"\n"+(state.skill_name(id) if id!="" else "Unassigned")+("\n%.1fs" % cooldown if cooldown>0 else "")
-        if id=="star" and combat.partner_time>0:
-            entry.button.text=key+"\nStar Throw ×%d" % (state.basic_star_count()*2)
-            entry.button.tooltip_text="%d player stars + %d partner stars" % [state.basic_star_count(),state.basic_star_count()]
-        if id=="shadow_partner" and combat.partner_time>0: entry.button.text=key+"\nShadow Partner\n%d s active" % ceili(combat.partner_time)
+        entry.button.text=key+"\n"+(state.skill_name(id) if id!="" else "—")+("\n%.1fs" % cooldown if cooldown>0 else "\n%d MP" % combat.mana_cost(id) if id!="" and combat.mana_cost(id)>0 else "")
+        entry.button.tooltip_text=(state.skill_name(id)+"\n"+Catalog.skill(id).get("description","")) if id!="" else "Empty slot. Assign skills in the Skills window."
         entry.button.modulate=Color("819a9c") if id=="" or cooldown>0 else Color.WHITE

@@ -1,7 +1,7 @@
 extends Node2D
 const FONT=preload("res://fonts/damage-bold.ttf")
 const GRADIENT=preload("res://visuals/damage_gradient.gdshader")
-func setup(text: String,critical: bool,celebration=false,incoming=false):
+func setup(text: String,critical: bool,celebration=false,incoming=false,tint=Color(0,0,0,0)):
     var font_size=40 if critical else 34
     if celebration: font_size=30
     var width=FONT.get_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x
@@ -33,5 +33,9 @@ func setup(text: String,critical: bool,celebration=false,incoming=false):
                 gradient.set_shader_parameter("top_color",Color("ffb626"))
                 gradient.set_shader_parameter("mid_color",Color("fff082"))
                 gradient.set_shader_parameter("bottom_color",Color("fffed7"))
+            if tint.a>0:
+                gradient.set_shader_parameter("top_color",tint.darkened(0.45))
+                gradient.set_shader_parameter("mid_color",tint)
+                gradient.set_shader_parameter("bottom_color",tint.lightened(0.5))
             label.material=gradient
         add_child(label)
