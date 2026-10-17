@@ -36,7 +36,7 @@ func set_pose(mode: String,direction: int,time: float):
     var rect=data.rects[frame]
     var anchor=data.anchors[frame]-rect.position
     sprite.texture=TEXTURES[appearance]
-    var scale_factor=0.34 if appearance=="thief" else 0.31
+    var scale_factor=80.0/data.rects[8].size.y
     sprite.scale=Vector2.ONE*scale_factor
     sprite.region_rect=rect
     sprite.flip_h=direction<0

@@ -13,6 +13,11 @@ var notice
 var notice_time=0.0
 var map_label
 var potion_button
+var boss_target
+var player
+var boss_panel
+var boss_label
+var boss_bar
 signal menu_requested(panel_id: String)
 func bind(s,c,b=null):
     state=s
@@ -41,6 +46,16 @@ func bind(s,c,b=null):
     for id in ["stats","skills","inventory"]:
         top.add_child(Style.button(id.capitalize(),func(): menu_requested.emit(id)))
     top.add_child(Style.button("Menu",func(): menu_requested.emit("controls")))
+    boss_panel=PanelContainer.new()
+    boss_panel.position=Vector2(340,145)
+    boss_panel.custom_minimum_size=Vector2(600,60)
+    root_control.add_child(boss_panel)
+    var boss_layout=VBoxContainer.new()
+    boss_panel.add_child(boss_layout)
+    boss_label=Style.label("Rootwarden",18,Color("f4d48a"))
+    boss_layout.add_child(boss_label)
+    boss_bar=create_bar(boss_layout,Color("bd729c"))
+    boss_panel.hide()
     var panel=PanelContainer.new()
     panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
     panel.offset_top=-100
@@ -103,6 +118,13 @@ func _process(delta):
     refresh()
 func refresh():
     if state==null or status==null: return
+    if boss_panel!=null:
+        var nearby=is_instance_valid(boss_target) and boss_target.hp>0 and player!=null and absf(player.global_position.x-boss_target.global_position.x)<650
+        boss_panel.visible=nearby
+        if nearby:
+            boss_label.text="Rootwarden  •  %d / %d" % [boss_target.hp,boss_target.max_hp]
+            boss_bar.max_value=boss_target.max_hp
+            boss_bar.value=boss_target.hp
     var stats=state.derived_stats()
     status.text="LV %d  %s  •  HP %d/%d  MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
     hp_bar.max_value=stats.max_hp

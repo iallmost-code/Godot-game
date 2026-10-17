@@ -25,21 +25,29 @@ func _ready():
     shape.shape=capsule
     shape.position.y=-18
     add_child(shape)
-    if definition_id=="lantern":
+    if definition_id in ["lantern","briar_lantern"]:
         hp=32
         max_hp=32
+    if definition_id=="thornling":
+        hp=160
+        max_hp=160
+    elif definition_id=="briar_lantern":
+        hp=100
+        max_hp=100
     sprite=Sprite2D.new()
     sprite.texture=preload("res://art/enemies.png")
     sprite.region_enabled=true
     sprite.region_filter_clip_enabled=true
     sprite.centered=false
     sprite.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
-    sprite.scale=Vector2.ONE*0.09
+    sprite.scale=Vector2.ONE*(64.0/735.0 if definition_id in ["lantern","briar_lantern"] else 60.0/626.0)
     var shader=Shader.new()
     shader.code="shader_type canvas_item; uniform float flash=0.0; void fragment(){COLOR.rgb=mix(COLOR.rgb,vec3(1.0),flash);}"
     var mat=ShaderMaterial.new()
     mat.shader=shader
     sprite.material=mat
+    if definition_id=="thornling": sprite.modulate=Color("ecb8cd")
+    elif definition_id=="briar_lantern": sprite.modulate=Color("b7e6f0")
     add_child(sprite)
 func _physics_process(delta):
     if dead: return
@@ -55,29 +63,32 @@ func _physics_process(delta):
             telegraph-=delta
             velocity.x=move_toward(velocity.x,0,600*delta)
             if telegraph<=0 and engage:
-                if definition_id=="lantern":
+                if definition_id in ["lantern","briar_lantern"]:
                     var projectile=preload("res://world/projectile.gd").new()
                     get_parent().add_child(projectile)
                     projectile.global_position=global_position+Vector2(0,-25)
                     projectile.direction=(player.global_position+Vector2(0,-25)-projectile.global_position).normalized()
                     projectile.target=player
+                    if definition_id=="briar_lantern": projectile.damage=11
                 elif absf(distance.x)<65:
-                    player.receive_damage(6,Vector2(facing*110,-70))
-        elif engage and attack_timer<=0 and (absf(distance.x)<52 or definition_id=="lantern"):
+                    player.receive_damage(12 if definition_id=="thornling" else 6,Vector2(facing*110,-70))
+        elif engage and attack_timer<=0 and (absf(distance.x)<52 or definition_id in ["lantern","briar_lantern"]):
             telegraph=0.7
             attack_timer=2.3
         else:
-            var speed=42 if definition_id=="mossling" else 22
+            var speed=48 if definition_id=="thornling" else 42 if definition_id=="mossling" else 22
             var desired=sign(target-global_position.x)*speed if absf(target-global_position.x)>38 else 0
             velocity.x=move_toward(velocity.x,desired,180*delta)
     else: velocity.x=move_toward(velocity.x,0,200*delta)
     move_and_slide()
     if sprite!=null:
-        var origin=887 if definition_id=="lantern" else 0
-        var anchor=513.0 if definition_id=="lantern" else 435.0
-        sprite.region_rect=Rect2(origin,0,887,887)
-        sprite.flip_h=facing>0 if definition_id=="lantern" else facing<0
-        sprite.position=Vector2(-(887-anchor) if sprite.flip_h else -anchor,-749 if definition_id=="lantern" else -739)*0.09
+        var lantern=definition_id in ["lantern","briar_lantern"]
+        var region=Rect2(806,208,610,735) if lantern else Rect2(91,280,626,626)
+        var anchor=Vector2(1100,941) if lantern else Vector2(404,904)
+        sprite.region_rect=region
+        sprite.flip_h=facing>0 if lantern else facing<0
+        var local=anchor-region.position
+        sprite.position=Vector2(-(region.size.x-local.x) if sprite.flip_h else -local.x,-local.y)*sprite.scale.x
         sprite.position.y+=sin(Time.get_ticks_msec()/220.0)*1.4
         sprite.material.set_shader_parameter("flash",1.0 if hurt_flash>0 else 0.0)
     queue_redraw()
@@ -95,12 +106,12 @@ func receive_hit(damage: int,push: Vector2,source: int) -> bool:
     return true
 func _draw():
     if hp<max_hp:
-        draw_style_box(health_style(Color("243449")),Rect2(-25,-58,50,5))
-        draw_rect(Rect2(-25,-58,50*float(hp)/max_hp,5),Color("ff827b"))
+        draw_style_box(health_style(Color("243449")),Rect2(-25,-74,50,5))
+        draw_rect(Rect2(-25,-74,50*float(hp)/max_hp,5),Color("ff827b"))
     if telegraph>0:
-        draw_circle(Vector2(0,-67),10,Color("f7ba63"))
-        draw_line(Vector2(0,-73),Vector2(0,-67),Color("47354e"),3)
-        draw_circle(Vector2(0,-63),1.5,Color("47354e"))
+        draw_circle(Vector2(0,-83),10,Color("f7ba63"))
+        draw_line(Vector2(0,-89),Vector2(0,-83),Color("47354e"),3)
+        draw_circle(Vector2(0,-79),1.5,Color("47354e"))
 func health_style(color):
     var style=StyleBoxFlat.new()
     style.bg_color=color

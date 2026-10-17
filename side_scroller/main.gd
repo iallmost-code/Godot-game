@@ -1,4 +1,5 @@
 extends Node2D
+const Maps=preload("res://data/maps.gd")
 const Style=preload("res://ui/style.gd")
 var test_mode=false
 var state
@@ -74,7 +75,8 @@ func _ready():
         player.set_physics_process(false)
         set_process(false)
 func change_map(id: String,spawn: String) -> bool:
-    if not ["town","forest"].has(id) or not ["entry","portal"].has(spawn): return false
+    var definition=Maps.definition(id)
+    if definition.is_empty() or not definition.spawns.has(spawn): return false
     var next=preload("res://world/map_controller.gd").new()
     next.map_id=id
     next.player=player
@@ -84,6 +86,7 @@ func change_map(id: String,spawn: String) -> bool:
     next.portal_requested.connect(change_map)
     next.advancement_requested.connect(show_advancement)
     next.reward_notice.connect(hud.show_notice)
+    next.boss_spawned.connect(func(enemy): hud.boss_target=enemy)
     if map!=null:
         remove_child(map)
         map.queue_free()
@@ -94,8 +97,11 @@ func change_map(id: String,spawn: String) -> bool:
     effects.effects.clear()
     effects.numbers.clear()
     player.reset_at(map.spawn_position(spawn))
-    hud.map_label.text="WILLOWBRIDGE  /  SAFE TOWN" if id=="town" else "THE WHISPERWOOD  /  MONSTER FIELD"
-    if id=="forest": hud.show_notice("Defeat creatures for XP. Job advancement begins at level 10 in town.",7)
+    hud.map_label.text=definition.title
+    hud.boss_target=next.boss
+    hud.player=player
+    if id=="forest": hud.show_notice("Briar Hollow lies beyond the far-right portal. Recommended level 15+.",7)
+    elif id=="briar": hud.show_notice("Briar Hollow: stronger monsters, better loot. Rootwarden waits at the far end.",7)
     camera.position=Vector2(clampf(player.position.x,557,map.width-557),450)
     return true
 func return_to_town():

@@ -15,6 +15,7 @@ with tempfile.TemporaryDirectory() as directory:
         assert {'project.godot','main.tscn','main.gd','README.md'}<=names
         assert {'art/warrior_atlas.png','art/sky.png','art/props.png','art/terrain.png','art/enemies.png','art/effects.png'}<=names
         assert {'art/sword_atlas.png','art/spear_atlas.png','art/thief_atlas.png','world/player_star.gd'}<=names
+        assert {'art/rootwarden.png','art/briar_background.png','actors/rootwarden.gd','data/maps.gd','tests/test_bulk_stats.gd','tests/test_briar.gd'}<=names
         assert b'Windswept' in z.read('project.godot')
         assert len(names)==len(z.namelist())
         assert not any('.godot/' in n or '.git/' in n or n.endswith('.json') for n in names)

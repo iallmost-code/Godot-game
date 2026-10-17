@@ -91,7 +91,7 @@ func advance_job(next: String) -> bool:
         sp["2"] += 1
         sp_earned["2"] += 1
         if not inventory.has("job_spear"): inventory.append("job_spear")
-        equipment.weapon="job_spear"
+        if Catalog.items()[equipment.weapon].attack<Catalog.items()["job_spear"].attack: equipment.weapon="job_spear"
     elif archetype=="thief" and next==next_job() and next in ["assassin","hermit","night_lord"] and level>=Catalog.jobs()[next].level:
         job=next
         var pool=str(tier())

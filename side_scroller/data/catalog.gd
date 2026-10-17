@@ -28,5 +28,12 @@ static func items() -> Dictionary:
         "starter_claw":{"name":"Moonlit Claw", "slot":"weapon", "path":"thief", "attack":18, "defense":0, "icon":"✦"},
         "thief_claw":{"name":"Elowen's Shadow Claw", "slot":"weapon", "path":"thief", "attack":25, "defense":0, "icon":"✦"},
         "forest_claw":{"name":"Nightwind Claw", "slot":"weapon", "path":"thief", "attack":30, "defense":0, "icon":"✦"},
+        "briar_sword":{"name":"Briarsteel Sword", "slot":"weapon", "path":"warrior", "attack":36, "defense":0, "icon":"⚔"},
+        "briar_spear":{"name":"Briarsteel Spear", "slot":"weapon", "path":"warrior", "attack":38, "defense":0, "icon":"♜"},
+        "briar_claw":{"name":"Thornweave Claw", "slot":"weapon", "path":"thief", "attack":38, "defense":0, "icon":"✦"},
+        "briar_armor":{"name":"Briarweave Coat", "slot":"armor", "attack":0, "defense":9, "icon":"◆"},
+        "warden_sword":{"name":"Rootwarden's Edge", "slot":"weapon", "path":"warrior", "attack":50, "defense":0, "icon":"⚔"},
+        "warden_spear":{"name":"Rootwarden's Lance", "slot":"weapon", "path":"warrior", "attack":50, "defense":0, "icon":"♜"},
+        "warden_claw":{"name":"Rootwarden's Talon", "slot":"weapon", "path":"thief", "attack":50, "defense":0, "icon":"✦"},
         "starter_armor":{"name":"Trail Vest", "slot":"armor", "attack":0, "defense":2, "icon":"◆"},
         "forest_armor":{"name":"Mossguard Coat", "slot":"armor", "attack":0, "defense":5, "icon":"◆"}}

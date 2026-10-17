@@ -1,4 +1,5 @@
 extends Node2D
+const Maps=preload("res://data/maps.gd")
 var map_id="town"
 var width=1800.0
 var state
@@ -8,46 +9,47 @@ var spawns: Array=[]
 var portal_position=Vector2.ZERO
 var instructor_position=Vector2(500,610)
 var sign_label
+var portals: Array=[]
+var boss
 signal portal_requested(map_id: String,spawn_id: String)
 signal advancement_requested(job_id: String)
 signal reward_notice(message: String)
+signal boss_spawned(enemy: Node2D)
 func setup(s):
     state=s
-    width=1800 if map_id=="town" else 3000
+    var data=Maps.definition(map_id)
+    width=data.width
+    portals=data.portals
+    portal_position=portals[0].position
     build_platform(Vector2(width/2,645),Vector2(width,70),false)
     build_platform(Vector2(-20,300),Vector2(40,900),false)
     build_platform(Vector2(width+20,300),Vector2(40,900),false)
-    portal_position=Vector2(1580,610) if map_id=="town" else Vector2(150,610)
+    for platform in data.platforms:
+        build_platform(Vector2(platform[0],platform[1]+8),Vector2(platform[2],16),true)
+    for portal in portals:
+        make_label(portal.label,portal.position+Vector2(-85,-130),Color("edf5cc"),17)
     if map_id=="town":
-        for data in [[730,460,280],[1220,420,260]]:
-            build_platform(Vector2(data[0],data[1]+8),Vector2(data[2],16),true)
         var npc=preload("res://visuals/character_visual.gd").new()
         npc.position=instructor_position
         npc.modulate=Color(0.92,0.96,1.0)
         add_child(npc)
         npc.set_pose("idle",1,0)
         make_label("Captain Elowen\nJob advancement",instructor_position+Vector2(-85,-115),Color("f8de9f"),17)
-        make_label("Forest ->\nUp to enter",portal_position+Vector2(-60,-130),Color("ebf9e7"),17)
     else:
-        for data in [[750,485,300],[1100,375,280],[1500,475,350],[1940,350,300],[2370,455,380]]:
-            build_platform(Vector2(data[0],data[1]+9),Vector2(data[2],18),true)
-        make_label("<- Willowbridge\nUp to return",portal_position+Vector2(-80,-130),Color("edf5cc"),17)
-        make_label("Shift + Shift: double jump\nSpace: attack  •  Z / X: skills after first job",Vector2(390,300),Color("d7e9cc"),16)
-        for data in [[640,610,"mossling"],[980,610,"mossling"],[1290,610,"mossling"],[1660,610,"mossling"],[2210,610,"mossling"],[2670,610,"mossling"],[815,485,"lantern"],[1530,475,"lantern"],[2370,455,"lantern"]]:
-            var record={"position":Vector2(data[0],data[1]),"id":data[2],"node":null,"timer":0.0}
+        make_label("Briar Hollow: tougher enemies and better loot →" if map_id=="forest" else "ROOTWARDEN ahead →\nLv 25 recommended • Jump over the slam!",Vector2(380,300),Color("e7d2ed"),16)
+        for entry in data.enemies:
+            var record={"position":Vector2(entry[0],entry[1]),"id":entry[2],"node":null,"timer":0.0}
             spawns.append(record)
             spawn_enemy(record)
     var artwork=preload("res://visuals/world_art.gd").new()
     artwork.map_id=map_id
     artwork.width=width
     artwork.z_index=-10
-    artwork.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
+    artwork.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
     add_child(artwork)
     queue_redraw()
 func spawn_position(id: String) -> Vector2:
-    if id=="entry": return Vector2(260,590) if map_id=="town" else Vector2(250,590)
-    if id=="portal": return Vector2(1450,590) if map_id=="town" else Vector2(250,590)
-    return Vector2.INF
+    return Maps.definition(map_id).spawns.get(id,Vector2.INF)
 func build_platform(pos: Vector2,size: Vector2,one_way: bool):
     var body=StaticBody2D.new()
     var shape=CollisionShape2D.new()
@@ -69,31 +71,40 @@ func make_label(text,pos,color,size):
     label.add_theme_constant_override("outline_size",2)
     add_child(label)
 func spawn_enemy(record):
-    var enemy=preload("res://actors/enemy.gd").new()
+    var enemy=preload("res://actors/rootwarden.gd").new() if record.id=="rootwarden" else preload("res://actors/enemy.gd").new()
     enemy.definition_id=record.id
     enemy.position=record.position
     enemy.player=player
     add_child(enemy)
     record.node=enemy
+    if record.id=="rootwarden":
+        boss=enemy
+        boss_spawned.emit(enemy)
     enemy.defeated.connect(func(pos,id): on_defeated(pos,id,record))
 func on_defeated(pos: Vector2,id: String,record: Dictionary):
-    record.timer=7.0
-    state.add_xp(40 if id=="mossling" else 60)
-    var reward={"coins":randi_range(2,7)}
+    record.timer=45.0 if id=="rootwarden" else 9.0 if map_id=="briar" else 7.0
+    state.add_xp({"mossling":40,"lantern":60,"thornling":110,"briar_lantern":140,"rootwarden":900}[id])
+    var reward={"coins":randi_range(7,14) if map_id=="briar" else randi_range(2,7)}
+    var weapon_type="claw" if state.archetype=="thief" else "spear" if state.job=="spearman" else "sword"
     var roll=randf()
-    if roll<0.18: reward.potions=1
-    elif roll<0.3:
-        var weapon="forest_claw" if state.archetype=="thief" else "forest_spear" if state.job=="spearman" else "forest_sword"
-        reward.item=weapon if randf()<0.5 else "forest_armor"
+    if id=="rootwarden":
+        reward={"coins":75,"potions":3,"item":"warden_"+weapon_type}
+        reward_notice.emit("Rootwarden defeated! Collect your guaranteed weapon and potions.")
+    elif roll<0.18: reward.potions=1
+    elif roll<(0.42 if map_id=="briar" else 0.3):
+        var zone="briar" if map_id=="briar" else "forest"
+        reward.item=zone+"_"+weapon_type if randf()<0.5 else zone+"_armor"
     var loot=preload("res://world/loot_pickup.gd").new()
     loot.setup(reward)
     loot.position=pos
     add_child(loot)
     pickups.append(loot)
 func interact():
-    if player.global_position.distance_to(portal_position)<90:
-        portal_requested.emit("forest" if map_id=="town" else "town","entry")
-    elif map_id=="town" and absf(player.position.x-instructor_position.x)<100:
+    for portal in portals:
+        if player.global_position.distance_to(portal.position)<90:
+            portal_requested.emit(portal.target,portal.spawn)
+            return
+    if map_id=="town" and absf(player.position.x-instructor_position.x)<100:
         advancement_requested.emit(state.next_job())
     else: reward_notice.emit("Move near a glowing portal or the town instructor, then press Up.")
 func _process(delta):
@@ -108,6 +119,8 @@ func _process(delta):
             if drop.try_collect(state): reward_notice.emit(text)
     queue_redraw()
 func _draw():
+    for portal in portals: draw_portal(portal.position)
+func draw_portal(portal_position: Vector2):
     # Portal rune with a pulsing center and arch.
     var portal_color=Color("8fecdf")
     draw_arc(portal_position+Vector2(0,-45),42,PI,TAU,24,Color("b9d3c7"),11,true)
