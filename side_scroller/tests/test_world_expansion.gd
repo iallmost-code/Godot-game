@@ -10,7 +10,7 @@ func run(t):
     t.check(maps.has_method("route_between"),"atlas can plan a walking route to any inspected region")
     if maps.has_method("route_between"):
         var route=maps.route_between("town","frostmere")
-        t.check(route.size()>3 and route[0]=="town" and route.back()=="frostmere","route planner connects starter town to the snow region")
+        t.check(route==["town","portal_hub","frostmere"],"route planner connects starter town to the snow region")
         t.check(maps.route_between("missing","town").is_empty(),"invalid route request returns no path")
     var ids=maps.all_ids()
     var reached=["town"]

@@ -20,7 +20,7 @@
         "That bark will make sturdy shims. A feast should challenge your appetite, not your balance."
       ],
       "reward": {
-        "xp": 240,
+        "xp": 444,
         "coins": 24,
         "item": "",
         "consumable": "hp_1",
@@ -50,7 +50,7 @@
         "Pink suits the tables beautifully. The hogs can choose their own decorations next year."
       ],
       "reward": {
-        "xp": 400,
+        "xp": 740,
         "coins": 32,
         "item": "",
         "consumable": "hp_1",
@@ -80,7 +80,7 @@
         "Dry bread, dry benches, and a sky doing its best to interfere. We are ready."
       ],
       "reward": {
-        "xp": 600,
+        "xp": 1110,
         "coins": 40,
         "item": "",
         "consumable": "hp_1",
@@ -110,7 +110,7 @@
         "The first chair is yours. Take this vest; there is always another newcomer who needs a welcome."
       ],
       "reward": {
-        "xp": 1176,
+        "xp": 2184,
         "coins": 96,
         "item": "starter_armor",
         "consumable": "hp_1",
@@ -139,7 +139,7 @@
         "Now the directions will survive their first puddle. That is more than my old boots managed."
       ],
       "reward": {
-        "xp": 192,
+        "xp": 360,
         "coins": 12,
         "item": "",
         "consumable": "hp_1",
@@ -169,7 +169,7 @@
         "A clear path is a better first lesson than a surprise shell to the ankle."
       ],
       "reward": {
-        "xp": 320,
+        "xp": 600,
         "coins": 16,
         "item": "",
         "consumable": "hp_1",
@@ -198,7 +198,7 @@
         "It smells faintly of the woods. A guidebook ought to."
       ],
       "reward": {
-        "xp": 720,
+        "xp": 1320,
         "coins": 60,
         "item": "",
         "consumable": "hp_1",
@@ -228,7 +228,7 @@
         "The new class will find a kinder trail. Keep this gear as proof that you helped write their first chapter."
       ],
       "reward": {
-        "xp": 672,
+        "xp": 1260,
         "coins": 24,
         "item": "starter_armor",
         "consumable": "hp_1",
@@ -257,7 +257,7 @@
         "Polished shells will scatter the light across the water. A little patience makes a bright beacon."
       ],
       "reward": {
-        "xp": 288,
+        "xp": 528,
         "coins": 36,
         "item": "",
         "consumable": "hp_1",
@@ -287,7 +287,7 @@
         "There we are: three flags for arrival, one for hot tea. The last signal is unofficial."
       ],
       "reward": {
-        "xp": 480,
+        "xp": 880,
         "coins": 48,
         "item": "",
         "consumable": "hp_1",
@@ -317,7 +317,7 @@
         "No more damp wick. The keeper will sleep better, and so will the ferry crew."
       ],
       "reward": {
-        "xp": 990,
+        "xp": 1830,
         "coins": 100,
         "item": "",
         "consumable": "hp_1",
@@ -347,7 +347,7 @@
         "There is the ferry bell. Take this, and join us when the gangplank settles."
       ],
       "reward": {
-        "xp": 1008,
+        "xp": 1848,
         "coins": 72,
         "item": "starter_armor",
         "consumable": "hp_1",
@@ -376,7 +376,7 @@
         "Flexible and strong. The trees have been solving building problems longer than we have."
       ],
       "reward": {
-        "xp": 1026,
+        "xp": 2016,
         "coins": 180,
         "item": "",
         "consumable": "hp_1",
@@ -406,7 +406,7 @@
         "A telescope wearing a mushroom hat. I will call it practical and refuse further questions."
       ],
       "reward": {
-        "xp": 1567,
+        "xp": 3079,
         "coins": 220,
         "item": "",
         "consumable": "hp_1",
@@ -436,7 +436,7 @@
         "There: not a tremble. Even the faint stars should hold still long enough to count."
       ],
       "reward": {
-        "xp": 2223,
+        "xp": 4368,
         "coins": 260,
         "item": "",
         "consumable": "hp_1",
@@ -466,7 +466,7 @@
         "Our first constellation is visible. This is for you; the view is for everyone."
       ],
       "reward": {
-        "xp": 2992,
+        "xp": 5879,
         "coins": 300,
         "item": "cape_lv10",
         "consumable": "hp_1",
@@ -495,7 +495,7 @@
         "This grain will hold. A warning bell should not need a warning of its own."
       ],
       "reward": {
-        "xp": 1206,
+        "xp": 2448,
         "coins": 216,
         "item": "",
         "consumable": "hp_1",
@@ -525,7 +525,7 @@
         "A snug fit, and not a scrap wasted. That is good smithing."
       ],
       "reward": {
-        "xp": 1842,
+        "xp": 3739,
         "coins": 264,
         "item": "",
         "consumable": "hp_1",
@@ -555,7 +555,7 @@
         "The crew made it up with all their tools and most of their sandwiches."
       ],
       "reward": {
-        "xp": 2613,
+        "xp": 5304,
         "coins": 312,
         "item": "",
         "consumable": "hp_1",
@@ -584,7 +584,7 @@
         "Hear that? The whole ridge can. Wear this with the thanks of everyone who works above the clouds."
       ],
       "reward": {
-        "xp": 3517,
+        "xp": 7139,
         "coins": 360,
         "item": "hat_lv10",
         "consumable": "hp_1",
@@ -614,7 +614,7 @@
         "The address stays put when wet. That is an excellent quality in an address."
       ],
       "reward": {
-        "xp": 1206,
+        "xp": 2448,
         "coins": 216,
         "item": "",
         "consumable": "hp_1",
@@ -644,7 +644,7 @@
         "The letters will reach the upper stairs without acquiring tooth marks."
       ],
       "reward": {
-        "xp": 1842,
+        "xp": 3739,
         "coins": 264,
         "item": "",
         "consumable": "hp_1",
@@ -673,7 +673,7 @@
         "A fine little roof. Please do not tell the landlord we improved the building."
       ],
       "reward": {
-        "xp": 2613,
+        "xp": 5304,
         "coins": 312,
         "item": "",
         "consumable": "hp_1",
@@ -703,7 +703,7 @@
         "The last letter was an invitation to supper. It would have been a shame to lose it. This is yours."
       ],
       "reward": {
-        "xp": 4042,
+        "xp": 8504,
         "coins": 420,
         "item": "gloves_lv10",
         "consumable": "hp_1",
@@ -732,7 +732,7 @@
         "Damp, as suspected. The spores are troublesome, but they are not keeping secrets."
       ],
       "reward": {
-        "xp": 2016,
+        "xp": 4608,
         "coins": 360,
         "item": "",
         "consumable": "hp_1",
@@ -762,7 +762,7 @@
         "These will last through a dozen winters. I shall label the drawer before I forget what they are."
       ],
       "reward": {
-        "xp": 3080,
+        "xp": 7040,
         "coins": 440,
         "item": "",
         "consumable": "hp_1",
@@ -792,7 +792,7 @@
         "He has reached the last post. There is already a warm line of light through the hollow."
       ],
       "reward": {
-        "xp": 4368,
+        "xp": 9984,
         "coins": 520,
         "item": "",
         "consumable": "hp_1",
@@ -821,7 +821,7 @@
         "Warm light, quiet nests, and a safe road home. A good evening's work deserves good gear."
       ],
       "reward": {
-        "xp": 6510,
+        "xp": 15278,
         "coins": 660,
         "item": "shoes_lv10",
         "consumable": "hp_1",
@@ -851,7 +851,7 @@
         "Firm enough for a sea breeze, gentle enough for linen. I wish all kitchen tools were so agreeable."
       ],
       "reward": {
-        "xp": 1494,
+        "xp": 3186,
         "coins": 270,
         "item": "",
         "consumable": "hp_1",
@@ -881,7 +881,7 @@
         "They look like tiny parasols. The children may remember the shades longer than the cakes."
       ],
       "reward": {
-        "xp": 2282,
+        "xp": 4866,
         "coins": 330,
         "item": "",
         "consumable": "hp_1",
@@ -911,7 +911,7 @@
         "No leaking jam today. My apron may finally get an uneventful afternoon."
       ],
       "reward": {
-        "xp": 3666,
+        "xp": 8034,
         "coins": 442,
         "item": "",
         "consumable": "hp_1",
@@ -941,7 +941,7 @@
         "Everything is ready. Take this, find a comfortable rock, and save some room for a second cake."
       ],
       "reward": {
-        "xp": 4357,
+        "xp": 9291,
         "coins": 450,
         "item": "cape_lv10",
         "consumable": "hp_1",
@@ -970,7 +970,7 @@
         "A clear launch at last. I have missed hearing the kite string sing."
       ],
       "reward": {
-        "xp": 2574,
+        "xp": 6282,
         "coins": 450,
         "item": "",
         "consumable": "hp_2",
@@ -999,7 +999,7 @@
         "Light as a leaf and much less likely to fly away on its own."
       ],
       "reward": {
-        "xp": 3932,
+        "xp": 9596,
         "coins": 550,
         "item": "",
         "consumable": "hp_2",
@@ -1029,7 +1029,7 @@
         "Steady line, steady readings. We may finally know whether tomorrow calls for cloaks."
       ],
       "reward": {
-        "xp": 5577,
+        "xp": 13611,
         "coins": 650,
         "item": "",
         "consumable": "hp_2",
@@ -1059,7 +1059,7 @@
         "The kite is home above the clouds. This is your share of the weather office's small but grateful budget."
       ],
       "reward": {
-        "xp": 8190,
+        "xp": 20475,
         "coins": 810,
         "item": "hat_lv10",
         "consumable": "hp_2",
@@ -1089,7 +1089,7 @@
         "The frost is heaviest at the bend. We have found the trouble without losing a chimney brush."
       ],
       "reward": {
-        "xp": 3834,
+        "xp": 10386,
         "coins": 630,
         "item": "",
         "consumable": "hp_2",
@@ -1119,7 +1119,7 @@
         "The sleds are moving again. A warm hearth begins with a safe journey."
       ],
       "reward": {
-        "xp": 5857,
+        "xp": 15866,
         "coins": 770,
         "item": "",
         "consumable": "hp_2",
@@ -1148,7 +1148,7 @@
         "A strong brace. I had rather hoped the repair would not require my standing on the roof."
       ],
       "reward": {
-        "xp": 8307,
+        "xp": 22503,
         "coins": 910,
         "item": "",
         "consumable": "hp_2",
@@ -1178,7 +1178,7 @@
         "There is a fire in the hearth again. Your gear should keep a little of that warmth with you."
       ],
       "reward": {
-        "xp": 11182,
+        "xp": 30291,
         "coins": 1050,
         "item": "gloves_lv30",
         "consumable": "hp_2",
@@ -1207,7 +1207,7 @@
         "These cogs still have a good deal of honest work in them."
       ],
       "reward": {
-        "xp": 3834,
+        "xp": 10386,
         "coins": 630,
         "item": "",
         "consumable": "hp_2",
@@ -1237,7 +1237,7 @@
         "A gentle tick instead of a clang. The neighbors may forgive me yet."
       ],
       "reward": {
-        "xp": 5857,
+        "xp": 15866,
         "coins": 770,
         "item": "",
         "consumable": "hp_2",
@@ -1267,7 +1267,7 @@
         "The landing is clear. The pendulum remains stubborn, but it is now my problem."
       ],
       "reward": {
-        "xp": 8307,
+        "xp": 22503,
         "coins": 910,
         "item": "",
         "consumable": "hp_2",
@@ -1296,7 +1296,7 @@
         "It is no longer teatime. A pity, but a well-earned one. Take this for getting us moving."
       ],
       "reward": {
-        "xp": 11970,
+        "xp": 33022,
         "coins": 1110,
         "item": "shoes_lv30",
         "consumable": "hp_2",
@@ -1326,7 +1326,7 @@
         "Good teeth on these. A gate ought to open without a debate."
       ],
       "reward": {
-        "xp": 4536,
+        "xp": 12816,
         "coins": 720,
         "item": "",
         "consumable": "hp_2",
@@ -1356,7 +1356,7 @@
         "Solid footing. That is half of every repair, and nearly all of every sensible plan."
       ],
       "reward": {
-        "xp": 6930,
+        "xp": 19580,
         "coins": 880,
         "item": "",
         "consumable": "hp_2",
@@ -1386,7 +1386,7 @@
         "The post is straight again. The foreman has stopped pretending it always was."
       ],
       "reward": {
-        "xp": 9828,
+        "xp": 27768,
         "coins": 1040,
         "item": "",
         "consumable": "hp_2",
@@ -1415,7 +1415,7 @@
         "A gate that keeps its promise: open for travelers, closed against the night. This is for your part in it."
       ],
       "reward": {
-        "xp": 13230,
+        "xp": 37380,
         "coins": 1200,
         "item": "cape_lv30",
         "consumable": "hp_2",
@@ -1445,7 +1445,7 @@
         "Now people can look at the lanterns instead of their feet."
       ],
       "reward": {
-        "xp": 4536,
+        "xp": 12816,
         "coins": 720,
         "item": "",
         "consumable": "hp_2",
@@ -1474,7 +1474,7 @@
         "Green is her favorite. I think she would approve."
       ],
       "reward": {
-        "xp": 6930,
+        "xp": 19580,
         "coins": 880,
         "item": "",
         "consumable": "hp_2",
@@ -1504,7 +1504,7 @@
         "It shines without smoke. Perhaps it will be seen from farther away."
       ],
       "reward": {
-        "xp": 10452,
+        "xp": 29991,
         "coins": 1092,
         "item": "",
         "consumable": "hp_2",
@@ -1534,7 +1534,7 @@
         "I named it Safe Journey. Take this; I wanted the person who helped to have something that lasts."
       ],
       "reward": {
-        "xp": 13230,
+        "xp": 37380,
         "coins": 1200,
         "item": "hat_lv30",
         "consumable": "hp_2",
@@ -1563,7 +1563,7 @@
         "Visitors will be able to lean close without making me nervous."
       ],
       "reward": {
-        "xp": 4536,
+        "xp": 12816,
         "coins": 720,
         "item": "",
         "consumable": "hp_2",
@@ -1593,7 +1593,7 @@
         "A repair should suit its home. These stones look as though they have always been here."
       ],
       "reward": {
-        "xp": 6930,
+        "xp": 19580,
         "coins": 880,
         "item": "",
         "consumable": "hp_2",
@@ -1623,7 +1623,7 @@
         "The glass slides smoothly. No more grinding sound to frighten the little fish."
       ],
       "reward": {
-        "xp": 9828,
+        "xp": 27768,
         "coins": 1040,
         "item": "",
         "consumable": "hp_2",
@@ -1653,7 +1653,7 @@
         "One child has already called it a garden with fins. Keep this, with the reef keeper's thanks."
       ],
       "reward": {
-        "xp": 14070,
+        "xp": 40372,
         "coins": 1260,
         "item": "gloves_lv30",
         "consumable": "hp_2",
@@ -1682,7 +1682,7 @@
         "Bright enough for the bend, quiet enough for a nest. That is what we need."
       ],
       "reward": {
-        "xp": 7776,
+        "xp": 25056,
         "coins": 1080,
         "item": "",
         "consumable": "hp_3",
@@ -1712,7 +1712,7 @@
         "The carriers are through. We can share a mountain without sharing every stepping stone."
       ],
       "reward": {
-        "xp": 11880,
+        "xp": 38280,
         "coins": 1320,
         "item": "",
         "consumable": "hp_3",
@@ -1741,7 +1741,7 @@
         "A roof fit for a place of rest. The drakes have taught us something useful again."
       ],
       "reward": {
-        "xp": 16848,
+        "xp": 54288,
         "coins": 1560,
         "item": "",
         "consumable": "hp_3",
@@ -1771,7 +1771,7 @@
         "The bell is gentle, the road is marked, and the nest is quiet. Take this for a considerate journey."
       ],
       "reward": {
-        "xp": 23730,
+        "xp": 77280,
         "coins": 1860,
         "item": "shoes_lv50",
         "consumable": "hp_3",
@@ -1801,7 +1801,7 @@
         "The branches are quiet. We can set the tables without wearing the decorations."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -1830,7 +1830,7 @@
         "Soft enough for the ripest peach. I shall save the prettiest basket for the oldest guest."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -1860,7 +1860,7 @@
         "A very fine brush. I promise it will be washed before any honey is involved."
       ],
       "reward": {
-        "xp": 12090,
+        "xp": 36036,
         "coins": 1222,
         "item": "",
         "consumable": "hp_2",
@@ -1890,7 +1890,7 @@
         "There is a place set for you. Until supper, take this as a small taste of our gratitude."
       ],
       "reward": {
-        "xp": 15382,
+        "xp": 45201,
         "coins": 1350,
         "item": "cape_lv30",
         "consumable": "hp_2",
@@ -1919,7 +1919,7 @@
         "The gate is jammed, but the channel is sound. That is a kinder problem than I feared."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -1948,7 +1948,7 @@
         "A clean little filter. The water is already running brighter."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -1978,7 +1978,7 @@
         "A seal that bends instead of cracking. The best repairs know how to give a little."
       ],
       "reward": {
-        "xp": 11427,
+        "xp": 33579,
         "coins": 1170,
         "item": "",
         "consumable": "hp_2",
@@ -2008,7 +2008,7 @@
         "Hear them rustle? That is the sound we were missing. Take this for bringing it back."
       ],
       "reward": {
-        "xp": 16275,
+        "xp": 48510,
         "coins": 1410,
         "item": "hat_lv30",
         "consumable": "hp_2",
@@ -2037,7 +2037,7 @@
         "A little shade makes a long road feel shorter."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -2067,7 +2067,7 @@
         "A steady rim and no sharp edges. The children will find it easier now."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -2097,7 +2097,7 @@
         "The first water cart has reached the shade. We can finally stop counting every cup."
       ],
       "reward": {
-        "xp": 11427,
+        "xp": 33579,
         "coins": 1170,
         "item": "",
         "consumable": "hp_2",
@@ -2126,7 +2126,7 @@
         "The well is ready for the next caravan. Take this, and remember there is always a cup waiting here."
       ],
       "reward": {
-        "xp": 16275,
+        "xp": 48510,
         "coins": 1410,
         "item": "gloves_lv30",
         "consumable": "hp_2",
@@ -2156,7 +2156,7 @@
         "A sturdy retort. This time I will warm it slowly and listen to my own advice."
       ],
       "reward": {
-        "xp": 6066,
+        "xp": 18432,
         "coins": 900,
         "item": "",
         "consumable": "hp_2",
@@ -2186,7 +2186,7 @@
         "One turn at a time. Alchemy rewards patience more often than it rewards explosions."
       ],
       "reward": {
-        "xp": 9267,
+        "xp": 28158,
         "coins": 1100,
         "item": "",
         "consumable": "hp_2",
@@ -2216,7 +2216,7 @@
         "The measure is right. No fumes, no fizz, and no need to apologize to the neighbors."
       ],
       "reward": {
-        "xp": 13845,
+        "xp": 42627,
         "coins": 1352,
         "item": "",
         "consumable": "hp_2",
@@ -2246,7 +2246,7 @@
         "The bridge hinges will last another season. This is for the steadier pair of hands in today's work."
       ],
       "reward": {
-        "xp": 17692,
+        "xp": 53758,
         "coins": 1500,
         "item": "shoes_lv50",
         "consumable": "hp_2",
@@ -2275,7 +2275,7 @@
         "The scribes are inside. An archive sounds healthier with pages turning."
       ],
       "reward": {
-        "xp": 11736,
+        "xp": 41328,
         "coins": 1440,
         "item": "",
         "consumable": "hp_3",
@@ -2304,7 +2304,7 @@
         "A strong base. Time may pass, but the dial need not wander with it."
       ],
       "reward": {
-        "xp": 17930,
+        "xp": 63140,
         "coins": 1760,
         "item": "",
         "consumable": "hp_3",
@@ -2334,7 +2334,7 @@
         "A small glimmer, exactly where he would have put it."
       ],
       "reward": {
-        "xp": 26364,
+        "xp": 93522,
         "coins": 2132,
         "item": "",
         "consumable": "hp_3",
@@ -2364,7 +2364,7 @@
         "We have kept the hour without trying to stop it. Take this, and spend your next one well."
       ],
       "reward": {
-        "xp": 34230,
+        "xp": 120540,
         "coins": 2400,
         "item": "cape_lv70",
         "consumable": "hp_3",
@@ -2393,7 +2393,7 @@
         "A humble roof for humble wishes. It is enough."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -2423,7 +2423,7 @@
         "The path is open. Nobody should need a running start to bring a wish to the shrine."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -2452,7 +2452,7 @@
         "It glows softly enough to leave the moon some work to do."
       ],
       "reward": {
-        "xp": 12090,
+        "xp": 36036,
         "coins": 1222,
         "item": "",
         "consumable": "hp_2",
@@ -2482,7 +2482,7 @@
         "Every wish has a dry place now. This is a practical blessing for the road ahead."
       ],
       "reward": {
-        "xp": 15382,
+        "xp": 45201,
         "coins": 1350,
         "item": "hat_lv30",
         "consumable": "hp_2",
@@ -2512,7 +2512,7 @@
         "The lettering is straight again. Our baker will be pleased to stop selling what looks like burnt soup."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -2542,7 +2542,7 @@
         "Warm stalls make a kinder market. The first kettle is already singing."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -2571,7 +2571,7 @@
         "Bright enough for prices, soft enough for tired eyes."
       ],
       "reward": {
-        "xp": 12090,
+        "xp": 36036,
         "coins": 1222,
         "item": "",
         "consumable": "hp_2",
@@ -2601,7 +2601,7 @@
         "The last parcel is home. This was tucked into the courier fund for someone who earns it."
       ],
       "reward": {
-        "xp": 15382,
+        "xp": 45201,
         "coins": 1350,
         "item": "gloves_lv30",
         "consumable": "hp_2",
@@ -2630,7 +2630,7 @@
         "Thank you. A quiet path makes room for quiet thoughts."
       ],
       "reward": {
-        "xp": 7776,
+        "xp": 25056,
         "coins": 1080,
         "item": "",
         "consumable": "hp_3",
@@ -2659,7 +2659,7 @@
         "The names are legible again. They deserve to be read, not guessed."
       ],
       "reward": {
-        "xp": 11880,
+        "xp": 38280,
         "coins": 1320,
         "item": "",
         "consumable": "hp_3",
@@ -2689,7 +2689,7 @@
         "The lanterns are ready. No one returning from the road will find the keep dark."
       ],
       "reward": {
-        "xp": 16848,
+        "xp": 54288,
         "coins": 1560,
         "item": "",
         "consumable": "hp_3",
@@ -2718,7 +2718,7 @@
         "The same clear note as before. Keep this, and carry the watch's thanks into the morning."
       ],
       "reward": {
-        "xp": 23730,
+        "xp": 77280,
         "coins": 1860,
         "item": "shoes_lv50",
         "consumable": "hp_3",
@@ -2748,7 +2748,7 @@
         "They swing without a creak. The house sounds almost surprised."
       ],
       "reward": {
-        "xp": 3834,
+        "xp": 10386,
         "coins": 630,
         "item": "",
         "consumable": "hp_2",
@@ -2778,7 +2778,7 @@
         "Smoke out, rain out. A kitchen should keep its priorities simple."
       ],
       "reward": {
-        "xp": 5857,
+        "xp": 15866,
         "coins": 770,
         "item": "",
         "consumable": "hp_2",
@@ -2808,7 +2808,7 @@
         "Every pane arrived whole. I am counting that as the finest sort of good fortune."
       ],
       "reward": {
-        "xp": 8307,
+        "xp": 22503,
         "coins": 910,
         "item": "",
         "consumable": "hp_2",
@@ -2837,7 +2837,7 @@
         "There it is, in the front window. This is for helping a tired house look glad to see people again."
       ],
       "reward": {
-        "xp": 11970,
+        "xp": 33022,
         "coins": 1110,
         "item": "cape_lv30",
         "consumable": "hp_2",
@@ -2867,7 +2867,7 @@
         "They have reached the first bend. A map improves greatly when someone can stand still to draw it."
       ],
       "reward": {
-        "xp": 8694,
+        "xp": 28746,
         "coins": 1170,
         "item": "",
         "consumable": "hp_3",
@@ -2896,7 +2896,7 @@
         "A soft gleam is enough. We are guiding travelers, not announcing a parade."
       ],
       "reward": {
-        "xp": 13860,
+        "xp": 46255,
         "coins": 1474,
         "item": "",
         "consumable": "hp_3",
@@ -2926,7 +2926,7 @@
         "The seals have set cleanly. We will not find these signs floating in the stream next spring."
       ],
       "reward": {
-        "xp": 18837,
+        "xp": 62283,
         "coins": 1690,
         "item": "",
         "consumable": "hp_3",
@@ -2956,7 +2956,7 @@
         "A good trail ends at a warm door. Take this for helping us make sure of it."
       ],
       "reward": {
-        "xp": 25357,
+        "xp": 83841,
         "coins": 1950,
         "item": "hat_lv50",
         "consumable": "hp_3",
@@ -2985,7 +2985,7 @@
         "Light enough to rise with the tide, strong enough to keep its shape."
       ],
       "reward": {
-        "xp": 6066,
+        "xp": 18432,
         "coins": 900,
         "item": "",
         "consumable": "hp_2",
@@ -3015,7 +3015,7 @@
         "They have the bell. It has been silent for years, but its bronze is sound."
       ],
       "reward": {
-        "xp": 9267,
+        "xp": 28158,
         "coins": 1100,
         "item": "",
         "consumable": "hp_2",
@@ -3044,7 +3044,7 @@
         "A steady light. The crews will not need to guess at the channel mouth anymore."
       ],
       "reward": {
-        "xp": 13845,
+        "xp": 42627,
         "coins": 1352,
         "item": "",
         "consumable": "hp_2",
@@ -3074,7 +3074,7 @@
         "The bell is ringing over the water again. Take this with the harbor's thanks, and come in out of the rain."
       ],
       "reward": {
-        "xp": 17692,
+        "xp": 53758,
         "coins": 1500,
         "item": "gloves_lv50",
         "consumable": "hp_2",
@@ -3103,7 +3103,7 @@
         "Those look much more useful than the minutes of a meeting."
       ],
       "reward": {
-        "xp": 6066,
+        "xp": 18432,
         "coins": 900,
         "item": "",
         "consumable": "hp_2",
@@ -3133,7 +3133,7 @@
         "Soft enough for my little sister. She has very firm opinions about cushions."
       ],
       "reward": {
-        "xp": 9267,
+        "xp": 28158,
         "coins": 1100,
         "item": "",
         "consumable": "hp_2",
@@ -3163,7 +3163,7 @@
         "Dry tickets at last. We were nearly selling damp confetti."
       ],
       "reward": {
-        "xp": 13845,
+        "xp": 42627,
         "coins": 1352,
         "item": "",
         "consumable": "hp_2",
@@ -3193,7 +3193,7 @@
         "It is turning! Take this, then come back before sunset. The top seat has the best view."
       ],
       "reward": {
-        "xp": 17692,
+        "xp": 53758,
         "coins": 1500,
         "item": "shoes_lv50",
         "consumable": "hp_2",
@@ -3222,7 +3222,7 @@
         "Now the beans will not be mistaken for onions. Neither plant enjoyed that arrangement."
       ],
       "reward": {
-        "xp": 240,
+        "xp": 444,
         "coins": 24,
         "item": "",
         "consumable": "hp_1",
@@ -3252,7 +3252,7 @@
         "A cheerful gate is easier to notice than a stern little sign."
       ],
       "reward": {
-        "xp": 400,
+        "xp": 740,
         "coins": 32,
         "item": "",
         "consumable": "hp_1",
@@ -3282,7 +3282,7 @@
         "Every new leaf has a roof. The garden can sleep as soundly as we do."
       ],
       "reward": {
-        "xp": 600,
+        "xp": 1110,
         "coins": 40,
         "item": "",
         "consumable": "hp_1",
@@ -3312,7 +3312,7 @@
         "The beds are watered. Keep this, and visit when the first supper beans are ready."
       ],
       "reward": {
-        "xp": 1176,
+        "xp": 2184,
         "coins": 96,
         "item": "starter_armor",
         "consumable": "hp_1",
@@ -3341,7 +3341,7 @@
         "Smooth enough for a weary visitor's first cup. Little comforts are worth the work."
       ],
       "reward": {
-        "xp": 240,
+        "xp": 444,
         "coins": 24,
         "item": "",
         "consumable": "hp_1",
@@ -3371,7 +3371,7 @@
         "Not a rattle. I can stop walking as though the tray contains sleeping dragons."
       ],
       "reward": {
-        "xp": 400,
+        "xp": 740,
         "coins": 32,
         "item": "",
         "consumable": "hp_1",
@@ -3401,7 +3401,7 @@
         "The kettle can steam in peace. That is an admirable ambition."
       ],
       "reward": {
-        "xp": 840,
+        "xp": 1560,
         "coins": 80,
         "item": "",
         "consumable": "hp_1",
@@ -3431,7 +3431,7 @@
         "The cups are ready and the sky is clearing. Take this for lending a hand between the clouds."
       ],
       "reward": {
-        "xp": 840,
+        "xp": 1554,
         "coins": 48,
         "item": "starter_armor",
         "consumable": "hp_1",
@@ -3460,7 +3460,7 @@
         "The north corner. I had blamed the door, which was quite unfair to it."
       ],
       "reward": {
-        "xp": 240,
+        "xp": 444,
         "coins": 24,
         "item": "",
         "consumable": "hp_1",
@@ -3490,7 +3490,7 @@
         "That will glide. Carrying firewood should not feel like pulling the whole forest."
       ],
       "reward": {
-        "xp": 400,
+        "xp": 740,
         "coins": 32,
         "item": "",
         "consumable": "hp_1",
@@ -3520,7 +3520,7 @@
         "A warmer window with the same lovely view. A fair bargain."
       ],
       "reward": {
-        "xp": 840,
+        "xp": 1560,
         "coins": 80,
         "item": "",
         "consumable": "hp_1",
@@ -3550,7 +3550,7 @@
         "Warm guests and sheltered flowers. You have made a small corner of winter kinder. This is for you."
       ],
       "reward": {
-        "xp": 1176,
+        "xp": 2184,
         "coins": 96,
         "item": "starter_armor",
         "consumable": "hp_1",
@@ -3580,7 +3580,7 @@
         "The path will glow without waking the birds in the reeds."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -3610,7 +3610,7 @@
         "Every basket reached the storehouse. That is a quiet sort of triumph."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -3639,7 +3639,7 @@
         "Still mostly straight. I have untangled worse things than an ape's idea of decoration."
       ],
       "reward": {
-        "xp": 11427,
+        "xp": 33579,
         "coins": 1170,
         "item": "",
         "consumable": "hp_2",
@@ -3669,7 +3669,7 @@
         "The field lights are ready. Take this, and think of a good wish before you join the walk."
       ],
       "reward": {
-        "xp": 16275,
+        "xp": 48510,
         "coins": 1410,
         "item": "shoes_lv30",
         "consumable": "hp_2",
@@ -3699,7 +3699,7 @@
         "A dry bench is a generous welcome after a wet road."
       ],
       "reward": {
-        "xp": 5274,
+        "xp": 15498,
         "coins": 810,
         "item": "",
         "consumable": "hp_2",
@@ -3729,7 +3729,7 @@
         "The landing is quiet again. You can hear the lotus leaves brushing the water."
       ],
       "reward": {
-        "xp": 8057,
+        "xp": 23676,
         "coins": 990,
         "item": "",
         "consumable": "hp_2",
@@ -3758,7 +3758,7 @@
         "That should last through many crossings. I prefer repairs that give us time to watch the river."
       ],
       "reward": {
-        "xp": 11427,
+        "xp": 33579,
         "coins": 1170,
         "item": "",
         "consumable": "hp_2",
@@ -3788,7 +3788,7 @@
         "There: one clear light across the dusk. Take this, and wave if you pass us on the water."
       ],
       "reward": {
-        "xp": 16275,
+        "xp": 48510,
         "coins": 1410,
         "item": "cape_lv30",
         "consumable": "hp_2",

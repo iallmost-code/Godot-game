@@ -100,6 +100,7 @@ static func build_world() -> Dictionary:
         world[parent].spawns["route_"+id]=Vector2(x+100,590)
         add_portal(world,parent,x,trail,"entry",row[1]+"\n"+row[4]+" (Lv %d+)" % int(row[3]))
     add_extensions(world)
+    add_portal_hub(world)
     for id in world: add_tiers(world[id])
     return world
 # Upper tiers: long ledges above each hunting map reached by ropes and ladders.
@@ -267,3 +268,19 @@ static func route_between(start_id: String,end_id: String) -> Array:
                 previous[portal.target]=current
                 queue.append(portal.target)
     return []
+
+static func add_portal_hub(world: Dictionary):
+    var towns=[]
+    for id in world:
+        if world[id].safe: towns.append(id)
+    towns.sort_custom(func(a,b): return world[a].level<world[b].level if world[a].level!=world[b].level else world[a].name<world[b].name)
+    world.portal_hub={"id":"portal_hub","name":"Wayfarer's Concourse","title":"WAYFARER'S CONCOURSE  /  ALL TOWN PORTALS","safe":true,"region":"portal_hub","biome":"cloud","level":1,"width":6600,
+        "platforms":[[800,500,220],[3600,390,5400]],"spawns":{"entry":Vector2(557,590)},"portals":[],"enemies":[],"loot_zone":"forest",
+        "npc":{"name":"Waykeeper Astra","path":"","greeting":"All town gates are here. Choose a gate and press Up. Hold Down and press Jump to descend through a deck."}}
+    for i in towns.size():
+        var id=towns[i]
+        var floor_y=610-int(i/16)*220
+        var portal={"position":Vector2(1050+(i%16)*340,floor_y),"target":id,"spawn":"entry","label":world[id].name+"\nLv %d+" % world[id].level}
+        world.portal_hub.portals.append(portal)
+        world[id].width+=400
+        world[id].portals.append({"position":Vector2(world[id].width-200,610),"target":"portal_hub","spawn":"entry","label":"Portal Hub\nAll towns"})

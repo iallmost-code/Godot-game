@@ -110,6 +110,9 @@ func building(x: float,size=Vector2(360,320)):
     var height=size.x*region.size.y/region.size.x
     draw_texture_rect_region(BUILDINGS,Rect2(Vector2(x-size.x/2,610-height),Vector2(size.x,height)),region)
 func draw_region():
+    if map_id=="portal_hub":
+        draw_hub()
+        return
     if biome=="coast":
         draw_rect(Rect2(0,440,width,170),Color("67c6dd"))
         for x in range(0,int(width),100):
@@ -147,3 +150,24 @@ func draw_region():
     if biome=="snow":
         draw_line(Vector2(0,608),Vector2(width,608),Color("f3fbff"),12)
     prop(SIGN,Vector2(350,610),Vector2(78,65))
+
+func draw_hub():
+    # A quiet concourse, with its level guide beside the arrivals courtyard.
+    for x in range(-80,int(width)+180,170):
+        draw_circle(Vector2(x,570),72,Color("ecebfa"))
+        draw_circle(Vector2(x+65,590),65,Color("f5f3ff"))
+    for x in range(940,int(width),340):
+        draw_rect(Rect2(x,270,12,340),Color("d6c9e3"))
+        draw_rect(Rect2(x-7,270,26,12),Color("f5e2a4"))
+        draw_rect(Rect2(x-7,594,26,16),Color("b6aed0"))
+    var board=Rect2(300,250,720,285)
+    draw_style_box(preload("res://ui/style.gd").box(Color("272b48"),Color("f1d39a"),10,12),board)
+    var font=ThemeDB.fallback_font
+    draw_string(font,Vector2(325,282),"WHERE TO GO NEXT",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("ffe5ab"))
+    draw_string(font,Vector2(325,306),"Find its town gate here, then follow the named hunting portal.",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("d4e8fc"))
+    var travel=preload("res://systems/world_travel.gd")
+    for i in travel.STAGES.size():
+        var stage=travel.STAGES[i]
+        var line="Lv %d–%d: %s > %s" % [stage.low,stage.high,Maps.definition(stage.town).name,Maps.definition(stage.field).name]
+        draw_string(font,Vector2(325,330+i*17),line,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("f5f4e4"))
+    draw_string(font,Vector2(325,519),"Up: enter gate    Jump twice: climb    Down + Jump: descend",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("a8e5d3"))

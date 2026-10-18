@@ -18,12 +18,48 @@ var rank=1
 var scale_factor=1.0
 var combat
 var already_hit: Array=[]
+var tracking_target: Node2D
+var launch_direction=Vector2.ZERO
+const TRACKING_STYLES=["star","big_star","arrow","bolt"]
+func aim_point(enemy: Node2D) -> Vector2:
+    for child in enemy.get_children():
+        if child is CollisionShape2D: return child.global_position
+    return enemy.global_position+Vector2(0,-22)
+func target_visible(enemy: Node2D) -> bool:
+    var query=PhysicsRayQueryParameters2D.create(global_position,aim_point(enemy),1|4)
+    query.hit_from_inside=true
+    var result=get_world_2d().direct_space_state.intersect_ray(query)
+    return result.is_empty() or result.collider==enemy
+func target_valid(enemy) -> bool:
+    if not is_instance_valid(enemy) or enemy.is_queued_for_deletion() or enemy.hp<=0 or enemy.dead: return false
+    if already_hit.has(enemy.get_instance_id()): return false
+    var offset=aim_point(enemy)-global_position
+    var heading=launch_direction if launch_direction!=Vector2.ZERO else direction
+    return offset.dot(heading)>-8 and absf(offset.y)<240 and offset.length()<=max_distance-traveled+24 and target_visible(enemy)
+func find_tracking_target() -> Node2D:
+    var best: Node2D
+    var closest=INF
+    for enemy in get_tree().get_nodes_in_group("enemies"):
+        if not target_valid(enemy): continue
+        var distance=global_position.distance_squared_to(aim_point(enemy))
+        if distance<closest:
+            best=enemy
+            closest=distance
+    return best
+func steer(delta: float):
+    if not style in TRACKING_STYLES: return
+    if launch_direction==Vector2.ZERO: launch_direction=direction.normalized()
+    if not target_valid(tracking_target): tracking_target=find_tracking_target()
+    if is_instance_valid(tracking_target):
+        var desired=(aim_point(tracking_target)-global_position).normalized()
+        direction=direction.rotated(clampf(direction.angle_to(desired),-12*delta,12*delta)).normalized()
 signal hit(position: Vector2,amount: int,critical: bool)
 func _ready():
     add_to_group("player_stars")
     if style in ["arrow","bolt"]: speed=820.0
     if style=="big_star": speed=560.0
 func _physics_process(delta):
+    steer(delta)
     var step=minf(speed*delta,max_distance-traveled)
     var start=global_position
     var end=start+direction*step

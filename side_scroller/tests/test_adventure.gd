@@ -80,7 +80,7 @@ func quest_checks(t):
 func giver_check(t,label: String):
     var crowded=[]
     for town in Maps.all_ids():
-        if not Maps.definition(town).safe: continue
+        if not Maps.definition(town).safe or town=="portal_hub": continue
         if Quests.givers(town).is_empty(): crowded.append(town+" has none")
         var placed=[]
         for g in Quests.givers(town):

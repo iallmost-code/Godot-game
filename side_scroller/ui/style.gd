@@ -29,9 +29,22 @@ static func box(background: Color,border=Color("9ba9b6"),radius=4,margin=7) -> S
     style.content_margin_top=margin
     style.content_margin_bottom=margin
     return style
+static func gradient_box(top: Color,bottom: Color,margin=5) -> StyleBoxTexture:
+    var gradient=Gradient.new()
+    gradient.colors=PackedColorArray([top,bottom])
+    var texture=GradientTexture2D.new()
+    texture.gradient=gradient
+    texture.width=16
+    texture.height=32
+    texture.fill_from=Vector2(0,0)
+    texture.fill_to=Vector2(0,1)
+    var style=StyleBoxTexture.new()
+    style.texture=texture
+    style.set_content_margin_all(margin)
+    return style
 static func section(text: String,green=false) -> PanelContainer:
     var panel=PanelContainer.new()
-    panel.add_theme_stylebox_override("panel",box(Color("97bf31") if green else Color("65a7cd"),Color("c8df94") if green else Color("9bcce5"),3,5))
+    panel.add_theme_stylebox_override("panel",gradient_box(Color("c3de64") if green else Color("99cfe9"),Color("7ba922") if green else Color("4188b6")))
     var title=label(text,14,Color.WHITE)
     title.add_theme_constant_override("outline_size",2)
     title.add_theme_color_override("font_outline_color",Color("52743a") if green else Color("43728f"))
@@ -57,7 +70,11 @@ static func theme() -> Theme:
     value.set_color("font_color","Label",INK)
     value.set_constant("separation","VBoxContainer",5)
     value.set_constant("separation","HBoxContainer",5)
-    value.set_stylebox("panel","PanelContainer",box(Color("edf1f3"),Color("84919d"),6,9))
+    var window=box(Color("edf1f3"),Color("84919d"),6,9)
+    window.shadow_color=Color(0.08,0.12,0.18,0.3)
+    window.shadow_size=3
+    window.shadow_offset=Vector2(2,3)
+    value.set_stylebox("panel","PanelContainer",window)
     for state in ["normal","hover","pressed","disabled","focus"]:
         var color=Color("e8f0f5")
         if state=="hover": color=Color("cbe6f4")

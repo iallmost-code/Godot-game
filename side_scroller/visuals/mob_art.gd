@@ -1,5 +1,5 @@
 extends RefCounted
-# Vector monster art. Every template draws in local space with the feet at (0,0),
+# Painted monsters with vector fallbacks. Templates anchor their feet at (0,0),
 # facing right; the caller passes facing and size so one template serves many monsters.
 const Painted=preload("res://visuals/monster_layout.gd")
 const OUTLINE=Color("2b2233")
@@ -38,6 +38,22 @@ static func legs(c: CanvasItem,xs: Array,top: float,color: Color,t: float,width=
         c.draw_line(Vector2(xs[i],top),Vector2(xs[i]+swing,0),OUTLINE,width+2,true)
         c.draw_line(Vector2(xs[i],top),Vector2(xs[i]+swing,0),color,width,true)
 
+static func painted_key(p: Dictionary) -> String:
+    var body=p.get("body","slime")
+    if body=="drake" and (p.get("wings",false) or p.get("behavior","")=="flyer"): return "drake_winged"
+    if body=="yeti" and p.get("horns",false): return "yeti_horned"
+    if body=="wolf" and p.get("upright",false): return "wolf_upright"
+    if body=="boar" and p.get("flame",false): return "boar_flame"
+    if body=="boar" and p.get("tusks",false): return "boar_tusked"
+    if body=="stump" and p.get("weapon","")=="axe": return "stump_axe"
+    if body=="mushroom" and p.get("horns",false): return "mushroom_horned"
+    if body=="mushroom" and p.get("rot",false): return "mushroom_rot"
+    if body=="golem" and p.get("flame",false): return "golem_flame"
+    if body=="golem" and p.get("statue",false): return "golem_statue"
+    if body=="skeleton" and p.get("bow",false): return "skeleton_archer"
+    if body=="skeleton" and p.get("helmet",false): return "skeleton_captain"
+    return body
+
 static func draw(c: CanvasItem,p: Dictionary,t: float,facing: int,flash: float,status: Dictionary={}):
     var body=p.get("body","slime")
     var main: Color=p.get("color",Color("8fd6b6"))
@@ -53,12 +69,8 @@ static func draw(c: CanvasItem,p: Dictionary,t: float,facing: int,flash: float,s
     var size: float=p.get("size",1.0)
     var bob=sin(t*4.0)*1.2
     c.draw_set_transform(Vector2(0,bob if body in ["wraith","fish","clock","bat","idol","bird"] or p.get("behavior","")=="flyer" else 0),0,Vector2(facing*size,size))
-    # Dedicated variants preserve wings/horns; unpainted special features keep their fallback.
-    var painted_body=body
-    if body=="drake" and (p.get("wings",false) or p.get("behavior","")=="flyer"): painted_body="drake_winged"
-    if body=="yeti" and p.get("horns",false): painted_body="yeti_horned"
-    if body=="wolf" and p.get("upright",false): painted_body="wolf_upright"
-    if Painted.DATA.has(painted_body) and not p.get("boss",false) and (not p.get("horns",false) or body=="yeti") and not p.get("flame",false) and not p.get("statue",false) and p.get("weapon","")=="":
+    var painted_body=painted_key(p)
+    if Painted.DATA.has(painted_body) and not p.get("boss",false):
         var art=Painted.DATA[painted_body]
         var dimensions=art.rect.size*(float(art.height)/art.rect.size.y)
         var squash=sin(t*6)*0.025

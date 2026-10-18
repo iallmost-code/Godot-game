@@ -15,6 +15,7 @@ var walk_phase=0.0
 var lunge_speed=400.0
 var stun_time=0.0
 var status_immunity=0.0
+var dropped_platforms: Array=[]
 var state
 # Ropes and ladders of the current map: [x, top y, bottom y, kind].
 var climbs: Array=[]
@@ -40,6 +41,9 @@ func _ready():
     visual = preload("res://visuals/character_visual.gd").new()
     add_child(visual)
 func reset_at(pos: Vector2):
+    for entry in dropped_platforms:
+        if is_instance_valid(entry.body): remove_collision_exception_with(entry.body)
+    dropped_platforms.clear()
     stop_climbing()
     position = pos
     velocity = Vector2.ZERO
@@ -64,6 +68,35 @@ func teleport(offset: float):
     velocity.x=0
 func request_jump():
     jump_buffer = 0.12
+func request_drop_through() -> bool:
+    if not is_on_floor(): return false
+    var released=false
+    for i in get_slide_collision_count():
+        var collision=get_slide_collision(i)
+        var body=collision.get_collider()
+        if collision.get_normal().y>-0.7 or not body is StaticBody2D: continue
+        var owner=collision.get_collider_shape()
+        if not owner is CollisionShape2D or not owner.one_way_collision: continue
+        add_collision_exception_with(body)
+        var bottom=owner.global_position.y+owner.shape.get_rect().size.y/2
+        dropped_platforms.append({"body":body,"bottom":bottom,"age":0.0})
+        released=true
+    if released:
+        position.y+=4
+        velocity.y=maxf(140,velocity.y)
+        jumps_used=1
+        coyote=0
+        jump_buffer=0
+        boost_timer=0
+    return released
+func update_dropped_platforms(delta: float):
+    for entry in dropped_platforms.duplicate():
+        entry.age+=delta
+        if not is_instance_valid(entry.body):
+            dropped_platforms.erase(entry)
+        elif global_position.y-52>entry.bottom+2 or entry.age>1.0:
+            remove_collision_exception_with(entry.body)
+            dropped_platforms.erase(entry)
 func apply_knockback(impulse: Vector2):
     stop_climbing()
     velocity += impulse
@@ -110,6 +143,7 @@ func climb_step(delta: float,can_move: bool):
             facing=int(sign(side))
             velocity=Vector2(side*230,-300)
 func _physics_process(delta):
+    update_dropped_platforms(delta)
     hurt_timer = maxf(0, hurt_timer-delta)
     attack_timer = maxf(0, attack_timer-delta)
     damage_recoil=maxf(0,damage_recoil-delta)
@@ -118,6 +152,16 @@ func _physics_process(delta):
     var stats=state.derived_stats() if state!=null else {"speed":0.0,"jump":0.0}
     var flash_jump=state.bonus("flash_jump") if state!=null else 0.0
     var can_move=movement_enabled and stun_time<=0
+    var down=Input.is_action_pressed("move_down") if InputMap.has_action("move_down") else Input.is_physical_key_pressed(KEY_DOWN)
+    var drop_chord=can_move and not climbing and is_on_floor() and down and Input.is_action_just_pressed("jump")
+    var dropping_now=request_drop_through() if drop_chord else false
+    if climbing and can_move and down and Input.is_action_just_pressed("jump"):
+        stop_climbing()
+        request_drop_through()
+        velocity.y=140
+        jump_buffer=0
+        drop_chord=true
+        dropping_now=true
     if climbing:
         if state!=null:
             visual.appearance=appearance_for(state)
@@ -129,7 +173,7 @@ func _physics_process(delta):
             visual.set_pose("climb",facing,Time.get_ticks_msec()/1000.0)
             visual.walk_phase=position.y/40.0
             return
-    elif can_move and InputMap.has_action("move_down") and Input.is_action_pressed("move_down") and is_on_floor():
+    elif can_move and InputMap.has_action("move_down") and Input.is_action_pressed("move_down") and is_on_floor() and not drop_chord:
         var below=climb_at(1)
         if not below.is_empty():
             start_climbing(below)
@@ -141,13 +185,13 @@ func _physics_process(delta):
             return
     var direction = Input.get_axis("move_left", "move_right") if can_move else 0.0
     if direction != 0: facing = int(sign(direction))
-    if is_on_floor():
+    if is_on_floor() and not dropping_now:
         coyote = 0.10
         jumps_used = 0
     else:
         coyote = maxf(0, coyote-delta)
         velocity.y += 1100 * delta
-    if can_move and Input.is_action_just_pressed("jump"): request_jump()
+    if can_move and Input.is_action_just_pressed("jump") and not drop_chord: request_jump()
     if jump_buffer > 0:
         if is_on_floor() or coyote > 0:
             velocity.y = -420*(1.0+stats.jump)

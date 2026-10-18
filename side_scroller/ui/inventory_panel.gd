@@ -133,6 +133,7 @@ func refresh():
         if usable.get_child_count()>0:
             add_child(Style.label("Use a scroll on this item:",13,Color("7e6539")))
             add_child(usable)
+        else: usable.free()
         var row=HBoxContainer.new()
         add_child(row)
         var worn_now=state.is_equipped(inst.uid)

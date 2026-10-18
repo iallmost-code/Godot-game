@@ -18,6 +18,7 @@ var portals: Array=[]
 var boss
 signal portal_requested(map_id: String,spawn_id: String)
 signal advancement_requested(job_id: String)
+signal experience_gained(amount: int)
 signal reward_notice(message: String)
 signal boss_spawned(enemy: Node2D)
 signal shop_requested
@@ -40,7 +41,7 @@ func setup(s):
     for platform in data.platforms:
         build_platform(Vector2(platform[0],platform[1]+8),Vector2(platform[2],16),true)
     for portal in portals:
-        make_label(portal.label,portal.position+Vector2(-85,-160),Color("edf5cc"),15)
+        make_label(portal.label,portal.position+Vector2(-85,-105 if map_id=="portal_hub" else -160),Color("edf5cc"),15)
     if data.safe:
         var npc=preload("res://visuals/character_visual.gd").new()
         instructor_position=Vector2(500 if map_id=="town" else 600,610)
@@ -121,7 +122,8 @@ func reward_for(id: String,lv: int) -> Dictionary:
     var profile=EnemyStats.profile(id)
     var data=Maps.definition(map_id)
     var loot=data.get("loot_zone","forest")
-    var advanced=data.get("level",1)>=15
+    if lv>=10: loot=Maps.band_for(lv)
+    var advanced=lv>=15
     var reward={"coins":randi_range(2+int(lv/2.0),6+lv) if lv>=25 else randi_range(7,14) if advanced else randi_range(2,7)}
     var weapon_type=state.preferred_weapon()
     var roll=randf()
@@ -149,10 +151,11 @@ func reward_for(id: String,lv: int) -> Dictionary:
 func grant_xp(id: String,node,lv: int=0):
     var profile=EnemyStats.profile(id)
     if lv<=0: lv=profile.level
-    var base=profile.xp
-    if lv!=profile.level: base=int(profile.xp*float(lv)/profile.level) if profile.get("sprite",false) else int(profile.xp*float(EnemyStats.xp_for(lv))/EnemyStats.xp_for(profile.level))
+    var base=EnemyStats.experience(id,lv)
     var multiplier=(1.0+state.bonus("xp_pct"))*(node.xp_multiplier() if is_instance_valid(node) and node.has_method("xp_multiplier") else 1.0)
-    state.add_xp(maxi(1,int(base*multiplier)))
+    var amount=maxi(1,int(base*multiplier))
+    state.add_xp(amount)
+    experience_gained.emit(amount)
 func on_defeated(pos: Vector2,id: String,record: Dictionary):
     record.timer=45.0 if id=="rootwarden" else 90.0 if EnemyStats.is_boss(id) else 9.0 if map_id=="briar" else 7.0
     var lv=monster_level(id,record)

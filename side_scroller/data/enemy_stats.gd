@@ -90,9 +90,12 @@ const BOSSES={
     "gloam_idol":["Gloam Idol",190,"idol","3a2f5c","ff9ad6",3.0,130,["beam","rain","slam","volley","summon","charge"],"gloam_sentinel"],
 }
 static func hp_for(level: int) -> int: return int(20+9*level+0.35*level*level)
-static func xp_for(level: int) -> int: return int(12+4*level+0.05*level*level)
+static func xp_for(level: int) -> int: return int(24+6*clampi(level,1,200)+0.28*pow(clampi(level,1,200),2))
 static func profile(id: String) -> Dictionary:
-    if LEGACY.has(id): return LEGACY[id]
+    if LEGACY.has(id):
+        var result=LEGACY[id].duplicate(true)
+        result.xp=experience(id,result.level)
+        return result
     if ROSTER.has(id):
         var r=ROSTER[id]
         var p={"name":r[0],"level":r[1],"body":r[2],"behavior":r[3],"color":Color(r[4]),"accent":Color(r[5]),"size":r[6],
@@ -112,3 +115,6 @@ static func damage(id: String,level: int,multiplier=1.0) -> int:
     var l=clampi(level,1,200)
     return maxi(1,int((base+2*(l-1)+0.006*l*l)*multiplier))
 static func is_boss(id: String) -> bool: return BOSSES.has(id) or id=="rootwarden"
+
+static func experience(id: String,level: int) -> int:
+    return xp_for(level)*(10 if id=="rootwarden" else 30 if BOSSES.has(id) else 1)

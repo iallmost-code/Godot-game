@@ -1,6 +1,7 @@
 extends RefCounted
 const ART=preload("res://art/monster_atlas.png")
 const ART_2=preload("res://art/monster_atlas_2.png")
+const ART_3=preload("res://art/monster_atlas_3.png")
 const LYCAN=preload("res://art/moonfang_lycan.png")
 const DATA={
     "snail":{"rect":Rect2(25,70,308,250),"height":34},
@@ -29,4 +30,13 @@ const DATA={
     "bird":{"rect":Rect2(431,810,469,432),"height":61,"texture":ART_2},
     "monk":{"rect":Rect2(880,803,357,430),"height":70,"texture":ART_2},
     "wolf_upright":{"rect":Rect2(57,6,1145,1246),"height":76,"texture":LYCAN},
+    "boar_tusked":{"rect":Rect2(23,48,393,332),"height":42,"texture":ART_3},
+    "boar_flame":{"rect":Rect2(440,13,384,371),"height":48,"texture":ART_3},
+    "stump_axe":{"rect":Rect2(846,12,404,375),"height":51,"texture":ART_3},
+    "mushroom_horned":{"rect":Rect2(31,427,361,356),"height":49,"texture":ART_3},
+    "mushroom_rot":{"rect":Rect2(441,447,363,339),"height":45,"texture":ART_3},
+    "golem_flame":{"rect":Rect2(837,408,411,379),"height":76,"texture":ART_3},
+    "golem_statue":{"rect":Rect2(5,807,415,434),"height":80,"texture":ART_3},
+    "skeleton_archer":{"rect":Rect2(446,825,412,413),"height":68,"texture":ART_3},
+    "skeleton_captain":{"rect":Rect2(864,790,369,452),"height":69,"texture":ART_3},
 }

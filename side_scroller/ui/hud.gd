@@ -6,10 +6,14 @@ var combat
 var bindings
 var hp_bar
 var mp_bar
+var xp_gain=0
+var xp_time=0.0
+var xp_text
 var xp_bar
 var status
 var skills: Array=[]
 var menu_buttons={}
+var travel_buttons={}
 var notice
 var notice_time=0.0
 var map_label
@@ -22,6 +26,8 @@ var boss_label
 var boss_bar
 var buff_label
 var minimap
+signal travel_requested(destination: String)
+signal town_requested
 signal menu_requested(panel_id: String)
 func bind(s,c,b=null):
     state=s
@@ -55,6 +61,14 @@ func bind(s,c,b=null):
         top.add_child(menu_button)
         menu_buttons[id]=menu_button
     top.add_child(Style.button("Menu",func(): menu_requested.emit("controls")))
+    var travel=HBoxContainer.new()
+    travel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+    travel.position=Vector2(-600,62)
+    root_control.add_child(travel)
+    travel_buttons.travel_town=Style.button("Nearest town [T]",func(): town_requested.emit())
+    travel_buttons.travel_hub=Style.button("Portal hub [H]",func(): travel_requested.emit("portal_hub"))
+    travel_buttons.menu_map=Style.button("Level guide [M]",func(): menu_requested.emit("map"))
+    for button in travel_buttons.values(): travel.add_child(button)
     boss_panel=PanelContainer.new()
     boss_panel.position=Vector2(340,145)
     boss_panel.custom_minimum_size=Vector2(600,60)
@@ -82,6 +96,13 @@ func bind(s,c,b=null):
     hp_bar=create_bar(left,Color("ea8391"))
     mp_bar=create_bar(left,Color("71b7df"))
     xp_bar=create_bar(left,Color("e2c16c"))
+    xp_text=Style.label("",11,Color.WHITE)
+    xp_text.add_theme_color_override("font_outline_color",Color("49412a"))
+    xp_text.add_theme_constant_override("outline_size",2)
+    xp_text.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    xp_text.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+    xp_text.mouse_filter=Control.MOUSE_FILTER_IGNORE
+    xp_bar.add_child(xp_text)
     var ability_row=HBoxContainer.new()
     ability_row.add_theme_constant_override("separation",8)
     row.add_child(ability_row)
@@ -152,7 +173,11 @@ func create_bar(parent,color):
 func show_notice(message: String,duration=4.0):
     notice.text=message
     notice_time=duration
+func show_xp(amount: int):
+    xp_gain=amount
+    xp_time=2.5
 func _process(delta):
+    xp_time=maxf(0,xp_time-delta)
     notice_time-=delta
     if notice_time<=0: notice.text=""
     refresh()
@@ -165,6 +190,9 @@ func refresh():
             boss_label.text="Lv %d %s  •  %d / %d" % [boss_target.level,boss_target.profile.get("name","Boss") if boss_target.get("profile")!=null else "Rootwarden",boss_target.hp,boss_target.max_hp]
             boss_bar.max_value=boss_target.max_hp
             boss_bar.value=boss_target.hp
+    for action in travel_buttons:
+        var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else ""
+        travel_buttons[action].text={"travel_town":"Nearest town","travel_hub":"Portal hub","menu_map":"Level guide"}[action]+" ["+key+"]"
     for id in menu_buttons:
         var shortcut=OS.get_keycode_string(bindings.current()["menu_"+id]) if bindings!=null else ""
         menu_buttons[id].text=id.capitalize()+" ["+shortcut+"]"
@@ -185,6 +213,7 @@ func refresh():
     mp_bar.value=state.mp
     xp_bar.max_value=state.xp_required(state.level)
     xp_bar.value=state.xp
+    xp_text.text="EXP %d / %d  (%.1f%%)" % [state.xp,state.xp_required(state.level),100.0*state.xp/state.xp_required(state.level)]+("  +%d EXP" % xp_gain if xp_time>0 else "")
     xp_bar.tooltip_text="XP %d / %d  •  %d attribute points available" % [state.xp,state.xp_required(state.level),state.ap]
     var hp_key=OS.get_keycode_string(bindings.current().get("potion_hp",KEY_1)) if bindings!=null else "1"
     var mp_key=OS.get_keycode_string(bindings.current().get("potion_mp",KEY_2)) if bindings!=null else "2"

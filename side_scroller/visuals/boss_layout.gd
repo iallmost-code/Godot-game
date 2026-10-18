@@ -1,6 +1,7 @@
 extends RefCounted
 # Native source sheets: idle (left), attack (right). Feet are anchored at the bottom.
 const DATA={
+    "rootwarden":{"file":"res://art/bosses/rootwarden.png","texture":preload("res://art/bosses/rootwarden.png"),"rect":Rect2(37,18,970,752),"attack_rect":Rect2(1048,12,919,757),"foot_anchor":Vector2(522,770),"attack_anchor":Vector2(1507.5,769),"height":150.0,"source_facing":-1},
     "abyssal_leviathan":{"file":"res://art/bosses/abyssal_leviathan.png","texture":preload("res://art/bosses/abyssal_leviathan.png"),"rect":Rect2(32,37,910,791),"attack_rect":Rect2(950,65,876,764),"foot_anchor":Vector2(487.0,828),"attack_anchor":Vector2(1388.0,829),"height":204.0},
     "blight_mother":{"file":"res://art/bosses/blight_mother.png","texture":preload("res://art/bosses/blight_mother.png"),"rect":Rect2(10,6,872,747),"attack_rect":Rect2(1197,6,850,747),"foot_anchor":Vector2(446.0,753),"attack_anchor":Vector2(1622.0,753),"height":216.0},
     "chronovore":{"file":"res://art/bosses/chronovore.png","texture":preload("res://art/bosses/chronovore.png"),"rect":Rect2(24,10,935,766),"attack_rect":Rect2(1006,2,891,802),"foot_anchor":Vector2(491.5,776),"attack_anchor":Vector2(1451.5,804),"height":216.0},
@@ -22,7 +23,7 @@ static func draw(canvas: CanvasItem,id: String,attacking: bool,facing: int,flash
     var factor=float(data.height)/data.rect.size.y
     var tint=Color.WHITE.lerp(Color("bfe9ff"),0.55) if frozen else Color.WHITE
     if flash>0: tint=Color(1.35,1.35,1.35)
-    canvas.draw_set_transform(offset,0,Vector2(facing,1))
+    canvas.draw_set_transform(offset,0,Vector2(facing*data.get("source_facing",1),1))
     canvas.draw_texture_rect_region(data.texture,Rect2(-anchor*factor,region.size*factor),region,tint)
     canvas.draw_set_transform(Vector2.ZERO)
     return true

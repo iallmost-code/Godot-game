@@ -1,4 +1,5 @@
 extends Node2D
+const Travel=preload("res://systems/world_travel.gd")
 const Maps=preload("res://data/maps.gd")
 const Style=preload("res://ui/style.gd")
 var test_mode=false
@@ -57,6 +58,10 @@ func _ready():
     menu.setup(state,bindings)
     menu.player=player
     hud.menu_requested.connect(menu.open_panel)
+    hud.travel_requested.connect(fast_travel)
+    hud.town_requested.connect(return_nearest_town)
+    menu.travel_requested.connect(fast_travel)
+    menu.town_requested.connect(return_nearest_town)
     combat.feedback.connect(hud.show_notice)
     player.interact_requested.connect(func(): if map!=null: map.interact())
     player.died.connect(return_to_town,CONNECT_DEFERRED)
@@ -110,6 +115,7 @@ func change_map(id: String,spawn: String) -> bool:
     next.shop_requested.connect(func(): menu.open_panel("shop"))
     next.quest_requested.connect(func(npc): dialog.talk(map_id,npc))
     next.reward_notice.connect(hud.show_notice)
+    next.experience_gained.connect(hud.show_xp)
     next.boss_spawned.connect(func(enemy): hud.boss_target=enemy)
     if map!=null:
         remove_child(map)
@@ -215,6 +221,8 @@ func show_advancement(_id: String=""):
     menu.open_panel("stats")
     var box=VBoxContainer.new()
     Style.clear(menu.content)
+    menu.current_panel=null
+    menu.windows["stats"].current=null
     menu.content.add_child(box)
     box.add_child(Style.label("JOB ADVANCEMENT",26,Color("f4d48a")))
     box.add_child(Style.label("Choose your path. This choice is permanent." if options.size()>1 else "You are ready for your next advancement.",18))
@@ -244,3 +252,25 @@ func _process(delta):
 
 func persist():
     if not test_mode and save_store!=null: save_store.save(state,bindings)
+
+func fast_travel(destination: String) -> bool:
+    if Maps.definition(destination).is_empty(): return false
+    var target=Travel.travel_target(destination)
+    menu.close()
+    if dialog.opened: dialog.close()
+    combat.clear_partner()
+    combat.clear_summons()
+    combat.combo_orbs=0
+    if not change_map(target,"entry"): return false
+    hud.show_notice("Arrived: "+Maps.definition(target).name+" • M: level guide • H: all town portals • T: nearest town",7)
+    return true
+func return_nearest_town() -> bool:
+    return fast_travel(Travel.nearest_town(map_id,player.position))
+func _unhandled_input(event):
+    if not event is InputEventKey or not event.pressed or event.echo or menu.opened or dialog.opened: return
+    if event.is_action_pressed("travel_hub"):
+        fast_travel("portal_hub")
+        get_viewport().set_input_as_handled()
+    elif event.is_action_pressed("travel_town"):
+        return_nearest_town()
+        get_viewport().set_input_as_handled()

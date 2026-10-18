@@ -9,6 +9,7 @@ var dragging=false
 var world_map_id="town"
 var player
 var tabs_by_id={}
+var windows={}
 var content
 var current_panel
 var opened=false
@@ -18,6 +19,8 @@ signal save_requested
 signal export_requested
 signal import_requested
 signal character_requested(slot: String)
+signal travel_requested(destination: String)
+signal town_requested
 signal binding_changed
 func setup(s,b):
     state=s
@@ -32,10 +35,12 @@ func setup(s,b):
     shade.color=Color(0.035,0.075,0.10,0.16)
     shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     root_control.add_child(shade)
+    root_control.hide()
+func create_window(id: String):
     var panel=PanelContainer.new()
     window_panel=panel
     panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-    panel.position=Vector2(-450,-295)
+    panel.position=Vector2(-450+windows.size()*24,-295+windows.size()*16)
     panel.size=Vector2(900,590)
     root_control.add_child(panel)
     var layout=VBoxContainer.new()
@@ -45,7 +50,9 @@ func setup(s,b):
     layout.add_child(title_row)
     title_row.custom_minimum_size.y=30
     title_row.mouse_filter=Control.MOUSE_FILTER_STOP
-    title_row.gui_input.connect(drag_header)
+    title_row.gui_input.connect(func(event):
+        activate_window(id)
+        drag_header(event))
     var title=Style.label("CHARACTER STATS",17,Color("ffffff"))
     window_title=title
     title.mouse_filter=Control.MOUSE_FILTER_IGNORE
@@ -59,16 +66,17 @@ func setup(s,b):
     layout.add_child(title_frame)
     title.size_flags_horizontal=Control.SIZE_EXPAND_FILL
     title_row.add_child(title)
-    var close_button=Style.button("×",close)
+    var close_button=Style.button("×",func(): close_window(id))
     close_button.custom_minimum_size=Vector2(30,28)
     close_button.tooltip_text="Close window (Escape or its shortcut)"
     title_row.add_child(close_button)
-    var tabs=HBoxContainer.new()
+    tabs_by_id={}
+    var tabs=HFlowContainer.new()
     layout.add_child(tabs)
-    for id in ["stats","skills","inventory","quests","shop","map","controls","characters","save"]:
-        var tab=Style.button(id.capitalize(),func(): open_panel(id))
+    for tab_id in ["stats","skills","inventory","quests","shop","map","controls","characters","save"]:
+        var tab=Style.button(tab_id.capitalize(),func(): open_panel(tab_id))
         tabs.add_child(tab)
-        tabs_by_id[id]=tab
+        tabs_by_id[tab_id]=tab
     var scroll=ScrollContainer.new()
     scroll.size_flags_vertical=Control.SIZE_EXPAND_FILL
     scroll.custom_minimum_size.y=450
@@ -77,8 +85,14 @@ func setup(s,b):
     content.size_flags_horizontal=Control.SIZE_EXPAND_FILL
     content.add_theme_constant_override("separation",7)
     scroll.add_child(content)
-    root_control.hide()
+
+    windows[id]={"panel":window_panel,"title":window_title,"content":content,"tabs":tabs_by_id,"current":null}
 func open_panel(id: String):
+    if windows.has(id):
+        activate_window(id)
+        if current_panel!=null and current_panel.has_method("refresh"): current_panel.refresh()
+        return
+    create_window(id)
     if current_panel!=null and selected=="controls": current_panel.capture_action=""
     selected=id
     window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","quests":"QUEST LOG","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
@@ -98,7 +112,10 @@ func open_panel(id: String):
         content.add_child(current_panel)
         if id=="inventory": current_panel.bind(state)
         else: current_panel.bind(state,bindings)
-        if id=="map": current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
+        if id=="map":
+            current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
+            current_panel.travel_requested.connect(func(destination): travel_requested.emit(destination))
+            current_panel.town_requested.connect(func(): town_requested.emit())
         if id in ["inventory","shop"]: current_panel.set_context(world_map_id)
         if id=="controls": current_panel.binding_changed.connect(func(): binding_changed.emit())
     elif id=="characters":
@@ -124,14 +141,40 @@ Import a backup into its matching class slot.",18))
         content.add_child(Style.button("Save character now",func(): save_requested.emit()))
         content.add_child(Style.button("Download JSON backup",func(): export_requested.emit()))
         content.add_child(Style.button("Import JSON backup",func(): import_requested.emit()))
+    windows[id].current=current_panel
     menu_visibility_changed.emit(true)
-func close():
+func activate_window(id: String):
+    if not windows.has(id): return
+    var entry=windows[id]
+    if selected!=id and is_instance_valid(entry.current) and entry.current.has_method("refresh"): entry.current.refresh()
+    selected=id
+    window_panel=entry.panel
+    window_title=entry.title
+    content=entry.content
+    tabs_by_id=entry.tabs
+    current_panel=entry.current
+    root_control.move_child(window_panel,root_control.get_child_count()-1)
+func close_window(id: String):
+    if not windows.has(id): return
+    var entry=windows[id]
+    if id=="controls" and entry.current!=null: entry.current.capture_action=""
+    root_control.remove_child(entry.panel)
+    entry.panel.queue_free()
+    windows.erase(id)
     dragging=false
-    if current_panel!=null and selected=="controls": current_panel.capture_action=""
+    if windows.is_empty():
+        current_panel=null
+        opened=false
+        root_control.hide()
+        get_tree().paused=false
+        menu_visibility_changed.emit(false)
+    else: activate_window(windows.keys().back())
+func close():
+    for id in windows.keys(): close_window(id)
     opened=false
+    dragging=false
     root_control.hide()
     get_tree().paused=false
-    menu_visibility_changed.emit(false)
 func drag_header(event):
     if event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT:
         dragging=event.pressed
@@ -142,13 +185,13 @@ func drag_header(event):
 func _unhandled_input(event):
     if not event is InputEventKey or not event.pressed or event.echo: return
     if event.is_action_pressed("menu"):
-        if opened: close()
+        if opened: close_window(selected)
         else: open_panel("stats")
         get_viewport().set_input_as_handled()
         return
     for id in ["inventory","map","skills","stats","quests"]:
         if event.is_action_pressed("menu_"+id):
-            if opened and selected==id: close()
+            if windows.has(id): close_window(id)
             else: open_panel(id)
             get_viewport().set_input_as_handled()
             return

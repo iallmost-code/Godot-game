@@ -1,5 +1,6 @@
 extends "res://actors/enemy.gd"
-const ART=preload("res://art/rootwarden.png")
+const Layout=preload("res://visuals/boss_layout.gd")
+const ART=preload("res://art/bosses/rootwarden.png")
 var phase="idle"
 var attack_kind="slam"
 var windup=0.0
@@ -81,9 +82,18 @@ func _physics_process(delta):
     queue_redraw()
 func update_art():
     if sprite==null: return
-    var factor=150.0/955.0
+    var data=Layout.DATA.rootwarden
+    var attacking=phase=="windup" or slam_flash>0
+    var region: Rect2=data.attack_rect if attacking else data.rect
+    var anchor: Vector2=(data.attack_anchor if attacking else data.foot_anchor)-region.position
+    var factor=float(data.height)/data.rect.size.y
+    sprite.texture=ART
+    sprite.region_enabled=true
+    sprite.region_rect=region
+    sprite.centered=false
+    sprite.scale=Vector2.ONE*factor
     sprite.flip_h=facing>0
-    sprite.position=Vector2(-(ART.get_width()-701) if sprite.flip_h else -701,-1042)*factor
+    sprite.position=Vector2(-(region.size.x-anchor.x) if sprite.flip_h else -anchor.x,-anchor.y)*factor
     if phase=="windup": sprite.position.y+=sin(windup*7)*3
     sprite.material.set_shader_parameter("flash",1.0 if hurt_flash>0 else 0.0)
 func _draw():

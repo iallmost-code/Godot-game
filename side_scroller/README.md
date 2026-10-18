@@ -16,13 +16,39 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Interact with portal or NPC; climb a rope or ladder | Up arrow |
 | Climb down a rope or ladder | Down arrow |
 | Jump; press again in air for a boosted double jump | Shift |
+| Drop through a platform; release a rope downward | Hold Down + press Shift |
+| Central hub with gates to all 32 towns | H |
+| Teleport to nearest connected town | T |
 | Basic attack (sword/spear/dagger/staff swing, star or arrow; hold to repeat) | Space |
 | Skill hotkeys | Z, X, C, V, A, D, F |
 | HP / MP potion | 1 / 2 |
 | Inventory / Map / Skills / Stats / Quests | I / M / K / S / Q |
 | Menu / close window | Escape or top-right buttons |
 
-Rebind every key in **Menu → Controls**. Open menus pause the game.
+Rebind every key in **Menu → Controls**. Open menus pause the game. Windows stay open independently: drag their title bars, press their shortcut to toggle one, or press Escape to close the front window.
+
+## Where to go
+
+Press **M** for the **Level guide**. It highlights your next hunting area and offers a free **Travel** button. **All towns** lists every town; **Area atlas** shows each region, its local platforms and portal routes. Boss travel stops at the gate town so you enter the lair through its portal.
+
+Press **H** or click **Portal hub** to visit **Wayfarer's Concourse**. Its two decks hold physical portals to every town; stand beside one and press **Up**. Every town also has a return gate at its far end. Press **T** or click **Nearest town** to leave a hunting area safely. Teleporting preserves your equipment, money and XP.
+
+| Level | Hunting ground | Town |
+| --- | --- | --- |
+| 1–11 | Dewdrop Meadow | Farmeadow |
+| 12–24 | Mossvale Thicket | Starbough |
+| 25–44 | Rotfen Marsh | Hollowroot |
+| 45–59 | Emberpeak Canyon | Ironridge |
+| 60–79 | Frostspire Peaks | Frostmere |
+| 80–99 | Clockwork Spire | Tickletop |
+| 100–109 | Bonepit Mine | Frostmere |
+| 110–124 | Tidegrave Trench | Tideglass |
+| 125–154 | Skyreach Cliffs | Wyrmrest |
+| 155–200 | Timeless Sanctum | Hourglass |
+
+Monster XP now follows the actual spawned level: `24 + 6 × level + 0.28 × level²` (rounded down). Ordinary level 10 / 30 / 70 enemies give 112 / 456 / 1,816 XP before bonuses. Bosses give 30 times the normal level reward; Rootwarden gives 10 times. Equipment and potion drops also follow monster level. The EXP bar shows current progress and the latest kill reward. Town quest XP rewards follow the same improved curve.
+
+Stars, arrows and magic bolts steer toward visible enemies ahead within their remaining range. Solid walls block targeting and projectiles; piercing shots skip targets already hit.
 
 ## Classes and jobs
 
