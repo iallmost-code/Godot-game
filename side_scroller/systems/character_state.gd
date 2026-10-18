@@ -20,7 +20,14 @@ var ap = 0
 var sp = {"0":0, "1":0, "2":0, "3":0, "4":0}
 var sp_earned = {"0":0, "1":0, "2":0, "3":0, "4":0}
 var skill_ranks = {}
-var slots = {}
+# Skills on keys: {keycode: skill id}. Any key the action bindings leave free.
+var keys = {}
+# The old seven-slot view (z x c v a d f) of the same keys, for older code and saves.
+var slots: Dictionary:
+    get:
+        var view={}
+        for slot in Catalog.SLOTS: view[slot]=keys.get(slot_code(slot),"")
+        return view
 var hp = 120.0
 var mp = 40.0
 # Equipment instances {"uid", "id", "plus"}; duplicates allowed.
@@ -45,6 +52,8 @@ var quest_items = {}
 var scrolls = {}
 var looks = Adventure.default_looks()
 var pets: Array = []
+# Last raid chest per raid, as unix time; chests reset weekly.
+var raid_clears = {}
 var pet = ""
 var potion_cooldown = 0.0
 var mana_potion_cooldown = 0.0
@@ -52,7 +61,6 @@ var mana_potion_cooldown = 0.0
 var buffs = {}
 var migration_note = ""
 func _init():
-    for slot in Catalog.SLOTS: slots[slot]=""
     # A fresh character is a warrior novice until initialize_class picks a class.
     equip(add_item_uid(STARTER.warrior))
     equip(add_item_uid("starter_armor"))
@@ -124,7 +132,9 @@ func skill_name(id: String) -> String:
 # Early levels are quick; from level 120 each level takes four times the base curve.
 func xp_required(at_level: int) -> int:
     var base=15+10*at_level+1.1*at_level*at_level+0.004*at_level*at_level*at_level
-    return int(base*(1.0+minf(3.0,at_level/40.0)))
+    # Levels past 100 slow down progressively (about 3x at 150, 5x near 200).
+    var late=1.0+maxf(0.0,at_level-100.0)/25.0
+    return int(base*(1.0+minf(3.0,at_level/40.0))*late)
 func add_xp(amount: int):
     if amount <= 0 or level >= Catalog.MAX_LEVEL: return
     xp += amount
@@ -255,20 +265,29 @@ func can_use(id: String) -> bool:
     if skill.is_empty() or not skill.active: return false
     if skill.job=="": return id==basic_skill()
     return in_lineage(id) and skill_ranks.get(id,0) > 0
-func assign_skill(slot: String, id: String) -> bool:
-    if not slots.has(slot) or not can_use(id) or Catalog.skill(id).job=="": return false
-    var previous=""
-    for key in slots:
-        if key!=slot and slots[key]==id: previous=key
-    var displaced=slots[slot]
-    slots[slot]=id
-    if previous!="": slots[previous]=displaced
+static func slot_code(slot: String) -> int: return OS.find_keycode_from_string(slot.to_upper())
+func key_of(id: String) -> int:
+    for code in keys:
+        if keys[code]==id: return code
+    return 0
+# Puts a skill on a key. A skill sits on one key: moving it swaps with whatever
+# skill was on the target key.
+func assign_key(code: int,id: String) -> bool:
+    if code<=0 or not can_use(id) or Catalog.skill(id).job=="" or not Catalog.skill(id).active: return false
+    var previous=key_of(id)
+    var displaced=keys.get(code,"")
+    keys[code]=id
+    if previous!=0 and previous!=code:
+        if displaced!="": keys[previous]=displaced
+        else: keys.erase(previous)
     changed.emit()
     return true
-func clear_slot(slot: String):
-    if slots.has(slot):
-        slots[slot]=""
-        changed.emit()
+func clear_key(code: int):
+    if keys.erase(code): changed.emit()
+func assign_skill(slot: String, id: String) -> bool:
+    if not Catalog.SLOTS.has(slot): return false
+    return assign_key(slot_code(slot),id)
+func clear_slot(slot: String): clear_key(slot_code(slot))
 # ---------------- Items ----------------
 func instance(uid) -> Dictionary:
     if not (uid is int or uid is float): return {}
@@ -494,8 +513,8 @@ func clear_buffs():
     buffs.clear()
     changed.emit()
 func to_record() -> Dictionary:
-    return {"version":VERSION,"level":level,"xp":xp,"job":job,"archetype":archetype,"attributes":attributes.duplicate(),"ap":ap,"sp":sp.duplicate(),"sp_earned":sp_earned.duplicate(),"skill_ranks":skill_ranks.duplicate(),"slots":slots.duplicate(),"inventory":inventory.duplicate(true),"equipped":equipped.duplicate(),"next_uid":next_uid,"coins":coins,"shards":shards,"consumables":consumables.duplicate(),
-        "town":town,"quests":quests.duplicate(true),"quest_items":quest_items.duplicate(),"scrolls":scrolls.duplicate(),"looks":looks.duplicate(),"pets":pets.duplicate(),"pet":pet}
+    return {"version":VERSION,"level":level,"xp":xp,"job":job,"archetype":archetype,"attributes":attributes.duplicate(),"ap":ap,"sp":sp.duplicate(),"sp_earned":sp_earned.duplicate(),"skill_ranks":skill_ranks.duplicate(),"keys":keys_record(),"inventory":inventory.duplicate(true),"equipped":equipped.duplicate(),"next_uid":next_uid,"coins":coins,"shards":shards,"consumables":consumables.duplicate(),
+        "town":town,"quests":quests.duplicate(true),"quest_items":quest_items.duplicate(),"scrolls":scrolls.duplicate(),"looks":looks.duplicate(),"pets":pets.duplicate(),"pet":pet,"raid_clears":raid_clears.duplicate()}
 func whole(value,minimum: int,maximum: int) -> bool:
     return (value is int or value is float) and is_finite(float(value)) and value==int(value) and value>=minimum and value<=maximum
 # Largest SP a pool could have earned at this level and job.
@@ -650,14 +669,24 @@ func load_record(record: Dictionary) -> bool:
     var tier_total=0
     for pool in ["1","2","3","4"]: tier_total+=trial.sp_earned[pool]
     if trial.tier()>0 and tier_total>trial.tier()+3*(trial.level-Catalog.jobs()[Catalog.first_job(trial.archetype)].level): return false
-    var slot_record=record.get("slots",{})
-    if not slot_record is Dictionary: return false
+    # Skill keys; saves from before free key placement list seven lettered slots.
+    var key_record={}
+    if record.has("keys"):
+        if not record.keys is Dictionary: return false
+        for code in record.keys:
+            if not str(code).is_valid_int(): return false
+            key_record[int(str(code))]=record.keys[code]
+    else:
+        var slot_record=record.get("slots",{})
+        if not slot_record is Dictionary: return false
+        for slot in Catalog.SLOTS:
+            if slot_record.get(slot,"")!="": key_record[slot_code(slot)]=slot_record[slot]
     var assigned: Array=[]
-    for slot in Catalog.SLOTS:
-        var id=slot_record.get(slot,"")
-        if not id is String or id!="" and (not trial.can_use(id) or Catalog.skill(id).job=="" or assigned.has(id)): return false
-        trial.slots[slot]=id
-        if id!="": assigned.append(id)
+    for code in key_record:
+        var id=key_record[code]
+        if code<=0 or code>0x1ffffff or not id is String or not trial.can_use(id) or Catalog.skill(id).job=="" or not Catalog.skill(id).active or assigned.has(id): return false
+        trial.keys[code]=id
+        assigned.append(id)
     if not record.get("inventory",null) is Array or record.inventory.size()>INVENTORY_LIMIT: return false
     trial.inventory.clear()
     var uids=[]
@@ -689,7 +718,7 @@ func load_record(record: Dictionary) -> bool:
         if not Catalog.consumables().has(id) or not whole(record.consumables[id],0,9999): return false
         trial.consumables[id]=int(record.consumables[id])
     if not trial.read_extras(record): return false
-    for key in ["level","xp","job","archetype","attributes","ap","sp","sp_earned","skill_ranks","slots","inventory","equipped","equipment","next_uid","coins","shards","consumables","town","quests","quest_items","scrolls","looks","pets","pet"]:
+    for key in ["level","xp","job","archetype","attributes","ap","sp","sp_earned","skill_ranks","keys","inventory","equipped","equipment","next_uid","coins","shards","consumables","town","quests","quest_items","scrolls","looks","pets","pet","raid_clears"]:
         set(key,trial.get(key))
     buffs.clear()
     migration_note="Your character was updated to the full job tree. All skill points were refunded; open Skills to spend them." if migrated else ""
@@ -734,6 +763,12 @@ func read_extras(record: Dictionary) -> bool:
     var active=record.get("pet","")
     if not active is String or active!="" and not pets.has(active): return false
     pet=active
+    raid_clears={}
+    var clears=record.get("raid_clears",{})
+    if not clears is Dictionary: return false
+    for id in clears:
+        if not load("res://data/raids.gd").RAIDS.has(id) or not (clears[id] is int or clears[id] is float) or clears[id]<0: return false
+        raid_clears[id]=float(clears[id])
     return true
 func read_upgrades(entry: Dictionary,inst: Dictionary) -> bool:
     var slot=Catalog.items()[inst.id].slot
@@ -829,3 +864,17 @@ func set_looks(next: Dictionary) -> bool:
     looks=next.duplicate()
     changed.emit()
     return true
+func keys_record() -> Dictionary:
+    var record={}
+    for code in keys: record[str(code)]=keys[code]
+    return record
+# Moves skills from old lettered slots onto the keys an old save had bound to them.
+func adopt_legacy_keys(legacy: Dictionary):
+    if legacy.is_empty(): return
+    var moved={}
+    for slot in Catalog.SLOTS:
+        var id=keys.get(slot_code(slot),"")
+        if id!="" and legacy.has(slot) and int(legacy[slot])>0: moved[slot_code(slot)]=[int(legacy[slot]),id]
+    for code in moved: keys.erase(code)
+    for code in moved: keys[moved[code][0]]=moved[code][1]
+    if not moved.is_empty(): changed.emit()

@@ -2,6 +2,10 @@
 
 An original, single-player 2D side-scrolling RPG for **Godot Web Editor 4.7.2**, built on the classic job-tree formula: four classes, ten advancement paths, level 200, hunting grounds and bosses. Uses the Compatibility renderer and no external assets or plugins. All class, job, skill, monster and boss names are original.
 
+## Play in the browser
+
+Once GitHub Pages is switched on for this repository (Settings → Pages → Deploy from a branch → `main`, folder `/docs`), the game runs at **https://iallmost-code.github.io/Godot-game/**, with no editor needed. Saves stay in that browser. Rebuild the web version after changes with `python3 tools/export_web.py /path/to/godot`.
+
 ## Import the playable project
 
 Choose **Side-Scroller-Warrior.zip** in the Web Editor landing page's **Preload project ZIP**, then start the editor. In the Install Project dialog, click **Install** with **Edit Now** checked. Once the project opens, click **Run Project**. Click inside the running game so it receives keyboard input. Use the editor's Run button if your browser captures function keys.
@@ -20,12 +24,14 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Central hub with gates to all 32 towns | H |
 | Teleport to nearest connected town | T |
 | Basic attack (sword/spear/dagger/staff swing, star or arrow; hold to repeat) | Space |
-| Skill hotkeys | Z, X, C, V, A, D, F |
+| Skills | Any key you choose (Menu → Keys, or **Set key** in the Skill Book) |
 | HP / MP potion | 1 / 2 |
 | Inventory / Map / Skills / Stats / Quests | I / M / K / S / Q |
 | Menu / close window | Escape or top-right buttons |
 
-Rebind every key in **Menu → Controls**. Open menus pause the game. Windows stay open independently: drag their title bars, press their shortcut to toggle one, or press Escape to close the front window.
+**Key config (Menu → Keys):** a keyboard where any key can hold a skill or an action, like the classic key config. Pick an action or skill from the lists, then click a key. Click a key first to pick up what is on it and move it, and right-click a key to clear it. Put as many skills on keys as you like; the hotbar shows the first nine in keyboard order. Holding an attack skill's key keeps using it. Skills on keys are saved per character; action keys are shared. Left, Right, Down, Up, Jump, Attack and Menu always need a key but can move; potions, menus and travel can be cleared to free their keys. In the Skill Book, **Set key** next to a skill waits for the next key you press (Backspace removes it).
+
+ Open menus pause the game. Windows stay open independently: drag their title bars, press their shortcut to toggle one, or press Escape to close the front window.
 
 ## Where to go
 
@@ -100,6 +106,18 @@ Monsters walk, hop, charge, cast, fly or tank. Bosses cycle through telegraphed 
 Status effects shown as coloured dots over monsters: stun, freeze, poison (never kills), slow, silence, wither (harmless), weaken, armor break, snare, blind and mock (more damage and experience). You can dodge (**MISS**), block (**BLOCK**) and revive with Rebirth (**REBIRTH**).
 
 Death returns you to town at full health with all progress kept.
+
+### Endgame: raids, hard mode and field bosses
+
+- **Raids** have a RAID gate in their town and are fought in phases. Each phase's parts must all fall before the next one appears.
+  - **Ember Tyrant** (Lv 120, Frostmere): four arms, then the body.
+  - **Stormcrown Hydra** (Lv 160, Wyrmrest): Frost and Storm heads, then the Hydra.
+  - **Dreaming Seraph** (Lv 190, Hourglass Sanctum): three guardians, then the Seraph, then Seraph Awakened.
+- **Raid chest:** pays out once a week per character. It holds a raid weapon for your class (Tyrant's / Stormcrown / Seraphic), a raid piece (Eye of the Tyrant earring, Stormcrown Cloak, Seraphic Halo), Shards, coins, scrolls and a Chaos Scroll. Repeat clears in the same week give coins.
+- **Hard mode:** every lair has a second "Hard" gate. The boss is 40 levels higher (up to 200), has more health and one extra attack pattern, and drops five scrolls plus extra Shards.
+- **Field bosses:** a named giant shows up on every hunting map 20–45 seconds after you arrive, with an announcement and a health bar. Examples are Old Shellback in Dewdrop Meadow, Grumblebark, Bogmaw, Cindermaw, Whitefang Alpha, Overclocked Sentinel, Marrow Captain, Coralback Ancient, Stormhoof Khan and The Last Warden; regional routes get a "Chief" version of their monster. It drops a weapon, an armor piece, Shards, coins and two scrolls, then returns about 10 minutes after it falls.
+
+Leveling past 100 slows down gradually: each level needs about 3× more experience at 150 and about 5× near 200.
 
 ### Ropes, ladders and the minimap
 

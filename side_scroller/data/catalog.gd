@@ -137,6 +137,13 @@ static func items() -> Dictionary:
     for type in nouns:
         add.call("expedition_"+type,"Wayfarer "+nouns[type],type,70)
         add.call("relic_"+type,"Aethersteel "+nouns[type],type,110)
+    # Raid gear from data/raids.gd.
+    for tier in ["tyrant","hydra","seraph"]:
+        var raid_gear={"tyrant":["Tyrant's",128],"hydra":["Stormcrown",150],"seraph":["Seraphic",166]}[tier]
+        for type in nouns: add.call("%s_%s" % [tier,type],"%s %s" % [raid_gear[0],nouns[type]],type,raid_gear[1])
+    i.tyrant_eye={"name":"Eye of the Tyrant","slot":"accessory","attack":2,"defense":10,"stats":{"ALL":12}}
+    i.hydra_cloak={"name":"Stormcrown Cloak","slot":"cape","attack":0,"defense":60,"stats":{"ALL":6,"mp":400}}
+    i.seraph_halo={"name":"Seraphic Halo","slot":"hat","attack":0,"defense":90,"stats":{"ALL":10,"hp":800}}
     i.expedition_armor={"name":"Wayfarer Coat","slot":"armor","attack":0,"defense":20,"icon":"◆"}
     i.relic_armor={"name":"Aetherweave Coat","slot":"armor","attack":0,"defense":32,"icon":"◆"}
     i.starter_armor={"name":"Trail Vest","slot":"armor","attack":0,"defense":2,"icon":"◆"}
@@ -165,6 +172,9 @@ static func items() -> Dictionary:
         elif id.begins_with("warden_"): req=10
         elif id.begins_with("expedition_"): req=35
         elif id.begins_with("relic_"): req=60
+        elif id.begins_with("tyrant_"): req=120
+        elif id.begins_with("hydra_"): req=160
+        elif id.begins_with("seraph_"): req=190
         elif id.contains("_lv"):
             var band=int(id.get_slice("_lv",1))
             req=1 if band<=10 else band-5

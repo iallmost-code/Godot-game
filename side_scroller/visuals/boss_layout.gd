@@ -15,13 +15,13 @@ const DATA={
     "mother_cap":{"file":"res://art/bosses/mother_cap.png","texture":preload("res://art/bosses/mother_cap.png"),"rect":Rect2(13,60,762,765),"attack_rect":Rect2(901,67,860,757),"foot_anchor":Vector2(394.0,825),"attack_anchor":Vector2(1331.0,824),"height":216.0},
     "thornscale_wyrm":{"file":"res://art/bosses/thornscale_wyrm.png","texture":preload("res://art/bosses/thornscale_wyrm.png"),"rect":Rect2(18,18,973,741),"attack_rect":Rect2(1037,18,965,741),"foot_anchor":Vector2(504.5,759),"attack_anchor":Vector2(1519.5,759),"height":204.0},
 }
-static func draw(canvas: CanvasItem,id: String,attacking: bool,facing: int,flash=0.0,frozen=false,offset=Vector2.ZERO) -> bool:
+static func draw(canvas: CanvasItem,id: String,attacking: bool,facing: int,flash=0.0,frozen=false,offset=Vector2.ZERO,art_scale=1.0,colour=Color.WHITE) -> bool:
     if not DATA.has(id): return false
     var data=DATA[id]
     var region: Rect2=data.attack_rect if attacking else data.rect
     var anchor: Vector2=(data.attack_anchor if attacking else data.foot_anchor)-region.position
-    var factor=float(data.height)/data.rect.size.y
-    var tint=Color.WHITE.lerp(Color("bfe9ff"),0.55) if frozen else Color.WHITE
+    var factor=float(data.height)/data.rect.size.y*art_scale
+    var tint=colour.lerp(Color("bfe9ff"),0.55) if frozen else colour
     if flash>0: tint=Color(1.35,1.35,1.35)
     canvas.draw_set_transform(offset,0,Vector2(facing*data.get("source_facing",1),1))
     canvas.draw_texture_rect_region(data.texture,Rect2(-anchor*factor,region.size*factor),region,tint)

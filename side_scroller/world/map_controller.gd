@@ -5,6 +5,16 @@ const EnemyStats=preload("res://data/enemy_stats.gd")
 const Quests=preload("res://systems/quests.gd")
 const Adventure=preload("res://data/adventure.gd")
 const UiIcons=preload("res://visuals/ui_icon_layout.gd")
+const Raids=preload("res://data/raids.gd")
+# Field boss respawn times per map (unix seconds), kept across map changes.
+static var field_boss_ready: Dictionary={}
+const FIELD_BOSS_RESPAWN=600.0
+var raid_id=""
+var raid_phase=-1
+var raid_parts: Array=[]
+var raid_delay=0.0
+var field_boss=null
+var field_boss_delay=-1.0
 var map_id="town"
 var width=1800.0
 var state
@@ -69,6 +79,11 @@ func setup(s):
             var record={"position":Vector2(entry[0],entry[1]),"id":entry[2],"node":null,"timer":0.0,"level":entry[3] if entry.size()>3 else 0}
             spawns.append(record)
             spawn_enemy(record)
+        if data.has("raid"):
+            raid_id=data.raid
+            raid_delay=2.0
+        elif field_boss_info()!=[] and Time.get_unix_time_from_system()>=float(field_boss_ready.get(map_id,0.0)):
+            field_boss_delay=randf_range(20.0,45.0)
     var artwork=preload("res://visuals/world_art.gd").new()
     artwork.map_id=map_id
     artwork.width=width
@@ -165,7 +180,97 @@ func on_defeated(pos: Vector2,id: String,record: Dictionary):
     var wanted=Quests.wanted_drop(state,id)
     if wanted!="" and randf()<0.6: spawn_loot(pos+Vector2(randf_range(-30,30),0),{"quest_item":wanted})
     if EnemyStats.is_boss(id):
-        for i in 2: spawn_loot(pos+Vector2(40+i*30,0),{"scroll":Adventure.random_scroll()})
+        for i in (5 if id.ends_with("_hard") else 2): spawn_loot(pos+Vector2(40+i*30,0),{"scroll":Adventure.random_scroll()})
+        if id.ends_with("_hard"): spawn_loot(pos+Vector2(-60,0),{"shards":20+lv/4})
+# ---------------- Raids ----------------
+func start_raid_phase():
+    raid_phase+=1
+    var phases: Array=Raids.RAIDS[raid_id].phases
+    var parts: Array=phases[raid_phase]
+    for i in parts.size():
+        var x=width/2.0+(i-(parts.size()-1)/2.0)*420.0
+        var enemy=preload("res://actors/boss.gd").new()
+        enemy.definition_id=parts[i]
+        enemy.position=Vector2(clampf(x,500,width-300),610)
+        enemy.player=player
+        add_child(enemy)
+        raid_parts.append(enemy)
+        enemy.defeated.connect(func(pos,id): on_raid_part_defeated(pos,id,enemy))
+    boss=raid_parts[0]
+    boss_spawned.emit(boss)
+    var final=raid_phase==phases.size()-1
+    reward_notice.emit(("Final phase: %s!" % EnemyStats.profile(parts[0]).name) if final and raid_phase>0 else Raids.RAIDS[raid_id].intro if raid_phase==0 else "Phase %d: %s appears!" % [raid_phase+1,EnemyStats.profile(parts[0]).name])
+func on_raid_part_defeated(pos: Vector2,id: String,node):
+    raid_parts.erase(node)
+    grant_xp(id,node)
+    spawn_loot(pos,{"coins":20*EnemyStats.profile(id).level})
+    spawn_loot(pos+Vector2(30,0),{"scroll":Adventure.random_scroll()})
+    var alive=raid_parts.filter(func(part): return is_instance_valid(part) and not part.dead)
+    if not alive.is_empty():
+        boss=alive[0]
+        boss_spawned.emit(boss)
+        return
+    raid_parts.clear()
+    if raid_phase<Raids.RAIDS[raid_id].phases.size()-1:
+        raid_delay=3.0
+        reward_notice.emit("The ground shakes...")
+    else: finish_raid(pos)
+func finish_raid(pos: Vector2):
+    var info=Raids.RAIDS[raid_id]
+    if not Raids.ready(state,raid_id):
+        spawn_loot(pos,{"coins":100*info.level})
+        reward_notice.emit("%s defeated! The weekly chest was already claimed (resets in %d days)." % [info.name,Raids.days_left(state,raid_id)])
+        return
+    state.raid_clears[raid_id]=Time.get_unix_time_from_system()
+    var gear=Raids.GEAR[info.loot]
+    spawn_loot(pos,{"item":"%s_%s" % [info.loot,state.preferred_weapon()]})
+    spawn_loot(pos+Vector2(-40,0),{"item":gear.piece})
+    spawn_loot(pos+Vector2(40,0),{"shards":40+info.level/2})
+    spawn_loot(pos+Vector2(80,0),{"coins":400*info.level})
+    for i in 3: spawn_loot(pos+Vector2(-80-i*30,0),{"scroll":Adventure.random_scroll()})
+    spawn_loot(pos+Vector2(-170,0),{"scroll":"scroll_chaos"})
+    state.changed.emit()
+    reward_notice.emit("%s defeated! Raid chest: %s and %s." % [info.name,Catalog.items()["%s_%s" % [info.loot,state.preferred_weapon()]].name,Catalog.items()[gear.piece].name])
+# ---------------- Field bosses ----------------
+# [monster, name, level] for this map's field boss, or [].
+func field_boss_info() -> Array:
+    var data=Maps.definition(map_id)
+    if data.safe or data.has("boss") or data.enemies.is_empty(): return []
+    if EnemyStats.FIELD_BOSSES.has(map_id):
+        var named=EnemyStats.FIELD_BOSSES[map_id]
+        return [named[0],named[1],mini(200,data.level+8)]
+    var first=data.enemies[0]
+    if first[2]=="rootwarden": return []
+    var lv=(first[3] if first.size()>3 else EnemyStats.profile(first[2]).level)+5
+    return [first[2],"Chief "+EnemyStats.profile(first[2]).name,mini(200,lv)]
+func spawn_field_boss():
+    var info=field_boss_info()
+    if info.is_empty(): return
+    var enemy=preload("res://actors/enemy.gd").new()
+    enemy.definition_id=info[0]
+    enemy.elite_name=info[1]
+    enemy.level=info[2]
+    enemy.position=Vector2(randf_range(width*0.45,width*0.75),610)
+    enemy.player=player
+    enemy.area_tint=preload("res://visuals/world_theme.gd").enemy_tint(Maps.definition(map_id).biome)
+    add_child(enemy)
+    field_boss=enemy
+    boss=enemy
+    boss_spawned.emit(enemy)
+    enemy.defeated.connect(func(pos,id): on_field_boss_defeated(pos,id,enemy))
+    reward_notice.emit("A field boss appears: %s (Lv %d)!" % [info[1],info[2]])
+func on_field_boss_defeated(pos: Vector2,id: String,node):
+    field_boss_ready[map_id]=Time.get_unix_time_from_system()+FIELD_BOSS_RESPAWN
+    grant_xp(id,node,node.level)
+    var weapon=state.preferred_weapon()
+    var band=Maps.band_for(node.level)
+    spawn_loot(pos,{"item":"%s_%s" % [weapon,band]})
+    spawn_loot(pos+Vector2(-40,0),{"item":"%s_%s" % [["hat","gloves","shoes","cape","earring"].pick_random(),band]})
+    spawn_loot(pos+Vector2(40,0),{"coins":40*node.level})
+    spawn_loot(pos+Vector2(80,0),{"shards":5+node.level/15})
+    for i in 2: spawn_loot(pos+Vector2(-80-i*30,0),{"scroll":Adventure.random_scroll()})
+    for note in Quests.on_kill(state,id): reward_notice.emit(note)
+    reward_notice.emit("%s defeated! It returns in about 10 minutes." % node.elite_name)
 func spawn_loot(pos: Vector2,reward: Dictionary):
     var loot=preload("res://world/loot_pickup.gd").new()
     loot.setup(reward)
@@ -200,6 +305,12 @@ func interact():
         else: reward_notice.emit(instructor.name+": "+instructor.greeting)
     else: reward_notice.emit("Move near a glowing portal or the town instructor, then press Up.")
 func _process(delta):
+    if raid_id!="" and raid_delay>0:
+        raid_delay-=delta
+        if raid_delay<=0: start_raid_phase()
+    if field_boss_delay>0:
+        field_boss_delay-=delta
+        if field_boss_delay<=0: spawn_field_boss()
     for record in spawns:
         if not is_instance_valid(record.node):
             record.timer-=delta

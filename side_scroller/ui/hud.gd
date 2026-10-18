@@ -29,6 +29,9 @@ var minimap
 signal travel_requested(destination: String)
 signal town_requested
 signal menu_requested(panel_id: String)
+const Keymap=preload("res://systems/keymap.gd")
+# Hotbar: basic attack, then skills on keys in keyboard order.
+const HOTBAR_SIZE=10
 func bind(s,c,b=null):
     state=s
     combat=c
@@ -107,9 +110,9 @@ func bind(s,c,b=null):
     ability_row.add_theme_constant_override("separation",8)
     row.add_child(ability_row)
     ability_row.add_theme_constant_override("separation",4)
-    for slot in ["attack"]+Catalog.SLOTS:
-        var button=Style.button("",func(): show_notice("Use the displayed key to attack. Aim by facing your target."))
-        button.custom_minimum_size=Vector2(83,72)
+    for slot in range(HOTBAR_SIZE):
+        var button=Style.button("",func(): show_notice("Put skills on any key in Menu → Keys, or with Set key in the skill book."))
+        button.custom_minimum_size=Vector2(66,72)
         button.add_theme_font_size_override("font_size",12)
         button.clip_text=true
         ability_row.add_child(button)
@@ -191,10 +194,10 @@ func refresh():
             boss_bar.max_value=boss_target.max_hp
             boss_bar.value=boss_target.hp
     for action in travel_buttons:
-        var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else ""
+        var key=Keymap.key_name(int(bindings.current()[action])) if bindings!=null else ""
         travel_buttons[action].text={"travel_town":"Nearest town","travel_hub":"Portal hub","menu_map":"Level guide"}[action]+" ["+key+"]"
     for id in menu_buttons:
-        var shortcut=OS.get_keycode_string(bindings.current()["menu_"+id]) if bindings!=null else ""
+        var shortcut=Keymap.key_name(int(bindings.current()["menu_"+id])) if bindings!=null else ""
         menu_buttons[id].text=id.capitalize()+" ["+shortcut+"]"
     var stats=state.derived_stats()
     status.text="LV %d %s • HP %d/%d • MP %d/%d" % [state.level,Catalog.jobs()[state.job].name,state.hp,stats.max_hp,state.mp,stats.max_mp]
@@ -215,21 +218,28 @@ func refresh():
     xp_bar.value=state.xp
     xp_text.text="EXP %d / %d  (%.1f%%)" % [state.xp,state.xp_required(state.level),100.0*state.xp/state.xp_required(state.level)]+("  +%d EXP" % xp_gain if xp_time>0 else "")
     xp_bar.tooltip_text="XP %d / %d  •  %d attribute points available" % [state.xp,state.xp_required(state.level),state.ap]
-    var hp_key=OS.get_keycode_string(bindings.current().get("potion_hp",KEY_1)) if bindings!=null else "1"
-    var mp_key=OS.get_keycode_string(bindings.current().get("potion_mp",KEY_2)) if bindings!=null else "2"
+    var hp_key=Keymap.key_name(int(bindings.current().get("potion_hp",KEY_1))) if bindings!=null else "1"
+    var mp_key=Keymap.key_name(int(bindings.current().get("potion_mp",KEY_2))) if bindings!=null else "2"
     potion_button.text="%s HP %d" % [hp_key,state.count_potions("hp")]
     potion_button.tooltip_text="HP potion [%s]: uses the smallest potion that fills your missing health." % hp_key
     potion_button.modulate=Color("819a9c") if state.potion_cooldown>0 else Color.WHITE
     mana_button.text="%s MP %d" % [mp_key,state.count_potions("mp")]
     mana_button.tooltip_text="MP potion [%s]" % mp_key
+    var codes=Keymap.skill_keys(state)
     for entry in skills:
         var slot=entry.slot
-        var id=state.basic_skill() if slot=="attack" else state.slots[slot]
-        var action="attack" if slot=="attack" else "skill_"+slot
-        var key=OS.get_keycode_string(bindings.current()[action]) if bindings!=null else slot.to_upper()
+        var code=0
+        var id=""
+        if slot==0:
+            id=state.basic_skill()
+            code=int(bindings.current().get("attack",0)) if bindings!=null else KEY_SPACE
+        elif slot-1<codes.size():
+            code=codes[slot-1]
+            id=state.keys[code]
+        var key=Keymap.key_name(code) if code>0 else ""
         var cooldown=combat.cooldowns.get(id,0)
         entry.peak=maxf(entry.peak,cooldown) if cooldown>0 else 0.0
         entry.icon.set_state(id,key,cooldown,entry.peak,state.skill_name(id) if id!="" else "—")
         var cost=combat.mana_cost(id) if id!="" else 0
-        entry.button.tooltip_text=(state.skill_name(id)+("  •  %d MP" % cost if cost>0 else "")+"\n"+Catalog.skill(id).get("description","")) if id!="" else "Empty slot. Assign skills in the Skills window."
+        entry.button.tooltip_text=(state.skill_name(id)+("  •  %d MP" % cost if cost>0 else "")+"\n"+Catalog.skill(id).get("description","")) if id!="" else "Empty. Put skills on any key in Menu → Keys."
         entry.button.modulate=Color("b8c4c6") if id=="" else Color.WHITE

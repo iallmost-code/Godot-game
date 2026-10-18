@@ -89,6 +89,30 @@ const BOSSES={
     "thornscale_wyrm":["Thornscale Wyrm",170,"wyrm","3a5a4a","d24f4a",3.4,110,["beam","rain","slam","volley","summon"],"bone_wyvern"],
     "gloam_idol":["Gloam Idol",190,"idol","3a2f5c","ff9ad6",3.0,130,["beam","rain","slam","volley","summon","charge"],"gloam_sentinel"],
 }
+# Raid bosses come in parts fought in phases (see data/raids.gd). Same layout as
+# BOSSES plus the painted boss whose art they borrow, its scale and a tint.
+const RAID_PARTS={
+    "tyrant_arm_left":["Tyrant's Left Arm",120,"colossus","5a2a1a","ff7a3c",2.0,30,["slam","rain"],"","molten_colossus",0.55,Color(1.25,0.75,0.55)],
+    "tyrant_arm_right":["Tyrant's Right Arm",120,"colossus","5a2a1a","ff7a3c",2.0,30,["volley","slam"],"","molten_colossus",0.55,Color(1.25,0.75,0.55)],
+    "tyrant_arm_low_left":["Tyrant's Lower Arm",120,"colossus","5a2a1a","ff7a3c",2.0,30,["beam","slam"],"","molten_colossus",0.5,Color(1.15,0.7,0.5)],
+    "tyrant_arm_low_right":["Tyrant's Lower Arm",120,"colossus","5a2a1a","ff7a3c",2.0,30,["charge","rain"],"","molten_colossus",0.5,Color(1.15,0.7,0.5)],
+    "ember_tyrant":["Ember Tyrant",125,"colossus","4a1a10","ffb35c",3.2,95,["slam","rain","beam","volley","summon"],"magma_golem","molten_colossus",1.25,Color(1.3,0.85,0.6)],
+    "hydra_head_left":["Hydra's Frost Head",160,"wyrm","2a4a7a","8fd6ff",2.6,50,["beam","volley","rain"],"","thornscale_wyrm",0.7,Color(0.65,0.85,1.35)],
+    "hydra_head_right":["Hydra's Storm Head",160,"wyrm","4a2a7a","f6ef7a",2.6,50,["rain","charge","volley"],"","thornscale_wyrm",0.7,Color(1.1,1.0,0.55)],
+    "stormcrown_hydra":["Stormcrown Hydra",165,"wyrm","2a3a5a","c9a4ff",3.4,115,["beam","rain","slam","volley","summon","charge"],"bone_wyvern","thornscale_wyrm",1.3,Color(0.8,0.85,1.3)],
+    "seraph_guardian_dawn":["Dawn Guardian",185,"clock","f2c94c","fff2b8",2.4,32,["beam","volley"],"","chronovore",0.6,Color(1.35,1.2,0.7)],
+    "seraph_guardian_dusk":["Dusk Guardian",185,"clock","6a5ab8","c9a4ff",2.4,32,["rain","slam"],"","chronovore",0.6,Color(0.8,0.7,1.35)],
+    "seraph_guardian_star":["Star Guardian",185,"clock","8fd6ff","ffffff",2.4,32,["charge","volley"],"","chronovore",0.6,Color(0.8,1.2,1.35)],
+    "dreaming_seraph":["Dreaming Seraph",190,"idol","f2ecff","ff9ad6",3.0,85,["beam","rain","volley","summon"],"gloam_sentinel","gloam_idol",1.2,Color(1.25,1.15,1.4)],
+    "seraph_awakened":["Seraph Awakened",195,"idol","3a1a3a","ff4d6d",3.2,110,["beam","rain","slam","volley","charge","summon"],"gloam_sentinel","gloam_idol",1.35,Color(1.45,0.75,0.95)],
+}
+# Hard-mode rematches: "<boss>_hard" is 40 levels higher with one extra pattern.
+const HARD_LEVELS=40
+# Named field bosses for the deeper hunting grounds: [monster, name].
+const FIELD_BOSSES={"dewdrop":["pebble_snail","Old Shellback"],"mossvale":["gloom_stump","Grumblebark"],"rotfen":["swamp_gator","Bogmaw"],
+    "emberpeak":["crimson_drake","Cindermaw"],"frostspire":["rime_wolf","Whitefang Alpha"],"clockwork":["tick_sentinel","Overclocked Sentinel"],
+    "bonepit":["bone_captain","Marrow Captain"],"tidegrave":["coral_golem","Coralback Ancient"],"skyreach":["storm_centaur","Stormhoof Khan"],
+    "timeless":["memory_warden","The Last Warden"]}
 static func hp_for(level: int) -> int: return int(20+9*level+0.35*level*level)
 static func xp_for(level: int) -> int: return int(24+6*clampi(level,1,200)+0.28*pow(clampi(level,1,200),2))
 static func profile(id: String) -> Dictionary:
@@ -103,6 +127,28 @@ static func profile(id: String) -> Dictionary:
         p.merge(r[7])
         if p.behavior=="tank": p.hp=int(p.hp*1.6)
         return p
+    if id.ends_with("_hard") and BOSSES.has(id.trim_suffix("_hard")):
+        var base=profile(id.trim_suffix("_hard"))
+        var hard_level=mini(200,base.level+HARD_LEVELS)
+        var factor=float(hp_for(hard_level))/hp_for(base.level)
+        base.name=base.name+" (Hard)"
+        base.level=hard_level
+        base.hp=int(base.hp*factor*1.5)
+        base.xp=xp_for(hard_level)*45
+        base.base_attack=8+int(hard_level/6.0)
+        var extra=["rain","beam","volley","charge"]
+        for pattern in extra:
+            if not base.patterns.has(pattern):
+                base.patterns=base.patterns+[pattern]
+                break
+        base.art=id.trim_suffix("_hard")
+        base.hard=true
+        base.damage_mult=1.35
+        return base
+    if RAID_PARTS.has(id):
+        var r=RAID_PARTS[id]
+        return {"name":r[0],"level":r[1],"body":r[2],"color":Color(r[3]),"accent":Color(r[4]),"size":r[5],"boss":true,"raid":true,
+            "base_attack":10+int(r[1]/5.0),"hp":hp_for(r[1])*r[6]*3,"damage_mult":1.7,"xp":xp_for(r[1])*20,"patterns":r[7],"minion":r[8],"art":r[9],"art_scale":r[10],"tint":r[11]}
     if BOSSES.has(id):
         var b=BOSSES[id]
         return {"name":b[0],"level":b[1],"body":b[2],"color":Color(b[3]),"accent":Color(b[4]),"size":b[5],"boss":true,
@@ -113,8 +159,8 @@ static func damage(id: String,level: int,multiplier=1.0) -> int:
     # Roster monsters placed at another level use that level's base attack.
     var base=p.base_attack if LEGACY.has(id) or level==p.level else (8+int(level/6.0) if BOSSES.has(id) else 4+int(level/8.0))
     var l=clampi(level,1,200)
-    return maxi(1,int((base+2*(l-1)+0.006*l*l)*multiplier))
-static func is_boss(id: String) -> bool: return BOSSES.has(id) or id=="rootwarden"
+    return maxi(1,int((base+2*(l-1)+0.006*l*l)*multiplier*p.get("damage_mult",1.0)))
+static func is_boss(id: String) -> bool: return BOSSES.has(id) or id=="rootwarden" or RAID_PARTS.has(id) or id.ends_with("_hard") and BOSSES.has(id.trim_suffix("_hard"))
 
 static func experience(id: String,level: int) -> int:
     return xp_for(level)*(10 if id=="rootwarden" else 30 if BOSSES.has(id) else 1)

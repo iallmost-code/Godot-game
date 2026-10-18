@@ -74,7 +74,7 @@ func create_window(id: String):
     var tabs=HFlowContainer.new()
     layout.add_child(tabs)
     for tab_id in ["stats","skills","inventory","quests","shop","map","controls","characters","save"]:
-        var tab=Style.button(tab_id.capitalize(),func(): open_panel(tab_id))
+        var tab=Style.button(tab_label(tab_id),func(): open_panel(tab_id))
         tabs.add_child(tab)
         tabs_by_id[tab_id]=tab
     var scroll=ScrollContainer.new()
@@ -95,11 +95,11 @@ func open_panel(id: String):
     create_window(id)
     if current_panel!=null and selected=="controls": current_panel.capture_action=""
     selected=id
-    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","quests":"QUEST LOG","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
+    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","quests":"QUEST LOG","controls":"KEY CONFIG","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
     for tab_id in tabs_by_id:
         var action="menu_"+tab_id
-        var key_name=" ["+OS.get_keycode_string(bindings.current()[action])+"]" if bindings.current().has(action) else ""
-        tabs_by_id[tab_id].text=tab_id.capitalize()+key_name
+        var key_name=" ["+preload("res://systems/keymap.gd").key_name(int(bindings.current()[action]))+"]" if bindings.current().has(action) else ""
+        tabs_by_id[tab_id].text=tab_label(tab_id)+key_name
         tabs_by_id[tab_id].modulate=Color("b7d88a") if tab_id==id else Color.WHITE
     opened=true
     root_control.show()
@@ -195,3 +195,5 @@ func _unhandled_input(event):
             else: open_panel(id)
             get_viewport().set_input_as_handled()
             return
+
+func tab_label(id: String) -> String: return "Keys" if id=="controls" else id.capitalize()

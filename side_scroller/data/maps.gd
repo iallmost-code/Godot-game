@@ -249,6 +249,22 @@ static func add_extensions(world: Dictionary):
             "width":2000,"platforms":[[520,470,260],[1480,470,260]],"spawns":{"entry":Vector2(250,590)},"portals":[],"enemies":[[1350,610,boss]],
             "loot_zone":band_for(p.level),"boss":boss,"notice":"%s  •  Lv %d boss. Jump over slams and low sweeps!" % [p.name,p.level]}
         link(world,town,arena,"Boss: %s\nLv %d" % [p.name,p.level])
+        # Hard-mode rematch next to the normal lair.
+        var hard=EnemyStats.profile(boss+"_hard")
+        var hard_arena=arena+"_hard"
+        world[hard_arena]=world[arena].duplicate(true)
+        world[hard_arena].merge({"id":hard_arena,"name":hard.name+"'s Lair","title":"%s  /  HARD BOSS LV %d" % [hard.name.to_upper(),hard.level],"level":hard.level,
+            "enemies":[[1350,610,boss+"_hard"]],"loot_zone":band_for(hard.level),"boss":boss+"_hard","hard":true,"portals":[],
+            "notice":"%s  •  Lv %d hard rematch. Faster patterns, better loot." % [hard.name,hard.level]},true)
+        link(world,town,hard_arena,"Hard: %s\nLv %d" % [p.name,hard.level])
+    var Raids=preload("res://data/raids.gd")
+    for raid in Raids.RAIDS:
+        var info=Raids.RAIDS[raid]
+        var arena=Raids.arena_id(raid)
+        world[arena]={"id":arena,"name":info.name+"'s Domain","title":"%s  /  RAID LV %d" % [info.name.to_upper(),info.level],"safe":false,"region":info.town,"biome":info.biome,
+            "level":info.level,"width":2800,"platforms":[[700,470,300],[1400,400,360],[2100,470,300]],"spawns":{"entry":Vector2(250,590)},"portals":[],"enemies":[],
+            "loot_zone":band_for(info.level),"boss":info.phases[0][0],"raid":raid,"notice":info.intro}
+        link(world,info.town,arena,"RAID: %s\nLv %d+" % [info.name,info.level])
 static func add_portal(world: Dictionary,id: String,x: int,target: String,spawn: String,text: String):
     world[id].portals.append({"position":Vector2(x,610),"target":target,"spawn":spawn,"label":text+"\nUp to travel"})
 static func route_between(start_id: String,end_id: String) -> Array:

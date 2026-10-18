@@ -222,9 +222,13 @@ func _physics_process(delta):
         if state!=null and InputMap.has_action("potion_mp") and Input.is_action_just_pressed("potion_mp"): state.use_potion("mp")
         if combat != null:
             if Input.is_action_pressed("attack"): combat.begin_attack(state.basic_skill())
-            for slot in state.slots:
-                if InputMap.has_action("skill_"+slot) and Input.is_action_just_pressed("skill_"+slot):
-                    combat.begin_attack(state.slots[slot])
+            # Skills on any key; holding an attack skill keeps using it.
+            for code in state.keys:
+                var action="key_%d" % code
+                if not InputMap.has_action(action): continue
+                var id=state.keys[code]
+                if Input.is_action_just_pressed(action) or Catalog.skill(id).kind=="attack" and Input.is_action_pressed(action):
+                    combat.begin_attack(id)
     var pose = "idle"
     if not is_on_floor(): pose = "jump"
     elif absf(velocity.x) > 15: pose = "run"

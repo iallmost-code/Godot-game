@@ -86,9 +86,14 @@ func _ready():
         save_store.use_slot(selected)
         state.initialize_class(selected)
         save_store.load_into(state,bindings)
+        state.adopt_legacy_keys(bindings.legacy_skill_keys)
         if state.migration_note!="": startup_warning=state.migration_note
     state.changed.connect(func(): call_deferred("persist"))
+    # Skills sit on any key; rebuild their input actions whenever the keys change.
+    state.changed.connect(refresh_skill_keys)
+    refresh_skill_keys()
     menu.binding_changed.connect(persist)
+    menu.binding_changed.connect(refresh_skill_keys)
     menu.character_requested.connect(switch_character)
     menu.save_requested.connect(func():
         if save_store.save(state,bindings): hud.show_notice("Character saved."))
@@ -195,6 +200,8 @@ func switch_character(slot: String) -> bool:
     combat.combo_orbs=0
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
+    state.adopt_legacy_keys(bindings.legacy_skill_keys)
+    refresh_skill_keys()
     respawn_map_id=state.town
     menu.close()
     change_map(state.town,"entry")
@@ -250,6 +257,12 @@ func _process(delta):
         camera.position=Vector2(lerpf(camera.position.x,clampf(player.position.x,557,map.width-557),minf(1,delta*6)),lerpf(camera.position.y,camera_y(),minf(1,delta*5)))
         if state.pet!=(pet_node.pet_id if pet_node!=null and is_instance_valid(pet_node) else ""): refresh_pet()
 
+var skill_key_signature=""
+func refresh_skill_keys():
+    var signature=str(state.keys)+str(bindings.current())
+    if signature==skill_key_signature: return
+    skill_key_signature=signature
+    preload("res://systems/keymap.gd").apply_skills(state,bindings)
 func persist():
     if not test_mode and save_store!=null: save_store.save(state,bindings)
 

@@ -5,16 +5,39 @@ var state
 var bindings
 var selected_tier=1
 var note=""
+# Skill waiting for a key press from "Set key".
+var capture_skill=""
+const Keymap=preload("res://systems/keymap.gd")
 func bind(s,b=null):
+    process_mode=Node.PROCESS_MODE_ALWAYS
     state=s
     bindings=b
     selected_tier=state.tier()
     refresh()
 func assign_skill(slot: String,id: String) -> bool:
     var result=state.assign_skill(slot,id)
-    note="Assigned to "+slot_label(slot)+". Existing skills move or swap automatically." if result else "Learn this skill and unlock its job first."
+    if result and bindings!=null: Keymap.apply_skills(state,bindings)
+    note="Assigned to "+slot.to_upper()+"." if result else "Learn this skill and unlock its job first."
     refresh()
     return result
+func start_capture(id: String):
+    capture_skill=id
+    note="Press any key for %s (Escape cancels, Backspace clears)." % state.skill_name(id)
+    refresh()
+func _input(event):
+    if capture_skill=="" or not event is InputEventKey or not event.pressed or event.echo: return
+    var code=event.physical_keycode if event.physical_keycode!=0 else event.keycode
+    var id=capture_skill
+    capture_skill=""
+    if code==KEY_ESCAPE: note="Cancelled."
+    elif code==KEY_BACKSPACE and state.key_of(id)!=0:
+        Keymap.clear(state,bindings,state.key_of(id))
+        note="%s removed from its key." % state.skill_name(id)
+    else:
+        var problem=Keymap.assign(state,bindings,code,"skill",id)
+        note=problem if problem!="" else "%s is now on %s." % [state.skill_name(id),Keymap.key_name(code)]
+    get_viewport().set_input_as_handled()
+    refresh()
 func rank_up(id: String,times: int=1):
     var gained=0
     for i in range(times):
@@ -48,11 +71,11 @@ func refresh():
         var button=Style.button(text+" [%d]" % state.sp[str(t)],func(): selected_tier=t; refresh())
         button.modulate=Color("b7d88a") if t==selected_tier else Color.WHITE
         tabs.add_child(button)
-    var hotbar=HBoxContainer.new()
+    var hotbar=HFlowContainer.new()
     add_child(hotbar)
-    for slot in Catalog.SLOTS:
-        var assigned=state.slots[slot]
-        hotbar.add_child(Style.label(slot_label(slot)+": "+(state.skill_name(assigned) if assigned!="" else "—")+"   ",13,Color("f4d48a")))
+    for code in Keymap.skill_keys(state):
+        hotbar.add_child(Style.label(Keymap.key_name(code)+": "+state.skill_name(state.keys[code])+"   ",13,Color("f4d48a")))
+    if state.keys.is_empty(): hotbar.add_child(Style.label("No skills on keys yet. Use Set key below, or Menu → Keys for the full keyboard.",13,Color("f4d48a")))
     if note!="": add_child(Style.label(note,15,Color("8ed9d0")))
     var job_id="beginner" if selected_tier==0 else job_for_tier(selected_tier)
     if job_id=="":
@@ -92,12 +115,13 @@ func refresh():
         five.disabled=blocked
         line.add_child(five)
         if skill.active:
-            for slot in Catalog.SLOTS:
-                var button=Style.button(slot_label(slot)+("•" if state.slots[slot]==id else ""),func(): assign_skill(slot,id))
-                button.custom_minimum_size.x=40
-                button.disabled=not state.can_use(id)
-                button.tooltip_text="Move or swap this skill into "+slot_label(slot)+"." if state.can_use(id) else "Learn rank 1 first."
-                line.add_child(button)
+            var on_key=state.key_of(id)
+            var waiting=capture_skill==id
+            var button=Style.button("Press a key…" if waiting else ("Key: %s" % Keymap.key_name(on_key) if on_key!=0 else "Set key"),func(): start_capture(id))
+            button.custom_minimum_size.x=110
+            button.disabled=not state.can_use(id)
+            button.tooltip_text="Click, then press any key to put this skill on it." if state.can_use(id) else "Learn rank 1 first."
+            line.add_child(button)
         row.add_child(Style.label(skill.description+("  Requires "+Catalog.skill(skill.requires).name+"." if skill.has("requires") else ""),13,Color("acc6c6")))
         row.add_child(Style.label(details(id,maxi(1,rank)),12,Color("e1bf83")))
 func details(id: String,rank: int) -> String:
@@ -121,6 +145,4 @@ func details(id: String,rank: int) -> String:
     if skill.has("duration"): parts.append("%ds" % v.call("duration"))
     if v.call("cooldown")>=1.0 and skill.active: parts.append("%.0fs cooldown" % v.call("cooldown"))
     return "Rank %d: " % rank+"  •  ".join(parts)
-func slot_label(slot: String) -> String:
-    if bindings!=null and bindings.current().has("skill_"+slot): return OS.get_keycode_string(bindings.current()["skill_"+slot])
-    return slot.to_upper()
+

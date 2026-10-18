@@ -29,6 +29,8 @@ var charge_time=0.0
 var charge_windup=0.0
 var charge_cooldown=2.0
 var age=0.0
+# Field boss name; empty for ordinary monsters.
+var elite_name=""
 signal defeated(position: Vector2, definition_id: String)
 func _ready():
     profile=EnemyStats.profile(definition_id)
@@ -55,7 +57,17 @@ func _ready():
     shape.position.y=-capsule.height/2-(26 if behavior=="flyer" else 0)
     add_child(shape)
     attack_timer=randf_range(0.8,1.8)
+    if elite_name!="": make_elite()
     if profile.get("sprite",false): build_sprite()
+# Field bosses: a giant named version of a map monster.
+func make_elite():
+    profile=profile.duplicate()
+    profile.name=elite_name
+    profile.size=profile.get("size",1.0)*2.8
+    max_hp*=30
+    hp=max_hp
+    is_heavy=true
+    add_to_group("field_bosses")
 func build_sprite():
     sprite=Sprite2D.new()
     sprite.texture=preload("res://art/enemies.png")
@@ -100,7 +112,7 @@ func immobile() -> bool: return has_status("stun") or has_status("freeze")
 func can_attack() -> bool: return not immobile() and not has_status("seal") and not has_status("doom")
 func damage_taken_multiplier() -> float:
     return (1.25 if has_status("armor_break") else 1.0)*(1.3 if has_status("taunt") else 1.0)
-func xp_multiplier() -> float: return 1.3 if has_status("taunt") else 1.0
+func xp_multiplier() -> float: return (1.3 if has_status("taunt") else 1.0)*(35.0 if elite_name!="" else 1.0)
 func speed_multiplier() -> float:
     if has_status("web") or immobile(): return 0.0
     return (0.5 if has_status("slow") else 1.0)*(0.6 if has_status("doom") else 1.0)
@@ -218,7 +230,7 @@ func shoot(amount: int,angle: float=0.0,origin_offset:=Vector2(0,-25)):
     return projectile
 func attack_damage(multiplier=1.0) -> int:
     var weakened=0.7 if has_status("weaken") else 1.0
-    return EnemyStats.damage(definition_id,level,multiplier*weakened)
+    return EnemyStats.damage(definition_id,level,multiplier*weakened*(1.8 if elite_name!="" else 1.0))
 func try_contact_damage():
     if dead or not is_instance_valid(player) or has_status("doom") or immobile(): return
     var offset=player.global_position-global_position

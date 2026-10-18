@@ -25,7 +25,8 @@ func run(t):
     event.physical_keycode=KEY_SHIFT
     event.pressed=true
     t.root.push_input(event)
-    t.check(b.current().attack==KEY_SPACE,"captured duplicate key rejected")
+    t.check(b.current().attack==KEY_SHIFT and b.current().jump==KEY_SPACE,"capturing a key another action uses swaps the two actions")
+    controls.restore_defaults()
     controls.start_capture("attack")
     event.physical_keycode=KEY_G
     t.root.push_input(event)
@@ -69,6 +70,8 @@ func run(t):
     captured.pressed=false
     Input.parse_input_event(captured.duplicate())
     Input.flush_buffered_events()
+    control.restore_defaults()
+    control.start_capture("jump")
     captured=InputEventKey.new()
     captured.physical_keycode=KEY_ESCAPE
     captured.pressed=true
@@ -95,13 +98,17 @@ func run(t):
     assign_game.state.assign_skill("z","power_strike")
     assign_game.menu.open_panel("skills")
     await t.process_frame
-    var button=find_button(assign_game.menu.current_panel,"C")
-    t.check(button!=null and not button.disabled,"learned skill has an active assignment button")
+    var button=find_button(assign_game.menu.current_panel,"Key: Z")
+    t.check(button!=null and not button.disabled,"learned skill has a Set key button showing its key")
     if button!=null:
         button.pressed.emit()
+        var press=InputEventKey.new()
+        press.physical_keycode=KEY_C
+        press.pressed=true
+        t.root.push_input(press)
         await t.process_frame
-        t.check(assign_game.state.slots.c=="power_strike" and assign_game.state.slots.z=="","paused-menu button callback moves a learned skill")
-        t.check(assign_game.hud.skills[3].icon.footer.contains("Heavy Blow"),"hotbar updates after a menu assignment")
+        t.check(assign_game.state.slots.c=="power_strike" and assign_game.state.slots.z=="","Set key then a key press moves the skill while paused")
+        t.check(assign_game.hud.skills[1].icon.footer.contains("Heavy Blow"),"hotbar updates after a menu assignment")
     assign_game.menu.close()
     assign_game.queue_free()
     await t.process_frame
