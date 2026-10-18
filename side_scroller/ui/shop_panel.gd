@@ -33,7 +33,7 @@ func sell(uid: int,dismantle: bool):
     var inst=state.instance(uid)
     var name=ItemText.title(inst)
     var amount=state.dismantle(uid) if dismantle else state.sell(uid)
-    note=("%s %s for %d %s." % ["Dismantled" if dismantle else "Sold",name,amount,"Shards" if dismantle else "coins"]) if amount>0 else "Worn gear cannot be sold."
+    note=("%s %s for %d %s." % ["Dismantled" if dismantle else "Sold",name,amount,"Shards" if dismantle else "coins"]) if amount>0 else "Worn or locked gear cannot be sold or dismantled."
     refresh()
 func bulk(dismantle: bool):
     var total=0

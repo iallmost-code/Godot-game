@@ -22,8 +22,11 @@ var mana_button
 var boss_target
 var player
 var boss_panel
+var boss_warning
 var boss_label
 var boss_bar
+var partner_bar
+var partner_label
 var buff_label
 var minimap
 signal travel_requested(destination: String)
@@ -57,9 +60,9 @@ func bind(s,c,b=null):
     root_control.add_child(minimap)
     var top=HBoxContainer.new()
     top.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-    top.position=Vector2(-600,22)
+    top.position=Vector2(-770,22)
     root_control.add_child(top)
-    for id in ["stats","skills","inventory","quests","map"]:
+    for id in ["stats","skills","inventory","quests","map","journey","bosses"]:
         var menu_button=Style.button(id.capitalize(),func(): menu_requested.emit(id))
         top.add_child(menu_button)
         menu_buttons[id]=menu_button
@@ -72,6 +75,18 @@ func bind(s,c,b=null):
     travel_buttons.travel_hub=Style.button("Portal hub [H]",func(): travel_requested.emit("portal_hub"))
     travel_buttons.menu_map=Style.button("Level guide [M]",func(): menu_requested.emit("map"))
     for button in travel_buttons.values(): travel.add_child(button)
+    partner_bar=ProgressBar.new()
+    partner_bar.position=Vector2(25,177)
+    partner_bar.size=Vector2(240,22)
+    partner_bar.show_percentage=false
+    partner_bar.visible=false
+    root_control.add_child(partner_bar)
+    partner_label=Style.label("",12,Color.WHITE)
+    partner_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    partner_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+    partner_label.add_theme_constant_override("outline_size",2)
+    partner_label.add_theme_color_override("font_outline_color",Color("38234e"))
+    partner_bar.add_child(partner_label)
     boss_panel=PanelContainer.new()
     boss_panel.position=Vector2(340,145)
     boss_panel.custom_minimum_size=Vector2(600,60)
@@ -80,6 +95,10 @@ func bind(s,c,b=null):
     boss_panel.add_child(boss_layout)
     boss_label=Style.label("Rootwarden",18,Color("f4d48a"))
     boss_layout.add_child(boss_label)
+    boss_warning=Style.label("",17,Color("a83227"))
+    boss_warning.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+    boss_warning.visible=false
+    boss_layout.add_child(boss_warning)
     boss_bar=create_bar(boss_layout,Color("bd729c"))
     boss_panel.hide()
     var panel=PanelContainer.new()
@@ -190,9 +209,14 @@ func refresh():
         var nearby=is_instance_valid(boss_target) and boss_target.hp>0 and player!=null and absf(player.global_position.x-boss_target.global_position.x)<650
         boss_panel.visible=nearby
         if nearby:
-            boss_label.text="Lv %d %s  •  %d / %d" % [boss_target.level,boss_target.profile.get("name","Boss") if boss_target.get("profile")!=null else "Rootwarden",boss_target.hp,boss_target.max_hp]
+            boss_label.text="Lv %d %s • Phase %d • %d / %d" % [boss_target.level,boss_target.profile.get("name","Boss"),boss_target.stage,boss_target.hp,boss_target.max_hp]
             boss_bar.max_value=boss_target.max_hp
             boss_bar.value=boss_target.hp
+            var warning=boss_target.phase=="windup"
+            boss_warning.visible=warning
+            if warning:
+                var pattern=boss_target.pattern if boss_target.has_method("start_pattern") else boss_target.attack_kind
+                boss_warning.text=preload("res://actors/boss.gd").LABELS.get(pattern,"WATCH THE WARNING!")
     for action in travel_buttons:
         var key=Keymap.key_name(int(bindings.current()[action])) if bindings!=null else ""
         travel_buttons[action].text={"travel_town":"Nearest town","travel_hub":"Portal hub","menu_map":"Level guide"}[action]+" ["+key+"]"
@@ -210,6 +234,14 @@ func refresh():
     if state.buff_group("combo")!="": parts.append("Orbs "+"●".repeat(combat.combo_orbs)+"○".repeat(maxi(0,int(maxf(5,state.bonus("combo_max")))-combat.combo_orbs)))
     if player!=null and player.stun_time>0: parts.push_front("STUNNED")
     buff_label.text="  •  ".join(parts)
+    buff_label.tooltip_text="Active buffs and summons. Timers count down while playing."
+    if combat.partner_time>0:
+        var duration=maxf(1,combat.partner_duration)
+        partner_bar.visible=true
+        partner_bar.max_value=duration
+        partner_bar.value=combat.partner_time
+        partner_label.text="SHADOW TWIN  %ds" % ceili(combat.partner_time)
+    else:partner_bar.visible=false
     hp_bar.max_value=stats.max_hp
     hp_bar.value=state.hp
     mp_bar.max_value=stats.max_mp

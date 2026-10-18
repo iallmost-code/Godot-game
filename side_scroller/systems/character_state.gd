@@ -1,6 +1,7 @@
 extends RefCounted
 const Catalog = preload("res://data/catalog.gd")
 const Adventure = preload("res://data/adventure.gd")
+const Quality=preload("res://data/loot_quality.gd")
 const VERSION=3
 const INVENTORY_LIMIT=128
 const POOLS=["0","1","2","3","4"]
@@ -195,7 +196,8 @@ func gear_totals() -> Dictionary:
                 for stat in ["STR","DEX","INT","LUK"]: total[stat]+=item.stats.ALL
             else: total[key]+=item.stats[key]
         if item.slot!="weapon": total.hp+=inst.plus*(5+int(item.req/4.0))
-        var bonus=inst.get("bonus",{})
+        var bonus=inst.get("bonus",{}).duplicate()
+        for key in inst.get("affixes",{}): bonus[key]=bonus.get(key,0)+inst.affixes[key]
         for key in bonus:
             if key=="ALL":
                 for stat in ["STR","DEX","INT","LUK"]: total[stat]+=bonus.ALL
@@ -313,11 +315,11 @@ func add_item(id: String) -> bool: return add_item_uid(id)!=0
 func item_attack(inst: Dictionary) -> int:
     var item=Catalog.items()[inst.id]
     var base=0 if item.attack<=0 else item.attack+inst.plus*maxi(1,int(round(item.attack*0.06)))
-    return maxi(0,base+int(inst.get("bonus",{}).get("attack",0)))
+    return maxi(0,base+int(inst.get("bonus",{}).get("attack",0))+int(inst.get("affixes",{}).get("attack",0)))
 func item_defense(inst: Dictionary) -> int:
     var item=Catalog.items()[inst.id]
     var base=0 if item.defense<=0 and item.slot=="weapon" else item.defense+inst.plus*maxi(1,int(round(item.defense*0.1)))
-    return maxi(0,base+int(inst.get("bonus",{}).get("defense",0)))
+    return maxi(0,base+int(inst.get("bonus",{}).get("defense",0))+int(inst.get("affixes",{}).get("defense",0)))
 # Why an item cannot be worn, or "" when it can.
 func equip_problem(id: String) -> String:
     var item=Catalog.items().get(id,{})
@@ -354,7 +356,7 @@ func shard_yield(inst: Dictionary) -> int:
     return 1+int(Catalog.items()[inst.id].req/10.0)+inst.plus*2
 func sell(uid: int) -> int:
     var inst=instance(uid)
-    if inst.is_empty() or is_equipped(uid): return 0
+    if inst.is_empty() or is_equipped(uid) or inst.get("locked",false): return 0
     var amount=sell_value(inst)
     remove_instance(uid)
     coins=mini(1000000,coins+amount)
@@ -362,7 +364,7 @@ func sell(uid: int) -> int:
     return amount
 func dismantle(uid: int) -> int:
     var inst=instance(uid)
-    if inst.is_empty() or is_equipped(uid): return 0
+    if inst.is_empty() or is_equipped(uid) or inst.get("locked",false): return 0
     var amount=shard_yield(inst)
     remove_instance(uid)
     shards=mini(1000000,shards+amount)
@@ -372,16 +374,19 @@ func dismantle(uid: int) -> int:
 func worse_gear() -> Array:
     var result=[]
     for inst in inventory:
-        if is_equipped(inst.uid): continue
+        if is_equipped(inst.uid) or inst.get("locked",false) or Quality.RANKS[Quality.rarity(inst)]>=2: continue
         var item=Catalog.items()[inst.id]
         if item.get("path",archetype)!=archetype:
             result.append(inst.uid)
             continue
         var worn=instance(equipped.get(item.slot,0))
         if worn.is_empty(): continue
-        var score=item_attack(inst)*3+item_defense(inst)
-        var worn_score=item_attack(worn)*3+item_defense(worn)
-        if score<worn_score or score==worn_score and inst.plus<=worn.plus: result.append(inst.uid)
+        var candidate=item_properties(inst)
+        var baseline=item_properties(worn)
+        var improves=false
+        for key in candidate:
+            if candidate[key]>baseline[key]:improves=true
+        if not improves:result.append(inst.uid)
     return result
 func forge_cost(inst: Dictionary) -> Dictionary:
     if inst.plus>=Catalog.MAX_PLUS: return {}
@@ -426,7 +431,12 @@ func collect_reward(reward: Dictionary) -> bool:
         if int(reward.get(key,0)) < 0: return false
     if reward.has("scroll") and not Adventure.scrolls().has(reward.scroll): return false
     if reward.has("quest_item") and not Adventure.QUEST_ITEMS.has(reward.quest_item): return false
-    if reward.has("item"): add_item_uid(reward.item)
+    var metadata={}
+    if reward.has("item") and not Quality.read(reward,metadata): return false
+    if reward.has("item"):
+        var uid=add_item_uid(reward.item)
+        var added=instance(uid)
+        added.merge(metadata,true)
     if reward.has("scroll"): scrolls[reward.scroll]=mini(9999,int(scrolls.get(reward.scroll,0))+1)
     if reward.has("quest_item"): quest_items[reward.quest_item]=mini(9999,int(quest_items.get(reward.quest_item,0))+1)
     coins = mini(1000000, coins+int(reward.get("coins",0)))
@@ -695,7 +705,7 @@ func load_record(record: Dictionary) -> bool:
         if not whole(entry.get("uid",-1),1,1000000000) or not whole(entry.get("plus",-1),0,Catalog.MAX_PLUS) or uids.has(int(entry.uid)): return false
         uids.append(int(entry.uid))
         var inst={"uid":int(entry.uid),"id":entry.id,"plus":int(entry.plus)}
-        if not trial.read_upgrades(entry,inst): return false
+        if not trial.read_upgrades(entry,inst) or not Quality.read(entry,inst): return false
         trial.inventory.append(inst)
     if not whole(record.get("next_uid",-1),1,1000000001) or (not uids.is_empty() and int(record.next_uid)<=uids.max()): return false
     trial.next_uid=int(record.next_uid)
@@ -829,7 +839,7 @@ func apply_scroll(uid: int,id: String,roll: float=-1.0) -> String:
         inst.slots=upgrade_slots(inst)-1
         if hit:
             inst.scrolled=int(inst.get("scrolled",0))+1
-            var bonus=inst.get("bonus",{})
+            var bonus=inst.get("bonus",{}).duplicate()
             if id=="scroll_chaos":
                 var item=Catalog.items()[inst.id]
                 var keys=bonus.keys()
@@ -878,3 +888,33 @@ func adopt_legacy_keys(legacy: Dictionary):
     for code in moved: keys.erase(code)
     for code in moved: keys[moved[code][0]]=moved[code][1]
     if not moved.is_empty(): changed.emit()
+
+func set_item_locked(uid: int,locked: bool) -> bool:
+    var inst=instance(uid)
+    if inst.is_empty():return false
+    inst.locked=locked
+    changed.emit()
+    return true
+func sort_inventory(mode="level"):
+    inventory.sort_custom(func(a,b):
+        if mode=="rarity":
+            var delta=Quality.RANKS[Quality.rarity(a)]-Quality.RANKS[Quality.rarity(b)]
+            if delta!=0:return delta>0
+        if mode=="slot":
+            var left=Catalog.GEAR_SLOTS.find(Catalog.items()[a.id].slot)
+            var right=Catalog.GEAR_SLOTS.find(Catalog.items()[b.id].slot)
+            if left!=right:return left<right
+        var level_delta=Catalog.items()[a.id].req-Catalog.items()[b.id].req
+        return level_delta>0 if level_delta!=0 else a.uid<b.uid)
+    changed.emit()
+
+func item_properties(inst: Dictionary) -> Dictionary:
+    var item=Catalog.items()[inst.id]
+    var total={"attack":item_attack(inst),"defense":item_defense(inst),"STR":0,"DEX":0,"INT":0,"LUK":0,"hp":0,"mp":0}
+    for values in [item.stats,inst.get("bonus",{}),inst.get("affixes",{})]:
+        for key in values:
+            if key=="ALL":
+                for stat in ["STR","DEX","INT","LUK"]:total[stat]+=values[key]
+            elif key in ["STR","DEX","INT","LUK","hp","mp"]:total[key]+=values[key]
+    if item.slot!="weapon":total.hp+=inst.plus*(5+int(item.req/4.0))
+    return total

@@ -7,6 +7,9 @@ const Looks=preload("res://visuals/looks_layout.gd")
 const Adventure=preload("res://data/adventure.gd")
 const SKIN_SHADER=preload("res://visuals/skin_tint.gdshader")
 const TEXTURES={"warrior":preload("res://art/warrior_body.png"),"thief":preload("res://art/thief_body.png"),"mage":preload("res://art/mage_body.png"),"archer":preload("res://art/archer_body.png")}
+var gear_layers: Array=[]
+var worn_gear={}
+var shadow_echo=false
 var appearance="spear"
 var pose="idle"
 var facing=1
@@ -34,6 +37,12 @@ var hair_sprite: Sprite2D
 var skin_material: ShaderMaterial
 func walk_frame_count() -> int: return 8
 func _ready():
+    for behind in [true,false]:
+        var layer=preload("res://visuals/gear_overlay.gd").new()
+        layer.behind=behind
+        layer.z_index=-1 if behind else 2
+        add_child(layer)
+        gear_layers.append(layer)
     sprite=Sprite2D.new()
     sprite.region_enabled=true
     sprite.region_filter_clip_enabled=true
@@ -123,9 +132,16 @@ func set_pose(mode: String,direction: int,time: float):
     sprite.flip_h=direction<0
     sprite.position=Vector2(-(rect.size.x-anchor.x) if sprite.flip_h else -anchor.x,-anchor.y)*factor+Vector2(0,breath)
     apply_skin(mask)
-    var head: Vector2=(source.heads[frame] if source.has("heads") else Vector2.ZERO)-rect.position
+    var head: Vector2=(source.heads[frame] if source.has("heads") else Layout.HEAD_ANCHORS[key][frame])-rect.position
     var head_at=sprite.position+Vector2(rect.size.x-head.x if sprite.flip_h else head.x,head.y)*factor
     place_overlays(custom,climbing,key,frame,head_at,factor,direction)
+    for layer in gear_layers:
+        layer.equipment=worn_gear
+        layer.head=head_at
+        layer.facing=direction
+        layer.pose=mode
+        layer.phase=time if mode!="run" else walk_phase
+        layer.queue_redraw()
     weapon_mount.visible=not climbing
     if climbing:
         queue_redraw()
@@ -182,6 +198,24 @@ func weapon_angle(mode: String,elapsed: float) -> float:
     if thrust: return PI/2 if p<0.8 else lerpf(PI/2,rest,(p-0.8)/0.2)
     return lerpf(0.9,2.5,smoothstep(0,0.75,p))
 func _draw():
+    if shadow_echo:
+        draw_arc(Vector2(0,-9),23,0,TAU,32,Color(.7,.5,1,.65),2,true)
+        for i in range(5):
+            var angle=phase*2+i*TAU/5
+            draw_circle(Vector2(cos(angle)*22,-35+sin(angle)*25),2,Color(.8,.65,1,.7))
+        draw_string_outline(ThemeDB.fallback_font,Vector2(-31,-103),"Shadow Twin",HORIZONTAL_ALIGNMENT_LEFT,-1,11,3,Color("30233d"))
+        draw_string(ThemeDB.fallback_font,Vector2(-31,-103),"Shadow Twin",HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("e2c5ff"))
     draw_set_transform(Vector2(0,1),0,Vector2(19,4))
     draw_circle(Vector2.ZERO,1,Color(0.05,0.10,0.12,0.20))
     draw_set_transform(Vector2.ZERO)
+
+func set_worn(state):
+    worn_gear={}
+    if state==null:return
+    for slot in ["hat","armor","cape","shoes"]:
+        var item=state.instance(state.equipped.get(slot,0))
+        if not item.is_empty():worn_gear[slot]=item
+    var weapon=state.instance(state.equipped.get("weapon",0))
+    if weapon_sprite!=null:
+        var quality=weapon.get("rarity","common")
+        weapon_sprite.modulate=Color.WHITE.lerp(preload("res://data/loot_quality.gd").COLORS.get(quality,Color.WHITE),.25 if quality in ["rare","epic"] else 0)

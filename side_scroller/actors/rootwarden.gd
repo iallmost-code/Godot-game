@@ -2,6 +2,8 @@ extends "res://actors/enemy.gd"
 const Layout=preload("res://visuals/boss_layout.gd")
 const ART=preload("res://art/bosses/rootwarden.png")
 var phase="idle"
+var stage=1
+var enraged=false
 var attack_kind="slam"
 var windup=0.0
 var recovery=1.2
@@ -27,17 +29,19 @@ func start_attack(kind: String):
     if dead: return
     attack_kind=kind
     phase="windup"
-    windup=0.95 if kind=="slam" else 0.8
+    var warning_sound=get_tree().get_first_node_in_group("soundscape")
+    if warning_sound!=null:warning_sound.play_effect("warning")
+    windup=maxf(0.65,(0.95 if kind=="slam" else 0.8)-.1*(stage-1))
     velocity.x=0
 func resolve_attack():
     if player==null or not is_instance_valid(player): return
     if attack_kind=="slam":
         slam_flash=0.35
         var offset=player.global_position-global_position
-        if absf(offset.x)<170 and offset.y>=-30 and absf(offset.y)<60:
+        if absf(offset.x)<170+20*(stage-1) and offset.y>=-30 and absf(offset.y)<60:
             if player.receive_damage(attack_damage(1.4),Vector2(facing*190,-130),self): player.apply_stun(0.8)
     else:
-        for angle in [-0.22,0.0,0.22]:
+        for angle in ([-.35,-.18,0,.18,.35] if stage>=2 else [-0.22,0.0,0.22]):
             var seed=preload("res://world/projectile.gd").new()
             seed.target=player
             seed.damage=attack_damage(0.75)
@@ -48,6 +52,7 @@ func resolve_attack():
             seed.direction=(player.global_position+Vector2(0,-26)-seed.global_position).normalized().rotated(angle)
 func _physics_process(delta):
     if dead: return
+    update_stage()
     tick_statuses(delta)
     hurt_flash=maxf(0,hurt_flash-delta)
     slam_flash=maxf(0,slam_flash-delta)
@@ -63,7 +68,7 @@ func _physics_process(delta):
             if windup<=0:
                 resolve_attack()
                 phase="recover"
-                recovery=1.5
+                recovery=1.5-.2*(stage-1)
         elif phase=="recover":
             velocity.x=0
             recovery=maxf(0,recovery-delta)
@@ -99,9 +104,17 @@ func update_art():
 func _draw():
     if phase=="windup" and attack_kind=="slam" or slam_flash>0:
         draw_set_transform(Vector2(0,-2),0,Vector2(1,0.14))
-        draw_circle(Vector2.ZERO,170,Color(1,0.35,0.22,0.24 if phase=="windup" else slam_flash))
-        draw_arc(Vector2.ZERO,170,0,TAU,64,Color("ffd59e"),3,true)
+        draw_circle(Vector2.ZERO,170+20*(stage-1),Color(1,0.35,0.22,0.24 if phase=="windup" else slam_flash))
+        draw_arc(Vector2.ZERO,170+20*(stage-1),0,TAU,64,Color("ffd59e"),3,true)
         draw_set_transform(Vector2.ZERO)
     if phase=="windup":
         draw_string_outline(ThemeDB.fallback_font,Vector2(-80,-165),"SLAM — JUMP!" if attack_kind=="slam" else "SEED VOLLEY!",HORIZONTAL_ALIGNMENT_LEFT,-1,19,4,Color("282031"))
         draw_string(ThemeDB.fallback_font,Vector2(-80,-165),"SLAM — JUMP!" if attack_kind=="slam" else "SEED VOLLEY!",HORIZONTAL_ALIGNMENT_LEFT,-1,19,Color("ffdcac"))
+
+func update_stage():
+    var next_stage=3 if hp<=max_hp*.35 else 2 if hp<=max_hp*.60 else 1
+    if next_stage<=stage:return
+    stage=next_stage
+    enraged=stage>=2
+    var fx=get_tree().get_first_node_in_group("combat_effects")
+    if fx!=null:fx.add_number(global_position+Vector2(0,-180),"PHASE %d!" % stage,true,true)

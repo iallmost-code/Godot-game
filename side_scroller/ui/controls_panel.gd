@@ -74,6 +74,33 @@ func restore_defaults():
     note="Default action keys restored. Your skills stay on their keys unless a default needed the key."
     binding_changed.emit()
     refresh()
+func set_audio(music: float,effects: float,shake=true):
+    var sound=get_tree().get_first_node_in_group("soundscape")
+    if sound!=null:sound.set_levels(music,effects,shake)
+func audio_controls():
+    var sound=get_tree().get_first_node_in_group("soundscape")
+    if sound==null:return
+    add_child(Style.section("SOUND & COMBAT FEEDBACK"))
+    for key in ["music","effects"]:
+        var row=HBoxContainer.new()
+        add_child(row)
+        var label=Style.label(key.capitalize()+" volume",14)
+        label.custom_minimum_size.x=160
+        row.add_child(label)
+        var slider=HSlider.new()
+        slider.custom_minimum_size=Vector2(280,26)
+        slider.min_value=0
+        slider.max_value=1
+        slider.step=.05
+        slider.value=sound.music_volume if key=="music" else sound.effects_volume
+        row.add_child(slider)
+        slider.value_changed.connect(func(value):
+            set_audio(value if key=="music" else sound.music_volume,value if key=="effects" else sound.effects_volume,sound.shake_enabled))
+    var shake=CheckButton.new()
+    shake.text="Gentle combat camera shake"
+    shake.button_pressed=sound.shake_enabled
+    shake.toggled.connect(func(value): set_audio(sound.music_volume,sound.effects_volume,value))
+    add_child(shake)
 func key_button(code: int) -> Control:
     var on=Keymap.on_key(state,bindings,code)
     var wide={KEY_SPACE:150,KEY_SHIFT:84,KEY_ENTER:76,KEY_BACKSPACE:70,KEY_TAB:62,KEY_CAPSLOCK:70,KEY_CTRL:62,KEY_ALT:56}.get(code,52)
@@ -156,3 +183,4 @@ func refresh():
         skills.add_child(button)
     if not any: add_child(Style.label("Learn active skills in the Skill Book (K) first.",14))
     add_child(Style.button("Restore default action keys",restore_defaults))
+    audio_controls()

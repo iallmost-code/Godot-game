@@ -1,7 +1,7 @@
 extends RefCounted
 # Keys for actions (one key each). Skills live per character in CharacterState.keys
 # and can sit on any key these actions do not use; see systems/keymap.gd.
-const DEFAULTS = {"move_left":KEY_LEFT,"move_right":KEY_RIGHT,"interact":KEY_UP,"jump":KEY_SHIFT,"attack":KEY_SPACE,"potion_hp":KEY_1,"potion_mp":KEY_2,"menu":KEY_ESCAPE,"menu_inventory":KEY_I,"menu_map":KEY_M,"menu_skills":KEY_K,"menu_stats":KEY_S,"travel_hub":KEY_H,"travel_town":KEY_T,"move_down":KEY_DOWN,"menu_quests":KEY_Q}
+const DEFAULTS = {"move_left":KEY_LEFT,"move_right":KEY_RIGHT,"interact":KEY_UP,"jump":KEY_SHIFT,"attack":KEY_SPACE,"potion_hp":KEY_1,"potion_mp":KEY_2,"menu":KEY_ESCAPE,"menu_inventory":KEY_I,"menu_map":KEY_M,"menu_skills":KEY_K,"menu_stats":KEY_S,"travel_hub":KEY_H,"travel_town":KEY_T,"move_down":KEY_DOWN,"menu_quests":KEY_Q,"menu_journey":KEY_J,"menu_bosses":KEY_B}
 # These always need a key; the rest can be cleared (0) to free their key for skills.
 const REQUIRED=["move_left","move_right","move_down","interact","jump","attack","menu"]
 var bindings = DEFAULTS.duplicate()

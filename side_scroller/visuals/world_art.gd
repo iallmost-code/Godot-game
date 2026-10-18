@@ -24,6 +24,10 @@ func _ready():
     data=Maps.definition(map_id)
     biome=data.biome
     palette=Scenery.palette(biome)
+    var atmosphere=preload("res://visuals/region_atmosphere.gd").new()
+    atmosphere.biome=biome
+    atmosphere.z_index=12
+    add_child(atmosphere)
     sky_sprite=Sprite2D.new()
     var backdrop=BRIAR if biome=="roots" else SKY
     sky_sprite.texture=backdrop

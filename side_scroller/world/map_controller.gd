@@ -29,6 +29,7 @@ var boss
 signal portal_requested(map_id: String,spawn_id: String)
 signal advancement_requested(job_id: String)
 signal experience_gained(amount: int)
+signal loot_collected(rare: bool)
 signal reward_notice(message: String)
 signal boss_spawned(enemy: Node2D)
 signal shop_requested
@@ -162,7 +163,7 @@ func reward_for(id: String,lv: int) -> Dictionary:
     elif roll<0.48: reward.shards=1+int(lv/25.0)
     elif roll<0.505: reward={"scroll":Adventure.random_scroll()}
     if EnemyStats.is_boss(id): reward.shards=5+int(lv/10.0)
-    return reward
+    return preload("res://data/loot_quality.gd").decorate(reward,lv,id if EnemyStats.is_boss(id) else "")
 func grant_xp(id: String,node,lv: int=0):
     var profile=EnemyStats.profile(id)
     if lv<=0: lv=profile.level
@@ -324,6 +325,10 @@ func collect(drop) -> bool:
     var r=drop.reward
     var text="%s found! Open Inventory to equip." % Catalog.items()[r.item].name if r.has("item") else "%s found." % Catalog.consumables()[r.consumable].name if r.has("consumable") else "Potion found." if r.has("potions") else "+%d Shards" % r.shards if r.has("shards") else "%s found!" % Adventure.scrolls()[r.scroll].name if r.has("scroll") else "%s (%d)" % [Adventure.QUEST_ITEMS[r.quest_item],int(state.quest_items.get(r.quest_item,0))+1] if r.has("quest_item") else "+%d coins" % r.get("coins",0)
     if drop.try_collect(state):
+        if r.has("item"):
+            var inst=state.inventory.back()
+            text=preload("res://ui/item_text.gd").title(inst)+" found! Open Inventory to compare."
+        loot_collected.emit(r.get("rarity","common") in ["rare","epic"])
         reward_notice.emit(text)
         pickups.erase(drop)
         return true

@@ -5,9 +5,9 @@ extends RefCounted
 const Catalog=preload("res://data/catalog.gd")
 const LABELS={"move_left":"Left","move_right":"Right","move_down":"Down / Climb","interact":"Up / Talk","jump":"Jump","attack":"Attack",
     "potion_hp":"HP Potion","potion_mp":"MP Potion","menu":"Menu","menu_inventory":"Inventory","menu_map":"Map","menu_skills":"Skills",
-    "menu_stats":"Stats","menu_quests":"Quests","travel_hub":"Portal Hub","travel_town":"Nearest Town"}
+    "menu_stats":"Stats","menu_quests":"Quests","menu_journey":"Journey","menu_bosses":"Boss Journal","travel_hub":"Portal Hub","travel_town":"Nearest Town"}
 const SHORT={"move_left":"←","move_right":"→","move_down":"↓","interact":"↑","jump":"Jump","attack":"Atk","potion_hp":"HP","potion_mp":"MP","menu":"Menu",
-    "menu_inventory":"Item","menu_map":"Map","menu_skills":"Skill","menu_stats":"Stat","menu_quests":"Quest","travel_hub":"Hub","travel_town":"Town"}
+    "menu_inventory":"Item","menu_map":"Map","menu_skills":"Skill","menu_stats":"Stat","menu_quests":"Quest","menu_journey":"Jrny","menu_bosses":"Boss","travel_hub":"Hub","travel_town":"Town"}
 # Keyboard drawn by the key config window, row by row.
 const ROWS=[
     [KEY_ESCAPE,KEY_F1,KEY_F2,KEY_F3,KEY_F4,KEY_F5,KEY_F6,KEY_F7,KEY_F8,KEY_F9,KEY_F10,KEY_F11,KEY_F12],
