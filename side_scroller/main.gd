@@ -6,6 +6,9 @@ var sound
 var shake_time=0.0
 var shake_power=0.0
 var step_time=0.0
+var frontend
+var loaded_character=false
+var protected_startup_save=false
 var test_mode=false
 var state
 var bindings
@@ -105,13 +108,16 @@ func _ready():
         var selected=save_store.selected_slot()
         save_store.use_slot(selected)
         state.initialize_class(selected)
-        save_store.load_into(state,bindings)
+        var existing_save=FileAccess.file_exists(save_store.path)
+        loaded_character=save_store.load_into(state,bindings)
+        protected_startup_save=existing_save and not loaded_character
         state.adopt_legacy_keys(bindings.legacy_skill_keys)
         if state.migration_note!="": startup_warning=state.migration_note
     state.changed.connect(func(): call_deferred("persist"))
     # Skills sit on any key; rebuild their input actions whenever the keys change.
     state.changed.connect(refresh_skill_keys)
     refresh_skill_keys()
+    menu.title_requested.connect(return_to_title)
     menu.binding_changed.connect(persist)
     menu.binding_changed.connect(refresh_skill_keys)
     menu.character_requested.connect(switch_character)
@@ -123,6 +129,10 @@ func _ready():
     change_map(state.town,"entry")
     if startup_warning=="": hud.show_notice("Welcome! Arrows move • Shift jumps twice • Space attacks • Up interacts",10)
     else: hud.show_notice(startup_warning,10)
+    frontend=preload("res://ui/front_menu.gd").new()
+    add_child(frontend)
+    frontend.setup(self)
+    if not test_mode:frontend.open_title()
     if test_mode:
         player.set_physics_process(false)
         set_process(false)
@@ -200,7 +210,7 @@ func return_to_town():
     hud.show_notice("Back on your feet. All collected loot and progress are kept.",7)
 func switch_character(slot: String) -> bool:
     if not save_store.slot_paths.has(slot) or slot==save_store.active_slot: return false
-    if not save_store.save(state,bindings): return false
+    if not protected_startup_save and not save_store.save(state,bindings): return false
     var previous_slot=save_store.active_slot
     var previous_bindings=bindings.current()
     save_store.use_slot(slot)
@@ -222,6 +232,8 @@ func switch_character(slot: String) -> bool:
     combat.combo_orbs=0
     for star in get_tree().get_nodes_in_group("player_stars"): star.queue_free()
     state.load_record(next.to_record())
+    loaded_character=true
+    protected_startup_save=false
     state.adopt_legacy_keys(bindings.legacy_skill_keys)
     refresh_skill_keys()
     respawn_map_id=state.town
@@ -292,7 +304,9 @@ func refresh_skill_keys():
     skill_key_signature=signature
     preload("res://systems/keymap.gd").apply_skills(state,bindings)
 func persist():
-    if not test_mode and save_store!=null: save_store.save(state,bindings)
+    if not test_mode and save_store!=null:
+        if protected_startup_save:return
+        save_store.save(state,bindings)
 
 func fast_travel(destination: String) -> bool:
     if Maps.definition(destination).is_empty(): return false
@@ -315,3 +329,16 @@ func _unhandled_input(event):
     elif event.is_action_pressed("travel_town"):
         return_nearest_town()
         get_viewport().set_input_as_handled()
+
+func return_to_title() -> bool:
+    if protected_startup_save:
+        hud.show_notice("Restore a valid backup before saving this character.",8)
+        return false
+    if not save_store.save(state,bindings):
+        hud.show_notice("Could not save. Stay in game and export a backup before leaving.",8)
+        return false
+    menu.close()
+    if dialog.opened:dialog.close()
+    frontend.session_started=true
+    frontend.open_title()
+    return true

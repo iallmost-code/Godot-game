@@ -12,6 +12,12 @@ Choose **Side-Scroller-Warrior.zip** in the Web Editor landing page's **Preload 
 
 Use this standalone project ZIP, not GitHub's repository-wide Code → Download ZIP: that archive also contains the previous 3D prototype.
 
+## Main menu and character selection
+
+The game starts at a title screen. **Continue** resumes your last saved character; **Character Select** shows Warrior, Mage, Archer and Thief as four independent slots, with saved levels, jobs and equipment previews. Pick an empty slot to start that class, or an existing one to continue it. Arrow keys select a class and Enter plays it.
+
+The title also has **Settings**, **How to Play** and **Quit / Exit**. In game, press Escape and click **Main menu** in a window header to save and return. The world stays paused while the title or character screen is open. In the web version, Exit explains how to close the tab after saving.
+
 ## Default controls
 
 | Action | Key |

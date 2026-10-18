@@ -21,6 +21,7 @@ signal import_requested
 signal character_requested(slot: String)
 signal travel_requested(destination: String)
 signal town_requested
+signal title_requested
 signal binding_changed
 func setup(s,b):
     state=s
@@ -66,6 +67,7 @@ func create_window(id: String):
     layout.add_child(title_frame)
     title.size_flags_horizontal=Control.SIZE_EXPAND_FILL
     title_row.add_child(title)
+    title_row.add_child(Style.button("Main menu",func():title_requested.emit()))
     var close_button=Style.button("×",func(): close_window(id))
     close_button.custom_minimum_size=Vector2(30,28)
     close_button.tooltip_text="Close window (Escape or its shortcut)"
