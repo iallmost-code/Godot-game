@@ -73,7 +73,7 @@ func create_window(id: String):
     tabs_by_id={}
     var tabs=HFlowContainer.new()
     layout.add_child(tabs)
-    for tab_id in ["stats","skills","inventory","quests","shop","map","controls","characters","save"]:
+    for tab_id in ["stats","skills","inventory","quests","shop","map","journey","bosses","controls","characters","save"]:
         var tab=Style.button(tab_id.capitalize(),func(): open_panel(tab_id))
         tabs.add_child(tab)
         tabs_by_id[tab_id]=tab
@@ -95,7 +95,7 @@ func open_panel(id: String):
     create_window(id)
     if current_panel!=null and selected=="controls": current_panel.capture_action=""
     selected=id
-    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","map":"WORLD MAP","quests":"QUEST LOG","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
+    window_title.text={"stats":"CHARACTER STATS","skills":"SKILL BOOK","inventory":"ITEM INVENTORY","shop":"MERCHANT","journey":"CHARACTER JOURNEY","bosses":"BOSS JOURNAL","map":"WORLD MAP","quests":"QUEST LOG","controls":"KEY SETTINGS","characters":"CHARACTER SELECT","save":"SAVE & BACKUP"}.get(id,id.to_upper())
     for tab_id in tabs_by_id:
         var action="menu_"+tab_id
         var key_name=" ["+OS.get_keycode_string(bindings.current()[action])+"]" if bindings.current().has(action) else ""
@@ -106,7 +106,7 @@ func open_panel(id: String):
     get_tree().paused=true
     Style.clear(content)
     current_panel=null
-    var scripts={"stats":"stats_panel","skills":"skills_panel","inventory":"inventory_panel","shop":"shop_panel","controls":"controls_panel","map":"map_panel","quests":"quest_panel"}
+    var scripts={"stats":"stats_panel","skills":"skills_panel","inventory":"inventory_panel","shop":"shop_panel","controls":"controls_panel","map":"map_panel","quests":"quest_panel","journey":"journey_panel","bosses":"boss_panel"}
     if scripts.has(id):
         current_panel=load("res://ui/"+scripts[id]+".gd").new()
         content.add_child(current_panel)
@@ -114,8 +114,10 @@ func open_panel(id: String):
         else: current_panel.bind(state,bindings)
         if id=="map":
             current_panel.set_context(world_map_id,player.position if is_instance_valid(player) else Vector2.ZERO)
-            current_panel.travel_requested.connect(func(destination): travel_requested.emit(destination))
             current_panel.town_requested.connect(func(): town_requested.emit())
+        if id in ["map","journey","bosses"]:
+            current_panel.travel_requested.connect(func(destination): travel_requested.emit(destination))
+        if id=="journey":current_panel.panel_requested.connect(open_panel)
         if id in ["inventory","shop"]: current_panel.set_context(world_map_id)
         if id=="controls": current_panel.binding_changed.connect(func(): binding_changed.emit())
     elif id=="characters":
@@ -189,7 +191,7 @@ func _unhandled_input(event):
         else: open_panel("stats")
         get_viewport().set_input_as_handled()
         return
-    for id in ["inventory","map","skills","stats","quests"]:
+    for id in ["inventory","map","skills","stats","quests","journey","bosses"]:
         if event.is_action_pressed("menu_"+id):
             if windows.has(id): close_window(id)
             else: open_panel(id)

@@ -1,10 +1,12 @@
 extends RefCounted
 # Shared item wording for the inventory and the merchant.
+const Quality=preload("res://data/loot_quality.gd")
 const Catalog=preload("res://data/catalog.gd")
 const SLOT_NAMES={"weapon":"Weapon","hat":"Hat","armor":"Armor","gloves":"Gloves","shoes":"Shoes","cape":"Cape","accessory":"Earring"}
 static func title(inst: Dictionary) -> String:
     var item=Catalog.items()[inst.id]
-    return ("+%d " % inst.plus if inst.plus>0 else "")+item.name
+    var prefix=Quality.TROPHIES.get(inst.get("origin",""),Quality.rarity(inst).capitalize() if Quality.rarity(inst)!="common" else "")
+    return ("[LOCKED] " if inst.get("locked",false) else "")+("+%d " % inst.plus if inst.plus>0 else "")+(prefix+" • " if prefix!="" else "")+item.name
 static func stats_line(state,inst: Dictionary) -> String:
     var item=Catalog.items()[inst.id]
     var parts=[]
@@ -20,6 +22,8 @@ static func stats_line(state,inst: Dictionary) -> String:
     for key in bonus:
         if key in ["attack","defense"] or bonus[key]==0: continue
         parts.append("%+d %s (scroll)" % [bonus[key],"All stats" if key=="ALL" else key.to_upper()])
+    for key in inst.get("affixes",{}):
+        parts.append("+%d %s (bonus)" % [inst.affixes[key],key.to_upper()])
     return "  •  ".join(parts)
 static func upgrades(state,inst: Dictionary) -> String:
     var text="%d upgrade slots left" % state.upgrade_slots(inst)
@@ -40,4 +44,9 @@ static func compare(state,inst: Dictionary) -> String:
     for pair in [["ATK",state.item_attack(worn),state.item_attack(inst)],["DEF",state.item_defense(worn),state.item_defense(inst)]]:
         if pair[1]!=0 or pair[2]!=0:
             parts.append("%s %d → %d (%+d)" % [pair[0],pair[1],pair[2],pair[2]-pair[1]])
+    var candidate=state.item_properties(inst)
+    var baseline=state.item_properties(worn)
+    for key in ["STR","DEX","INT","LUK","hp","mp"]:
+        var delta=candidate[key]-baseline[key]
+        if delta!=0:parts.append("%s %+d" % [key.to_upper(),delta])
     return "Compared with worn: "+("  •  ".join(parts) if not parts.is_empty() else "no ATK/DEF change")

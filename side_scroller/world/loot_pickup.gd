@@ -17,9 +17,16 @@ func _process(delta):
     queue_redraw()
 func _draw():
     var bob=sin(age*4)*3
-    draw_circle(Vector2(0,-10+bob),13,Color(1,0.85,0.43,0.15))
+    var tint=preload("res://data/loot_quality.gd").color(reward) if reward.has("item") else Color("efc775")
+    draw_circle(Vector2(0,-10+bob),13,Color(tint,0.2))
+    if reward.get("rarity","common") in ["rare","epic"]:
+        draw_line(Vector2(0,0),Vector2(0,-90),Color(tint,0.22),7,true)
+        draw_circle(Vector2(0,-10+bob),17+sin(age*3)*2,Color(tint,0.6),false,2,true)
+        var label=reward.get("rarity","").to_upper()
+        draw_string_outline(ThemeDB.fallback_font,Vector2(-23,-35+bob),label,HORIZONTAL_ALIGNMENT_LEFT,-1,12,3,Color("292235"))
+        draw_string(ThemeDB.fallback_font,Vector2(-23,-35+bob),label,HORIZONTAL_ALIGNMENT_LEFT,-1,12,tint)
     if reward.has("item"):
-        draw_colored_polygon(PackedVector2Array([Vector2(0,-25+bob),Vector2(9,-12+bob),Vector2(0,bob),Vector2(-9,-12+bob)]),Color("89e7da"))
+        draw_colored_polygon(PackedVector2Array([Vector2(0,-25+bob),Vector2(9,-12+bob),Vector2(0,bob),Vector2(-9,-12+bob)]),tint)
         draw_line(Vector2(0,-22+bob),Vector2(0,-3+bob),Color.WHITE,2)
     elif reward.has("consumable"):
         var mana=reward.consumable.begins_with("mp")

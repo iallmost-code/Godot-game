@@ -23,6 +23,7 @@ Use this standalone project ZIP, not GitHub's repository-wide Code → Download 
 | Skill hotkeys | Z, X, C, V, A, D, F |
 | HP / MP potion | 1 / 2 |
 | Inventory / Map / Skills / Stats / Quests | I / M / K / S / Q |
+| Character Journey / Boss Journal | J / B |
 | Menu / close window | Escape or top-right buttons |
 
 Rebind every key in **Menu → Controls**. Open menus pause the game. Windows stay open independently: drag their title bars, press their shortcut to toggle one, or press Escape to close the front window.
@@ -163,3 +164,17 @@ godot --headless --script res://tests/runner.gd
 ```
 
 The runner prints positive check counts and exits nonzero for failing assertions. It casts every skill of every fourth-job path and visits every hunting ground and boss arena. Engine script errors must also be treated as failures even when Godot returns zero. Native checks and visual capture do not alone establish Web Editor compatibility.
+
+## Combat, equipment and world polish
+
+**J — Character Journey** shows your current job, all completed advancements, upcoming paths and skill unlocks. It links directly to Captain Elowen, your next hunting ground and the skill book. **B — Boss Journal** lists all 13 bosses with painted portraits, recommended levels, named rewards, tactics and travel to their gate town.
+
+Bosses enter a second phase at 60% HP and a final phase at 35%. Later phases add projectiles, widen slams and reduce recovery time, while preserving readable wind-ups of at least 0.65 seconds. Ground attacks and charges mark their danger lanes. The boss health bar shows the phase.
+
+Monster equipment can be **Common, Uncommon, Rare or Epic**, with better odds at higher levels. Rarity bonuses add attack, defense or attributes independently of scroll upgrades. Each boss guarantees a named epic class weapon with its own trophy title. Rare and epic drops have colored ground beams; inventory borders and tooltips identify their quality. Hats, armor, capes, boots and weapon quality appear on your character; Shadow Twin mirrors your gear and looks.
+
+In Inventory, sort by level, rarity or slot, double-click to equip, and **Lock item** to protect a favorite. Locked gear cannot be sold or dismantled. Bulk cleanup preserves locked, rare and epic equipment, plus any item that improves a stat over your worn gear. The comparison lists attack, defense and attribute changes. Existing items and saves remain compatible; old gear defaults to Common.
+
+The world now includes nine original looping music pieces, three ambient beds, twelve synthesized effects and regional particles. Projectiles, hits, criticals, loot and level-ups have distinct sounds. **Menu → Controls** has music and effects sliders and a camera-shake toggle; these preferences save locally. A zero slider value mutes its channel. Click inside the game to enable browser audio.
+
+Audio is composed by `tools/generate_windswept_audio.py`, with no external samples or borrowed melodies. The script requires Python 3 and ffmpeg to regenerate the shipped WAV and Ogg assets.

@@ -2,6 +2,10 @@ extends Node2D
 const Travel=preload("res://systems/world_travel.gd")
 const Maps=preload("res://data/maps.gd")
 const Style=preload("res://ui/style.gd")
+var sound
+var shake_time=0.0
+var shake_power=0.0
+var step_time=0.0
 var test_mode=false
 var state
 var bindings
@@ -22,6 +26,9 @@ var startup_warning=""
 var dialog
 var pet_node
 func _ready():
+    sound=preload("res://systems/soundscape.gd").new()
+    sound.enabled=not test_mode
+    add_child(sound)
     state=preload("res://systems/character_state.gd").new()
     bindings=preload("res://systems/input_bindings.gd").new()
     bindings.apply(bindings.defaults())
@@ -35,13 +42,25 @@ func _ready():
     effects=preload("res://visuals/combat_effects.gd").new()
     effects.z_index=12
     add_child(effects)
-    combat.attack_started.connect(func(id,origin,direction,reach): effects.show_attack(id,origin,direction,reach,combat.windup))
+    combat.attack_started.connect(func(id,origin,direction,reach):
+        effects.show_attack(id,origin,direction,reach,combat.windup)
+        var skill=preload("res://data/catalog.gd").skill(id)
+        if skill.get("shape","")!="projectile":sound.play_effect("spell" if skill.get("element","")!="" else "swing"))
     combat.impact.connect(func(pos,amount,critical):
         effects.show_damage(pos,amount,critical)
-        effects.show_hit(pos,critical))
-    player.damaged.connect(func(amount): effects.show_player_damage(player.global_position+Vector2(0,-75),amount))
+        effects.show_hit(pos,critical)
+        sound.play_effect("crit" if critical else "hit")
+        if sound.shake_enabled and critical:shake_time=.12;shake_power=2.5)
+    player.damaged.connect(func(amount):
+        effects.show_player_damage(player.global_position+Vector2(0,-75),amount)
+        sound.play_effect("hurt")
+        if sound.shake_enabled:shake_time=.15;shake_power=3)
     player.evaded.connect(func(text): effects.show_evade(player.global_position+Vector2(0,-75),text))
     combat.effect_requested.connect(effects.show_effect)
+    combat.effect_requested.connect(func(kind,data):
+        if kind=="launch":
+            var style=data.get("style","star")
+            sound.play_effect("arrow" if style=="arrow" else "spell" if style=="bolt" else "star"))
     combat.loot_requested.connect(func(pos,reward): if map!=null: map.spawn_loot(pos,reward))
     combat.door_requested.connect(func():
         change_map(respawn_map_id,"entry")
@@ -66,6 +85,7 @@ func _ready():
     player.interact_requested.connect(func(): if map!=null: map.interact())
     player.died.connect(return_to_town,CONNECT_DEFERRED)
     state.leveled.connect(func(lv):
+        sound.play_effect("level")
         hud.show_notice("LEVEL %d! +5 attribute points%s." % [lv," and 3 skill points" if state.tier()>0 else ""],6)
         var fx=preload("res://visuals/level_up_fx.gd").new()
         fx.follow=player
@@ -115,6 +135,7 @@ func change_map(id: String,spawn: String) -> bool:
     next.shop_requested.connect(func(): menu.open_panel("shop"))
     next.quest_requested.connect(func(npc): dialog.talk(map_id,npc))
     next.reward_notice.connect(hud.show_notice)
+    next.loot_collected.connect(func(rare):sound.play_effect("epic" if rare else "loot"))
     next.experience_gained.connect(hud.show_xp)
     next.boss_spawned.connect(func(enemy): hud.boss_target=enemy)
     if map!=null:
@@ -125,6 +146,7 @@ func change_map(id: String,spawn: String) -> bool:
     if definition.safe:
         respawn_map_id=id
         state.remember_town(id)
+    sound.set_region(definition.biome,definition.has("boss"))
     player.climbs=map.climbs
     hud.minimap.map=map
     hud.minimap.player=player
@@ -241,6 +263,12 @@ func show_advancement(_id: String=""):
                 hud.show_notice("You are now a %s! Open Skills to spend your new skill point." % job.name,7)))
     box.add_child(Style.button("Not yet",menu.close))
 func _process(delta):
+    shake_time=maxf(0,shake_time-delta)
+    camera.offset=Vector2(sin(Time.get_ticks_msec()*.063),cos(Time.get_ticks_msec()*.079))*shake_power*minf(1,shake_time/.12) if sound.shake_enabled and shake_time>0 else Vector2.ZERO
+    step_time-=delta
+    if step_time<=0 and player.is_on_floor() and absf(player.velocity.x)>40:
+        sound.play_effect("step")
+        step_time=.28
     state.potion_cooldown=maxf(0,state.potion_cooldown-delta)
     state.mana_potion_cooldown=maxf(0,state.mana_potion_cooldown-delta)
     state.regenerate(delta,Maps.definition(map_id).get("safe",false))

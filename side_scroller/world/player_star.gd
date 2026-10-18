@@ -93,6 +93,12 @@ func _physics_process(delta):
     if traveled>=max_distance: queue_free()
     queue_redraw()
 func _draw():
+    var echo=scale_factor<1.0
+    var power=skill_id in ["triple_throw","avenger","snipe","dragon_pulse","piercing_arrow"]
+    var aura=Color("d5b1ff") if echo else Color("9eecff") if skill_id=="triple_throw" else Color("ffa97c") if skill_id=="avenger" else Color("d6e6ff")
+    if power or echo:
+        draw_circle(Vector2.ZERO,16 if power else 12,Color(aura,.15))
+        draw_line(-direction*38,direction*5,Color(aura,.45),4,true)
     var color=ELEMENT_COLORS.get(element,ELEMENT_COLORS[""])
     for i in range(1,trail.size()):
         draw_line(trail[i]-global_position,trail[i-1]-global_position,Color(color,0.3*(1.0-float(i)/trail.size())),maxf(1,5-i*0.6),true)
@@ -121,13 +127,13 @@ func _draw():
             draw_circle(Vector2.ZERO,7,Color("a87920"),false,2)
             draw_line(-direction*20,Vector2.ZERO,Color(1,0.85,0.4,0.4),4,true)
         _:
-            var size=2.1 if style=="big_star" else 1.0
+            var size=2.1 if style=="big_star" else 1.15 if skill_id=="triple_throw" else 1.0
             draw_line(-direction*24*size,Vector2.ZERO,Color(0.69,0.52,1,0.3),5*size,true)
             draw_set_transform(Vector2.ZERO,spin,Vector2.ONE*size)
             var points=PackedVector2Array([Vector2(0,-11),Vector2(3,-3),Vector2(11,0),Vector2(3,3),Vector2(0,11),Vector2(-3,3),Vector2(-11,0),Vector2(-3,-3)])
             draw_circle(Vector2.ZERO,14,Color(0.65,0.45,1,0.12))
             draw_polyline(points+PackedVector2Array([points[0]]),Color("302646"),4,true)
-            draw_colored_polygon(points,Color("d3d8f5"))
+            draw_colored_polygon(points,aura if power or echo else Color("d3d8f5"))
             draw_polyline(points,Color("6c56a9"),1,true)
             draw_line(Vector2(0,-8),Vector2(0,8),Color("ffffff"),1,true)
             draw_line(Vector2(-8,0),Vector2(8,0),Color("ffffff"),1,true)

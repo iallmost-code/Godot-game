@@ -20,6 +20,7 @@ var attack_targets=0
 var volleys_fired=0
 var attack_star_count=1
 var hidden_strike=false
+var partner_duration=0.0
 var partner_time=0.0
 var partner_skill=""
 var partner: Node2D
@@ -47,16 +48,19 @@ func skill_value(id: String,key: String,fallback=0.0) -> float:
 # ---------------- Shadow partner ----------------
 func clear_partner():
     partner_time=0
+    partner_duration=0
     partner_skill=""
     if is_instance_valid(partner): partner.queue_free()
     partner=null
 func summon_partner(id: String="",duration: float=60.0):
     clear_partner()
     partner_time=duration
+    partner_duration=duration
     partner_skill=id
     partner=preload("res://visuals/character_visual.gd").new()
     partner.appearance="thief"
-    partner.modulate=Color(0.46,0.26,0.75,0.58)
+    partner.modulate=Color(0.68,0.50,1.0,0.78)
+    partner.shadow_echo=true
     partner.z_index=4
     player.get_parent().add_child(partner)
     partner.global_position=player.global_position-Vector2(player.facing*45,0)
@@ -78,6 +82,8 @@ func update_partner(delta):
     partner.appearance=player.visual.appearance
     partner.attack_style=active if active!="" else "star"
     partner.set_equipment(state.equipment.weapon)
+    partner.set_worn(state)
+    partner.looks=state.looks
     partner.set_attack_clock(elapsed,swing_end,windup)
     partner.set_pose("attack" if active!="" else player.visual.pose,direction,Time.get_ticks_msec()/1000.0)
 # ---------------- Summons ----------------

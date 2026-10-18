@@ -25,11 +25,11 @@ for path in sorted(root.rglob('*')):
         if path.parent != root / 'data':
             continue
         json.loads(path.read_text(encoding='utf-8'))
-    if path.suffix not in {'.json', '.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid', '.ttf', '.gdshader'}:
+    if path.suffix not in {'.json', '.gd', '.godot', '.tscn', '.tres', '.md', '.svg', '.png', '.uid', '.ttf', '.gdshader', '.ogg', '.wav'}:
         raise SystemExit(f'Unexpected project file: {path}')
     if path.suffix in {'.gd', '.tscn', '.godot', '.tres'}:
         text = path.read_text()
-        for ref in re.findall(r'res://([A-Za-z0-9_./-]+\.(?:gdshader|gd|tscn|svg|png|tres|ttf))', text):
+        for ref in re.findall(r'res://([A-Za-z0-9_./-]+\.(?:gdshader|gd|tscn|svg|png|tres|ttf|ogg|wav))', text):
             if not (root / ref).is_file():
                 raise SystemExit(f'Missing dependency {ref} referenced by {path.name}')
     files.append(path)
